@@ -21,7 +21,7 @@ public class EditIngredientFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
 
     public interface OnFragmentInteractionListener {
-        Ingredient getCurrentFood();
+        Ingredient getCurrentIngredient();
         void onOkEditPressed(Ingredient ingredient);
 
     }
@@ -99,11 +99,11 @@ public class EditIngredientFragment extends DialogFragment {
 
 
 
-    static EditFoodFragment newInstance(Food food) {
+    static EditIngredientFragment newInstance(Ingredient ingredient) {
         Bundle args = new Bundle();
-        args.putSerializable("food", food);
+        args.putSerializable("ingredient", ingredient);
 
-        EditFoodFragment fragment = new EditFoodFragment();
+        EditIngredientFragment fragment = new EditIngredientFragment();
         fragment.setArguments(args);
         return fragment;
     }

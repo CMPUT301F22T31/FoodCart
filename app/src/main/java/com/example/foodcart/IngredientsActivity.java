@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class IngredientsActivity extends AppCompatActivity implements com.example.foodbook.AddFoodFragment.OnFragmentInteractionListener, EditFoodFragment.OnFragmentInteractionListener {
+public class IngredientsActivity extends AppCompatActivity implements com.example.foodcart.AddIngredientFragment.OnFragmentInteractionListener, EditIngredientFragment.OnFragmentInteractionListener {
 
     // Declare the variables
     ListView ingredientList;
@@ -57,12 +57,12 @@ public class IngredientsActivity extends AppCompatActivity implements com.exampl
             }
         });
 
-        totalCost = findViewById(R.id.totalCost);
+        // totalCost = findViewById(R.id.totalCost);
         Integer sum = 0;
         for (Ingredient item: dataList){
             sum += item.getTotal();
         }
-        totalCost.setText("Total Cost: $" + sum.toString() + " USD");
+        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
 
 
     }
@@ -71,17 +71,17 @@ public class IngredientsActivity extends AppCompatActivity implements com.exampl
     @Override
     public void onOkPressed(Ingredient ingredient) {
         ingredientAdapter.add(ingredient);
-        totalCost = findViewById(R.id.totalCost);
+        // totalCost = findViewById(R.id.totalCost);
         Integer sum = 0;
         for (Ingredient item: dataList){
             sum += item.getTotal();
         }
-        totalCost.setText("Total Cost: $" + sum.toString() + " USD");
+        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
     }
 
     // get the current food for Edit Food Fragment
     @Override
-    public Ingredient getCurrentFood() {
+    public Ingredient getCurrentIngredient() {
         return dataList.get(selected);
     }
 
@@ -89,12 +89,12 @@ public class IngredientsActivity extends AppCompatActivity implements com.exampl
     public void onOkEditPressed(Ingredient ingredient) {
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
-        totalCost = findViewById(R.id.totalCost);
+        // totalCost = findViewById(R.id.totalCost); TODO
         Integer sum = 0;
         for (Ingredient item: dataList){
             sum += item.getTotal();
         }
-        totalCost.setText("Total Cost: $" + sum.toString() + " USD");
+        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
     }
 }
 
