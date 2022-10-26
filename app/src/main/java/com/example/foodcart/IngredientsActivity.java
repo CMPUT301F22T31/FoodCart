@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,9 +31,14 @@ public class IngredientsActivity extends AppCompatActivity implements com.exampl
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
         dataList = new ArrayList<>();
+        try {
+            dataList.add(new Ingredient("Banana", new Date(10-10-2022), "pantry", 3, 4));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // set adapter
-        ingredientAdapter = new CustomArrayAdapter(this, dataList);
+        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
 
         // onClick for Add Food Button (floating action + button)

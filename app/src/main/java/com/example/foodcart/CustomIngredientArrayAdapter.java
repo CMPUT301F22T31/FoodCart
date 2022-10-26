@@ -11,16 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 
-public class CustomArrayAdapter extends ArrayAdapter<Ingredient> {
+public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
 
-    public CustomArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
+    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
         this.ingredients = ingredients;
         this.context = context;
@@ -42,8 +40,8 @@ public class CustomArrayAdapter extends ArrayAdapter<Ingredient> {
         TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
 
         ingredientDescription.setText(ingredient.getDescription());
-        ingredientQuantity.setText(ingredient.getCount());
-        // ingredient Sort TODO
+        ingredientQuantity.setText(ingredient.getCount().toString());
+        ingredientSort.setText("Sort value");
 
 
         // set up delete button on each list item and onClick
