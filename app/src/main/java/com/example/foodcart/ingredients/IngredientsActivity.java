@@ -1,4 +1,4 @@
-package com.example.foodcart;
+package com.example.foodcart.ingredients;
 
 import android.os.Bundle;
 import android.view.View;
@@ -8,12 +8,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.foodcart.R;
+import com.example.foodcart.ingredients.AddIngredientFragment;
+import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
+import com.example.foodcart.ingredients.EditIngredientFragment;
+import com.example.foodcart.ingredients.Ingredient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class IngredientsActivity extends AppCompatActivity implements com.example.foodcart.AddIngredientFragment.OnFragmentInteractionListener, EditIngredientFragment.OnFragmentInteractionListener {
+public class IngredientsActivity extends AppCompatActivity implements AddIngredientFragment.OnFragmentInteractionListener, EditIngredientFragment.OnFragmentInteractionListener {
 
     // Declare the variables
     ListView ingredientList;

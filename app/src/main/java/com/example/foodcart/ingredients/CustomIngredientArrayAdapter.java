@@ -1,4 +1,4 @@
-package com.example.foodcart;
+package com.example.foodcart.ingredients;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.foodcart.ingredients.Ingredient;
+import com.example.foodcart.R;
 
 import java.util.ArrayList;
 
@@ -33,7 +36,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
             view = LayoutInflater.from(context).inflate(R.layout.content_ingredients_item, parent, false);
         }
 
-        com.example.foodcart.Ingredient ingredient = ingredients.get(position);
+        com.example.foodcart.ingredients.Ingredient ingredient = ingredients.get(position);
 
         TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
         TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);

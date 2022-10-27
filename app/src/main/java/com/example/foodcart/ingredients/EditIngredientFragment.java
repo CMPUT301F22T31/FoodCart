@@ -1,4 +1,4 @@
-package com.example.foodcart;
+package com.example.foodcart.ingredients;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +12,9 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.foodcart.ingredients.Ingredient;
+import com.example.foodcart.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

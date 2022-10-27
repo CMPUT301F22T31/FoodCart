@@ -1,4 +1,4 @@
-package com.example.foodcart;
+package com.example.foodcart.ingredients;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

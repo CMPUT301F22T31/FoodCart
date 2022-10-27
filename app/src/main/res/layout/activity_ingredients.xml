@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".IngredientsActivity">
+    tools:context=".ingredients.IngredientsActivity">
 
     <TextView
         android:id="@+id/ingredients_title"
@@ -20,11 +20,21 @@
 
     <TextView
         android:id="@+id/ingredients_sort"
-        android:layout_width="97dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="92dp"
+        android:layout_width="51dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="24dp"
         android:text="Sort By: "
+        app:layout_constraintEnd_toStartOf="@+id/ingredients_sort_select"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/ingredients_sort_select"
+        android:layout_width="123dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -59,14 +69,16 @@
 
     <ImageButton
         android:id="@+id/ingredients_tab"
-        android:background="@color/green"
         android:layout_width="88dp"
         android:layout_height="67dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="12dp"
+        android:background="@color/green"
+        android:contentDescription="Go To Ingredients"
         android:src="@android:drawable/ic_menu_today"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="Go To Ingredients"
-        app:layout_constraintEnd_toStartOf="@+id/recipes_tab" />
+        app:layout_constraintEnd_toStartOf="@+id/recipes_tab"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/recipes_tab"
