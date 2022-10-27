@@ -25,7 +25,7 @@ public class AddIngredientFragment extends DialogFragment {
     private EditText ingredientLocation;
     private EditText ingredientBestBeforeDate;
     private EditText ingredientCount;
-    private EditText ingredientUnitCost;
+    private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
 
     public interface OnFragmentInteractionListener {
@@ -54,7 +54,7 @@ public class AddIngredientFragment extends DialogFragment {
         ingredientLocation = view.findViewById(R.id.locationAddText);
         ingredientBestBeforeDate = view.findViewById(R.id.bestBeforeDateAddText);
         ingredientCount = view.findViewById(R.id.countAddNumber);
-        ingredientUnitCost = view.findViewById(R.id.unitCostAddNumber);
+        ingredientCategory = view.findViewById(R.id.categoryAddText);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder

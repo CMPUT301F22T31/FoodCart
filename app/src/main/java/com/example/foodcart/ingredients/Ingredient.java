@@ -10,7 +10,7 @@ class Ingredient implements Serializable {
     Date bestBeforeDate;
     String location;
     int count;
-    int unitCost;
+    String category;
     String[] locationOptions = {"pantry", "freezer", "fridge"};
 
     public String getDescription() {
@@ -62,29 +62,21 @@ class Ingredient implements Serializable {
 
     }
 
-    public Integer getUnitCost() {
-        return unitCost;
+    public String getCategory() {
+        return category;
     }
 
-    public void setUnitCost(double cost) throws Exception {
-        if (cost > 0) {
-            this.unitCost = (int) Math.ceil(cost);
-        } else {
-            throw new Exception("Invalid unit cost.");
-        }
+    public void setCategory(String category){
+        this.category = category;
 
     }
 
-    public Integer getTotal() {
-        return (this.unitCost * this.count);
-    }
-
-    public Ingredient(String description, Date bestBeforeDate, String location, int count, int unitCost) throws Exception {
+    public Ingredient(String description, Date bestBeforeDate, String location, int count, String category) throws Exception {
         setDescription(description);
         setBestBeforeDate(bestBeforeDate);
         setLocation(location);
         setCount(count);
-        setUnitCost(unitCost);
+        setCategory(category);
     }
 }
 
