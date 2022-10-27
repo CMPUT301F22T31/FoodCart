@@ -13,6 +13,11 @@
         <entry key="..\:/AndroidStudioApps/anarkhedFoodBook/app/src/main/res/layout/fragment_add_food.xml" value="0.128" />
         <entry key="..\:/AndroidStudioApps/anarkhedFoodBook/app/src/main/res/layout/fragment_edit_food.xml" value="0.19157608695652173" />
         <entry key="..\:/AndroidStudioApps/anarkhedFoodBook/app/src/main/res/layout/list_view_inventory.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Alfred/Desktop/School 2022-2023/CMPUT 301/New folder/FoodCart/app/src/main/res/layout/activity_ingredients.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Alfred/Desktop/School 2022-2023/CMPUT 301/New folder/FoodCart/app/src/main/res/layout/activity_recipe.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Alfred/Desktop/School 2022-2023/CMPUT 301/New folder/FoodCart/app/src/main/res/layout/add_ingredient_fragment_layout.xml" value="0.14722222222222223" />
+        <entry key="..\:/Users/Alfred/Desktop/School 2022-2023/CMPUT 301/New folder/FoodCart/app/src/main/res/layout/content_ingredients_item.xml" value="0.14722222222222223" />
+        <entry key="..\:/Users/Alfred/Desktop/School 2022-2023/CMPUT 301/New folder/FoodCart/app/src/main/res/layout/edit_ingredient_fragment_layout.xml" value="0.14722222222222223" />
       </map>
     </option>
   </component>
