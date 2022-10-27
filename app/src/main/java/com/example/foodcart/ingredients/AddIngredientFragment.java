@@ -75,10 +75,10 @@ public class AddIngredientFragment extends DialogFragment {
                             e.printStackTrace();
                         }
                         int count = Integer.parseInt(ingredientCount.getText().toString());
-                        int unitCost = Integer.parseInt(ingredientUnitCost.getText().toString());
+                        String category = ingredientCategory.getText().toString();
                         System.out.println(description + " " + location);
                         try {
-                            listener.onOkPressed(new Ingredient(description, bestBeforeDate, location, count, unitCost));
+                            listener.onOkPressed(new Ingredient(description, bestBeforeDate, location, count, category));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
