@@ -38,7 +38,7 @@ public class IngredientsActivity extends AppCompatActivity implements AddIngredi
         ingredientList = findViewById(R.id.ingredients_list);
         dataList = new ArrayList<>();
         try {
-            dataList.add(new Ingredient("Banana", new Date(10-10-2022), "pantry", 3, 4));
+            dataList.add(new Ingredient("Banana", new Date(10-10-2022), "pantry", 3, "Fruit"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,13 +67,6 @@ public class IngredientsActivity extends AppCompatActivity implements AddIngredi
             }
         });
 
-        // totalCost = findViewById(R.id.totalCost);
-        Integer sum = 0;
-        for (Ingredient item: dataList){
-            sum += item.getTotal();
-        }
-        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
-
 
     }
 
@@ -81,12 +74,6 @@ public class IngredientsActivity extends AppCompatActivity implements AddIngredi
     @Override
     public void onOkPressed(Ingredient ingredient) {
         ingredientAdapter.add(ingredient);
-        // totalCost = findViewById(R.id.totalCost);
-        Integer sum = 0;
-        for (Ingredient item: dataList){
-            sum += item.getTotal();
-        }
-        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
     }
 
     // get the current food for Edit Food Fragment
@@ -99,12 +86,6 @@ public class IngredientsActivity extends AppCompatActivity implements AddIngredi
     public void onOkEditPressed(Ingredient ingredient) {
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
-        // totalCost = findViewById(R.id.totalCost); TODO
-        Integer sum = 0;
-        for (Ingredient item: dataList){
-            sum += item.getTotal();
-        }
-        // totalCost.setText("Total Cost: $" + sum.toString() + " USD");
     }
 }
 

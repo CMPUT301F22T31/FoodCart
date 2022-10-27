@@ -48,7 +48,7 @@ public class EditIngredientFragment extends DialogFragment {
         EditText ingredientLocation;
         EditText ingredientBestBeforeDate;
         EditText ingredientCount;
-        EditText ingredientUnitCost;
+        EditText ingredientCategory;
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_ingredient_fragment_layout, null);
 
         Ingredient currentItem = listener.getCurrentIngredient();
@@ -56,20 +56,20 @@ public class EditIngredientFragment extends DialogFragment {
         String currentLocation = currentItem.getLocation();
         Date currentBestBeforeDate = currentItem.getBestBeforeDate();
         Integer currentCount = currentItem.getCount();
-        Integer currentUnitCost = currentItem.getUnitCost();
+        String currentCategory = currentItem.getCategory();
 
 
         ingredientDescription = view.findViewById(R.id.descriptionEditText);
         ingredientLocation = view.findViewById(R.id.locationEditText);
         ingredientBestBeforeDate = view.findViewById(R.id.bestBeforeDateEditText);
         ingredientCount = view.findViewById(R.id.countEditNumber);
-        ingredientUnitCost = view.findViewById(R.id.unitCostEditNumber);
+        ingredientCategory = view.findViewById(R.id.categoryEditText);
 
         ingredientDescription.setText(currentDescription);
         ingredientLocation.setText(currentLocation);
         ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(currentBestBeforeDate));
         ingredientCount.setText(currentCount.toString());
-        ingredientUnitCost.setText(currentUnitCost.toString());
+        ingredientCategory.setText(currentCategory.toString());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder.setView(view)
@@ -89,10 +89,10 @@ public class EditIngredientFragment extends DialogFragment {
                         }
                     }
                     Integer count = Integer.parseInt(ingredientCount.getText().toString());
-                    Integer unitCost = Integer.parseInt(ingredientUnitCost.getText().toString());
+                    String category = ingredientCategory.getText().toString();
 
                     try {
-                        listener.onOkEditPressed(new Ingredient(description, bestBeforeDate, location, count, unitCost));
+                        listener.onOkEditPressed(new Ingredient(description, bestBeforeDate, location, count, category));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
