@@ -156,26 +156,27 @@ public class IngredientFragment extends DialogFragment {
     }
 
     private boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
-        boolean emptyStringExist = true;
+        boolean emptyStringExist = false;
         if(description.isEmpty()) {
+            emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Description", Toast.LENGTH_SHORT).show();
         }
         else if(location.isEmpty()) {
+            emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Location", Toast.LENGTH_SHORT).show();
         }
         else if(count.isEmpty()) {
+            emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Count", Toast.LENGTH_SHORT).show();
         }
         else if(unit.isEmpty()) {
+            emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Unit", Toast.LENGTH_SHORT).show();
         }
         else if(category.isEmpty()) {
+            emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Category", Toast.LENGTH_SHORT).show();
         }
-        else {
-            emptyStringExist = false;
-        }
-
         return emptyStringExist;
     }
 

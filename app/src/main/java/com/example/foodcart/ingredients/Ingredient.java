@@ -74,6 +74,7 @@ class Ingredient implements Serializable {
         setBestBeforeDate(bestBeforeDate);
         setLocation(location);
         setCount(count);
+        setUnit(unit);
         setCategory(category);
     }
 }
