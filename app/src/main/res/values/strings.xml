@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FoodCart</string>
+    <string name="ingredientDescription">Description</string>
+    <string name="ingredientBestBeforeDate">Best Before Date</string>
+    <string name="ingredientLocation">Storage Location</string>
+    <string name="ingredientCount">Quantity</string>
+    <string name="ingredientUnit">Unit</string>
+    <string name="ingredientCategory">Category</string>
+</resources>
