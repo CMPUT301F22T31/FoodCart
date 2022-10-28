@@ -91,19 +91,23 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = ingredientLocation.getText().toString();
-                            Date BBD = parseDate(ingredientBestBeforeDate.getText().toString());
+                            String date = ingredientBestBeforeDate.getText().toString();
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
-                            //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                            int countInt = Integer.parseInt(count);
-
-                            if (BBD != null && !emptyStringsExist) {
-                                Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
-                                listener.onOkPressedEdit(newIngredient);
-                            } else {
+                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
+                            if (!emptyStringsExist) {
+                                //try to parse the date
+                                Date BBD = parseDate(date);
+                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                                int countInt = Integer.parseInt(count);
+                                if (BBD != null) {
+                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
+                                    listener.onOkPressedEdit(newIngredient);
+                                }
+                            }
+                            else {
                                 Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -121,19 +125,23 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = ingredientLocation.getText().toString();
-                            Date BBD = parseDate(ingredientBestBeforeDate.getText().toString());
+                            String date = ingredientBestBeforeDate.getText().toString();
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
-                            //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                            int countInt = Integer.parseInt(count);
-
-                            if (BBD != null && !emptyStringsExist) {
-                                Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
-                                listener.onOkPressed(newIngredient);
-                            } else {
+                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
+                            if (!emptyStringsExist) {
+                                //try to parse the date
+                                Date BBD = parseDate(date);
+                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                                int countInt = Integer.parseInt(count);
+                                if (BBD != null) {
+                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
+                                    listener.onOkPressed(newIngredient);
+                                }
+                            }
+                            else {
                                 Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
                             }
 
@@ -155,11 +163,15 @@ public class IngredientFragment extends DialogFragment {
         return date;
     }
 
-    private boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
+    private boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
             emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Description", Toast.LENGTH_SHORT).show();
+        }
+        else if(date.isEmpty()) {
+            emptyStringExist = true;
+            Toast.makeText(getContext(), "Please Enter Date", Toast.LENGTH_SHORT).show();
         }
         else if(location.isEmpty()) {
             emptyStringExist = true;
