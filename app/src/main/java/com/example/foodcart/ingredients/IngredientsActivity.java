@@ -2,19 +2,30 @@ package com.example.foodcart.ingredients;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodcart.R;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,6 +36,7 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
     ArrayAdapter<Ingredient> ingredientAdapter;
     ArrayList<Ingredient> dataList;
     int selected;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +51,11 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
         // set adapter
         ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
+
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference IngredientCollection = db.collection("Ingredients");
 
         final ImageButton RecipeTab = findViewById(R.id.recipes_tab);
         RecipeTab.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +83,37 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
                 selected = position;
                 new IngredientFragment().newInstance(selectedIngredient).show(getSupportFragmentManager(), "EDIT_INGREDIENT");
         }
+        });
+
+        IngredientCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                dataList.clear();
+                assert queryDocumentSnapshots != null;
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                    Log.d("Sample", String.valueOf(doc.getData().get("Location")));
+                    String description = doc.getId();
+                    String location = (String) doc.getData().get("Location");
+                    String tempDate = (String) doc.getData().get("Date");
+                    String count = (String) doc.getData().get("Count");
+                    String unit = (String) doc.getData().get("Unit");
+                    String category = (String) doc.getData().get("Category");
+
+                    // Convert date string into Date class
+                    Date date = null;
+                    try {
+                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                    int countInt = Integer.parseInt(count);
+                    // add ingredient to list
+                    dataList.add(new Ingredient(description, date, location, countInt, unit, category));
+                }
+                ingredientAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
+            }
         });
 
     }

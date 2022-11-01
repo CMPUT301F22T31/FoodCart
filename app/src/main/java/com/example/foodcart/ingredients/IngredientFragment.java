@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -15,10 +16,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class IngredientFragment extends DialogFragment {
     private EditText ingredientDescription;
@@ -70,6 +76,11 @@ public class IngredientFragment extends DialogFragment {
         ingredientUnit = view.findViewById(R.id.ingredientUnitET);
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
 
+        // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference IngredientCollection = db.collection("Ingredients");
+
         Bundle args = getArguments();
         //Edit Ingredient functionality
         if(args != null) {
@@ -105,6 +116,30 @@ public class IngredientFragment extends DialogFragment {
                                 if (BBD != null) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
+                                    // Add new ingredient to DataBase
+                                    HashMap<String, String> data = new HashMap<>();
+                                    data.put("Location", location);
+                                    data.put("Date", date);
+                                    data.put("Count", count);
+                                    data.put("Unit", unit);
+                                    data.put("Category", category);
+                                    IngredientCollection
+                                            .document(description)
+                                            .set(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // These are a method which gets executed when the task is succeeded
+                                                    Log.d("Sample", "Data has been added successfully!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // These are a method which gets executed if there’s any problem
+                                                    Log.d("Sample", "Data could not be added!" + e.toString());
+                                                }
+                                            });
                                 }
                             }
                             else {
@@ -139,6 +174,30 @@ public class IngredientFragment extends DialogFragment {
                                 if (BBD != null) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
+                                    // Add new ingredient to DataBase
+                                    HashMap<String, String> data = new HashMap<>();
+                                    data.put("Location", location);
+                                    data.put("Date", date);
+                                    data.put("Count", count);
+                                    data.put("Unit", unit);
+                                    data.put("Category", category);
+                                    IngredientCollection
+                                            .document(description)
+                                            .set(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // These are a method which gets executed when the task is succeeded
+                                                    Log.d("Sample", "Data has been added successfully!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // These are a method which gets executed if there’s any problem
+                                                    Log.d("Sample", "Data could not be added!" + e.toString());
+                                                }
+                                            });
                                 }
                             }
                             else {
