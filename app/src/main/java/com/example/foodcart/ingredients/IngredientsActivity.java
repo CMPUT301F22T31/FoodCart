@@ -63,6 +63,7 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
             public void onClick(View view) {
                 Intent switchActivityIntent = new Intent(getApplicationContext(), RecipeActivity.class);
                 startActivity(switchActivityIntent);
+                finish();
             }
         });
 

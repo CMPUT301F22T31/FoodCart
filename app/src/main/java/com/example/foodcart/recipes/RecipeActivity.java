@@ -76,6 +76,7 @@ public class RecipeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientsActivity.class);
                 startActivity(switchActivityIntent);
+                finish();
             }
         });
     }
