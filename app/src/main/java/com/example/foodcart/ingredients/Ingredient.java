@@ -5,13 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class Ingredient implements Serializable {
+class Ingredient implements Serializable {
     String description;
     Date bestBeforeDate;
     String location;
     int count;
+    String unit;
     String category;
-    String[] locationOptions = {"pantry", "freezer", "fridge"};
 
     public String getDescription() {
         return description;
@@ -39,27 +39,25 @@ public class Ingredient implements Serializable {
         return location;
     }
 
-    public void setLocation(String location) throws Exception {
-        System.out.println(location);
-        if (Arrays.asList(locationOptions).contains(location)) {
-            this.location = location;
-            System.out.println("yes");
-        } else {
-            throw new Exception("Invalid location.");
-        }
+    public void setLocation(String location) {
+        this.location = location;
+
     }
 
     public Integer getCount() {
         return count;
     }
 
-    public void setCount(int count) throws Exception {
-        if (count > 0) {
-            this.count = count;
-        } else {
-            throw new Exception("Invalid count.");
-        }
+    public void setCount(int count) {
+        this.count = count;
+    }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getCategory() {
@@ -71,11 +69,12 @@ public class Ingredient implements Serializable {
 
     }
 
-    public Ingredient(String description, Date bestBeforeDate, String location, int count, String category) throws Exception {
+    public Ingredient(String description, Date bestBeforeDate, String location, int count, String unit, String category) {
         setDescription(description);
         setBestBeforeDate(bestBeforeDate);
         setLocation(location);
         setCount(count);
+        setUnit(unit);
         setCategory(category);
     }
 }
