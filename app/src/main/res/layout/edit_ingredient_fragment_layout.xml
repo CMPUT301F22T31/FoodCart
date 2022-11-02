@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/descriptionEditText"
+            android:layout_width="269dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Ingredient Description"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="57dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=" in " />
+
+        <EditText
+            android:id="@+id/locationEditText"
+            android:layout_width="123dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Location"
+            android:inputType="textPersonName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/bestBeforeDateEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="58dp"
+            android:cursorVisible="false"
+            android:hint="Best Before Date" />
+<!--            android:focusable="false"-->
+<!--            android:focusableInTouchMode="false"-->
+
+
+        <EditText
+            android:id="@+id/countEditNumber"
+            android:layout_width="210dp"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number"
+            android:hint="Count"/>
+
+        <EditText
+            android:id="@+id/categoryEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="58dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Category"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

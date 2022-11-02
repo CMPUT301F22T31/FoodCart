@@ -1,7 +1,6 @@
 package com.example.foodcart.ingredients;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -61,29 +56,8 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                 if (ingredients.size() > 0) {
                     // find selection
                     ingredients.remove(Math.min(position, ingredients.size() - 1));
-
-                    // Access a Cloud Firestore instance from your Activity
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    // Get a top level reference to the collection
-                    final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientCollection
-                            .document(ingredients.get(position).getDescription())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Sample", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
-                                }
-                            });
                     notifyDataSetChanged();
+
                 }
             }
         });
