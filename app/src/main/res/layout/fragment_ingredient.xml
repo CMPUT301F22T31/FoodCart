@@ -49,6 +49,7 @@
         android:inputType="date"
         android:minHeight="48dp"
         android:textColorHint="#757575"
+        android:hint="YYYY-MM-DD"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
@@ -124,6 +125,7 @@
         android:inputType="textPersonName"
         android:minHeight="48dp"
         android:textColorHint="#757575"
+        android:hint="Unit of Measure"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <TextView
