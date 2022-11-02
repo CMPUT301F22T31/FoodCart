@@ -53,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.954"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recipes_list"
         app:layout_constraintVertical_bias="0.409"
         app:srcCompat="@android:drawable/ic_input_add" />
 
