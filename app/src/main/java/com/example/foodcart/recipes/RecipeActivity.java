@@ -13,12 +13,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.foodcart.R;
-//import com.example.foodcart.ingredients.AddIngredientFragment;
-import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
-//import com.example.foodcart.ingredients.EditIngredientFragment;
 import com.example.foodcart.ingredients.Ingredient;
-import com.example.foodcart.ingredients.IngredientsActivity;
+
+
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import com.example.foodcart.ingredients.IngredientActivity;
+import com.example.foodcart.ingredients.IngredientFragment;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,11 +36,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity implements RecipeFragment.OnFragmentInteractionListener{
 
     ListView recipeListView;
     ArrayAdapter<Recipe> recipeAdapter;
     ArrayList<Recipe> recipeList;
+    int selected;
 
 
     @Override
@@ -52,12 +55,6 @@ public class RecipeActivity extends AppCompatActivity {
         recipeList = new ArrayList<>();
         try {
             ArrayList<Ingredient> ingredients = new ArrayList<>();
-            ingredients.add(new Ingredient("Marshmello", new Date(10-10-2022),
-                    "pantry", 1, "g", "Treat"));
-            ingredients.add(new Ingredient("Cracker", new Date(10-10-2022),
-                    "pantry", 1,"g", "Treat"));
-            recipeList.add(new Recipe("Smore", 5,1,
-                    "Marshmello best mello", "Dessert", ingredients));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,7 +74,7 @@ public class RecipeActivity extends AppCompatActivity {
         addRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new AddRecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
+                new RecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
             }
         });
 
@@ -85,8 +82,9 @@ public class RecipeActivity extends AppCompatActivity {
         recipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                int selected = position;
-                //new EditRecipeFragment().show(getSupportFragmentManager(), "EDIT_RECIPE");
+                Recipe selectedRecipe = recipeList.get(position);
+                selected = position;
+                new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
             }
         });
 
@@ -95,7 +93,7 @@ public class RecipeActivity extends AppCompatActivity {
         RecipeTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientsActivity.class);
+                Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
             }
@@ -154,5 +152,16 @@ public class RecipeActivity extends AppCompatActivity {
                 recipeAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
             }
         });
+    }
+
+    @Override
+    public void onOkPressedRecipe(Recipe newRecipe) {
+        recipeAdapter.add(newRecipe);
+    }
+
+    @Override
+    public void onOkPressedEditRecipe(Recipe newRecipe) {
+        recipeList.set(selected, newRecipe);
+        recipeAdapter.notifyDataSetChanged();
     }
 }

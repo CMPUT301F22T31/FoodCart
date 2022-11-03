@@ -1,26 +1,27 @@
 package com.example.foodcart.recipes;
 
 import com.example.foodcart.ingredients.Ingredient;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class Recipe {
+public class Recipe implements Serializable {
     String title;
     int prep_time;
     int servings;
     String comments;
     String category;
     ArrayList<Ingredient> ingredientList;
-    String picture = "PICTURE";
+    String picture;
 
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
-        title = title.substring(0, Math.min(30, title.length()));
         this.title = title;
     }
 
@@ -28,24 +29,16 @@ public class Recipe {
         return prep_time;
     }
 
-    public void setPrep_time(int prep_time) throws Exception {
-        if (prep_time> 0) {
-            this.prep_time = prep_time;
-        } else {
-            throw new Exception("Invalid prep time.");
-        }
+    public void setPrep_time(int prep_time) {
+        this.prep_time = prep_time;
     }
 
     public int getServings() {
         return servings;
     }
 
-    public void setServings(int servings) throws Exception {
-        if (servings > 0) {
-            this.servings = servings;
-        } else {
-            throw new Exception("Invalid servings.");
-        }
+    public void setServings(int servings) {
+        this.servings = servings;
     }
 
     public String getComments() {
@@ -53,7 +46,6 @@ public class Recipe {
     }
 
     public void setComments(String comments) {
-        comments = comments.substring(0, Math.min(30, comments.length()));
         this.comments = comments;
     }
 
@@ -73,6 +65,14 @@ public class Recipe {
         this.ingredientList = ingredientList;
     }
 
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
     public void addIngredient(Ingredient ingredient) {
         this.ingredientList.add(ingredient);
     }
@@ -81,12 +81,13 @@ public class Recipe {
         this.ingredientList.remove(ingredient);
     }
 
-    public Recipe(String title, int prep_time, int servings, String comments, String category,
-                  ArrayList<Ingredient> ingredients) throws Exception {
+    public Recipe(String title, int prep_time, int servings, String comments, String picture, String category,
+                  ArrayList<Ingredient> ingredients)  {
         setTitle(title);
         setPrep_time(prep_time);
         setServings(servings);
         setComments(comments);
+        setPicture(picture);
         setCategory(category);
         setIngredientList(ingredients);
     }
