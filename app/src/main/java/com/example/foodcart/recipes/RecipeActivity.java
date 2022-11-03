@@ -35,12 +35,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
         recipeList = new ArrayList<>();
         try {
             ArrayList<Ingredient> ingredients = new ArrayList<>();
-            ingredients.add(new Ingredient("Marshmello", new Date(10-10-2022),
-                    "pantry", 1, "g", "Treat"));
-            ingredients.add(new Ingredient("Cracker", new Date(10-10-2022),
-                    "pantry", 1,"g", "Treat"));
-            recipeList.add(new Recipe("Smore", 5,1,
-                    "Marshmello best mello", "Dessert", ingredients));
         } catch (Exception e) {
             e.printStackTrace();
         }

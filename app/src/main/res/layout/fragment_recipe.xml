@@ -18,10 +18,9 @@
 
     <Button
         android:id="@+id/recipeImgUploadButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/recipeTitleET"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/recipeImgView"
         android:text="Take Image">
 
     </Button>
@@ -30,7 +29,7 @@
         android:id="@+id/recipeTitleTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recipeImgView"
+        android:layout_below="@+id/recipeImgUploadButton"
         android:text="@string/recipeTitle"
         android:minHeight="48dp"
         android:textSize="20sp"
@@ -41,7 +40,7 @@
         android:id="@+id/recipeTitleET"
         android:layout_width="233dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recipeImgView"
+        android:layout_below="@+id/recipeImgUploadButton"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="138dp"
         android:layout_toEndOf="@id/recipeTitleTV"
@@ -71,7 +70,7 @@
         android:layout_marginStart="52dp"
         android:layout_marginTop="0dp"
         android:layout_toEndOf="@id/recipePrepareTimeTV"
-        android:hint="Enter time in minutes"
+        android:hint="Enter in minutes"
         android:importantForAutofill="no"
         android:inputType="number"
         android:minHeight="48dp"

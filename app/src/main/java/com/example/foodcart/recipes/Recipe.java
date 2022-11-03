@@ -15,7 +15,7 @@ public class Recipe implements Serializable {
     String comments;
     String category;
     ArrayList<Ingredient> ingredientList;
-    String picture = "PICTURE";
+    String picture;
 
     public String getTitle() {
         return title;
@@ -65,6 +65,14 @@ public class Recipe implements Serializable {
         this.ingredientList = ingredientList;
     }
 
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
     public void addIngredient(Ingredient ingredient) {
         this.ingredientList.add(ingredient);
     }
@@ -73,12 +81,13 @@ public class Recipe implements Serializable {
         this.ingredientList.remove(ingredient);
     }
 
-    public Recipe(String title, int prep_time, int servings, String comments, String category,
+    public Recipe(String title, int prep_time, int servings, String comments, String picture, String category,
                   ArrayList<Ingredient> ingredients)  {
         setTitle(title);
         setPrep_time(prep_time);
         setServings(servings);
         setComments(comments);
+        setPicture(picture);
         setCategory(category);
         setIngredientList(ingredients);
     }
