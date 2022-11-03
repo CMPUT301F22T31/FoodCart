@@ -6,4 +6,8 @@
     <string name="ingredientCount">Quantity</string>
     <string name="ingredientUnit">Unit</string>
     <string name="ingredientCategory">Category</string>
+    <string name="recipeTitle">Title</string>
+    <string name="recipeCookingTime">Cooking Time</string>
+    <string name="recipeServings">Number of Servings</string>
+    <string name="recipeComments">Additional Comments</string>
 </resources>

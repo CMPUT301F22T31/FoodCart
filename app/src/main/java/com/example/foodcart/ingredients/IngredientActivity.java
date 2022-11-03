@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class IngredientsActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener {
+public class IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener {
 
     // Declare the variables
     ListView ingredientList;

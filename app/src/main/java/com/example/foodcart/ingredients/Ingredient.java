@@ -18,7 +18,6 @@ public class Ingredient implements Serializable {
     }
 
     public void setDescription(String description) {
-        description = description.substring(0, Math.min(30, description.length()));
         this.description = description;
     }
 

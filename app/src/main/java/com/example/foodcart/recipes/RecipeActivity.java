@@ -11,17 +11,15 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.example.foodcart.R;
-//import com.example.foodcart.ingredients.AddIngredientFragment;
-import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
-//import com.example.foodcart.ingredients.EditIngredientFragment;
 import com.example.foodcart.ingredients.Ingredient;
-import com.example.foodcart.ingredients.IngredientsActivity;
+import com.example.foodcart.ingredients.IngredientActivity;
+import com.example.foodcart.ingredients.IngredientFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity implements RecipeFragment.OnFragmentInteractionListener{
 
     ListView recipeListView;
     ArrayAdapter<Recipe> recipeAdapter;
@@ -56,7 +54,7 @@ public class RecipeActivity extends AppCompatActivity {
         addRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new AddRecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
+                new RecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
             }
         });
 
@@ -64,8 +62,9 @@ public class RecipeActivity extends AppCompatActivity {
         recipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Recipe selectedRecipe = recipeList.get(position);
                 int selected = position;
-                //new EditRecipeFragment().show(getSupportFragmentManager(), "EDIT_RECIPE");
+                new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
             }
         });
 
@@ -74,10 +73,15 @@ public class RecipeActivity extends AppCompatActivity {
         RecipeTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientsActivity.class);
+                Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
             }
         });
+    }
+
+    @Override
+    public void onOkPressedRecipe(Recipe newRecipe) {
+        recipeAdapter.add(newRecipe);
     }
 }
