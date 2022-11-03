@@ -36,13 +36,14 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
     ArrayAdapter<Ingredient> ingredientAdapter;
     ArrayList<Ingredient> dataList;
     int selected;
-    FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
+        FirebaseFirestore db;
 
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
