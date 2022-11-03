@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
+import com.example.foodcart.recipes.RecipeFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -222,6 +223,7 @@ public class IngredientFragment extends DialogFragment {
         return date;
     }
 
+    //code is not reused as it also toasts specific errors
     private boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
