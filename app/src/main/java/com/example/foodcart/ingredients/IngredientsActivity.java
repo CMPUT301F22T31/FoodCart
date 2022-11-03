@@ -63,6 +63,7 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
             public void onClick(View view) {
                 Intent switchActivityIntent = new Intent(getApplicationContext(), RecipeActivity.class);
                 startActivity(switchActivityIntent);
+                finish();
             }
         });
 
@@ -92,7 +93,7 @@ public class IngredientsActivity extends AppCompatActivity implements Ingredient
                 dataList.clear();
                 assert queryDocumentSnapshots != null;
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                    Log.d("Sample", String.valueOf(doc.getData().get("Location")));
+                    Log.d("Update Ingredient", String.valueOf(doc.getData().get("Description")));
                     String description = doc.getId();
                     String location = (String) doc.getData().get("Location");
                     String tempDate = (String) doc.getData().get("Date");
