@@ -1,157 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="0dp">
 
-    <TextView
-        android:id="@+id/ingredientDescriptionTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientDescription"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/ingredientDescriptionET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="50dp"
-        android:layout_toEndOf="@id/ingredientDescriptionTV"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientDescriptionTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientDescription"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/ingredientBestBeforeDateTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientBestBeforeDate"
-        android:layout_below="@+id/ingredientDescriptionTV"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/ingredientDescriptionET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_toEndOf="@id/ingredientDescriptionTV"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/ingredientBestBeforeDateET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredientDescriptionET"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@id/ingredientBestBeforeDateTV"
-        android:importantForAutofill="no"
-        android:inputType="date"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        android:hint="YYYY-MM-DD"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientBestBeforeDateTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientBestBeforeDate"
+            android:layout_below="@+id/ingredientDescriptionTV"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/ingredientLocationTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientLocation"
-        android:layout_below="@+id/ingredientBestBeforeDateTV"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/ingredientBestBeforeDateET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredientDescriptionET"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/ingredientBestBeforeDateTV"
+            android:importantForAutofill="no"
+            android:inputType="date"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            android:hint="YYYY-MM-DD"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/ingredientLocationET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredientBestBeforeDateET"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@id/ingredientLocationTV"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientLocationTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientLocation"
+            android:layout_below="@+id/ingredientBestBeforeDateTV"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/ingredientCountTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientCount"
-        android:layout_below="@+id/ingredientLocationTV"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/ingredientLocationET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredientBestBeforeDateET"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/ingredientLocationTV"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/ingredientCountET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredientLocationET"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="78dp"
-        android:layout_toEndOf="@id/ingredientCountTV"
-        android:importantForAutofill="no"
-        android:inputType="number"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientCountTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientCount"
+            android:layout_below="@+id/ingredientLocationTV"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/ingredientUnitTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientUnit"
-        android:layout_below="@+id/ingredientCountTV"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/ingredientCountET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredientLocationET"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="78dp"
+            android:layout_toEndOf="@id/ingredientCountTV"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/ingredientUnitET"
-        android:layout_width="257dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredientCountET"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="117dp"
-        android:layout_marginTop="0dp"
-        android:layout_toEndOf="@id/ingredientUnitTV"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        android:hint="Unit of Measure"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientUnitTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientUnit"
+            android:layout_below="@+id/ingredientCountTV"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/ingredientCategoryTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/ingredientCategory"
-        android:layout_below="@+id/ingredientUnitTV"
-        android:minHeight="48dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"/>
+        <EditText
+            android:id="@+id/ingredientUnitET"
+            android:layout_width="257dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredientCountET"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="117dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@id/ingredientUnitTV"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            android:hint="Unit of Measure"
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    <EditText
-        android:id="@+id/ingredientCategoryET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ingredientUnitET"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="70dp"
-        android:layout_toEndOf="@id/ingredientCategoryTV"
-        android:importantForAutofill="no"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#757575"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/ingredientCategoryTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ingredientCategory"
+            android:layout_below="@+id/ingredientUnitTV"
+            android:minHeight="48dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/ingredientCategoryET"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ingredientUnitET"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="70dp"
+            android:layout_toEndOf="@id/ingredientCategoryTV"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColorHint="#757575"
+            tools:ignore="SpeakableTextPresentCheck" />
 
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
