@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:windowSoftInputMode="stateVisible">
 
     <ImageView
         android:id="@+id/recipeImgView"
@@ -21,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/recipeImgView"
-        android:text="Take Image">
+        android:text="Select Image from Gallery">
 
     </Button>
 

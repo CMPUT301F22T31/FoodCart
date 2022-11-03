@@ -1,7 +1,6 @@
 package com.example.foodcart.recipes;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,6 +24,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
@@ -39,12 +41,13 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServings;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Button recipeTakeImage;
     private Uri imageURI;
     private OnFragmentInteractionListener listener;
 
+
     public interface OnFragmentInteractionListener {
         void onOkPressedRecipe(Recipe newRecipe);
+        void onOkPressedEditRecipe(Recipe newRecipe);
     }
 
     @Override
@@ -72,12 +75,13 @@ public class RecipeFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
-        recipeTakeImage = view.findViewById(R.id.recipeImgUploadButton);
+        final Button recipeTakeImage = view.findViewById(R.id.recipeImgUploadButton);
         recipeTakeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraActivity.launch(cameraIntent);
+                Intent cameraIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                cameraIntent.setType("image/*");
+                cameraActivity.launch((Intent.createChooser(cameraIntent, "Select Image")));
             }
         });
         recipeTitle = view.findViewById(R.id.recipeTitleET);
@@ -88,6 +92,14 @@ public class RecipeFragment extends DialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             //edit recipe functionality
+            Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
+            recipeImage.setImageURI(Uri.parse(currentRecipe.getPicture()));
+            recipeTitle.setText(currentRecipe.getTitle());
+            recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
+            recipeServings.setText(Integer.toString(currentRecipe.getServings()));
+            recipeCategory.setText(currentRecipe.getCategory());
+            recipeComments.setText(currentRecipe.getComments());
+
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
                     .setView(view)
@@ -96,7 +108,25 @@ public class RecipeFragment extends DialogFragment {
                     .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            //do something
+                            String title = recipeTitle.getText().toString();
+                            String prepTime = recipePrepareTime.getText().toString();
+                            String serves = recipeServings.getText().toString();
+                            String category = recipeCategory.getText().toString();
+                            String comments = recipeComments.getText().toString();
+                            //replace this with ingredient arraylist
+                            ArrayList<Ingredient> ingredients = new ArrayList<>();
+                            //validate empty strings
+                            boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
+                            if (!emptyStringsExist && imageURI != null) {
+                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                                int prepTimeInt = Integer.parseInt(prepTime);
+                                int servesInt = Integer.parseInt(serves);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
+                                listener.onOkPressedEditRecipe(newRecipe);
+                            }
+                            else {
+                                Toast.makeText(getContext(), "Please Try Again", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }).create();
 
@@ -117,6 +147,7 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
+                            //replace this with ingredient arraylist
                             ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
@@ -124,7 +155,7 @@ public class RecipeFragment extends DialogFragment {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                                 int prepTimeInt = Integer.parseInt(prepTime);
                                 int servesInt = Integer.parseInt(serves);
-                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), comments, ingredients);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
                             }
                             else {
@@ -140,8 +171,10 @@ public class RecipeFragment extends DialogFragment {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        imageURI = result.getData().getData();
-                        recipeImage.setImageURI(imageURI);
+                        if (result.getData() != null) {
+                            imageURI = result.getData().getData();
+                            recipeImage.setImageURI(imageURI);
+                        }
                     }
                 }
             });

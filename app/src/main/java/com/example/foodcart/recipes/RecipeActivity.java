@@ -24,6 +24,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
     ListView recipeListView;
     ArrayAdapter<Recipe> recipeAdapter;
     ArrayList<Recipe> recipeList;
+    int selected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Recipe selectedRecipe = recipeList.get(position);
-                int selected = position;
+                selected = position;
                 new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
             }
         });
@@ -77,5 +78,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
     @Override
     public void onOkPressedRecipe(Recipe newRecipe) {
         recipeAdapter.add(newRecipe);
+    }
+
+    @Override
+    public void onOkPressedEditRecipe(Recipe newRecipe) {
+        recipeList.set(selected, newRecipe);
+        recipeAdapter.notifyDataSetChanged();
     }
 }
