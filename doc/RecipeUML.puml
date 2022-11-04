@@ -111,6 +111,32 @@ FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
 
 RecipeActivity --> RecipeFragment
 RecipeFragment --> ActivityResultLauncher
-ActivityResultLauncher --> RecipeActivity
+
+
+note "Activity and Fragment can move between each other via button clicks; onOkPressed() \nand onOkEdit() are the methods used by fragment to make changes to activity" as N1
+note "CustomIngredientArrayAdapter is to properly \ndisplay the ingredient class in the listview" as IActivity2
+note "selected is the position of the user chosen Ingredient from ListView" as IActivity3
+note "This is the firebase firestore that the application references\n all recipeList modifications are made to FireStore" as FireBase
+note "emptyString() checks for valid user input \n& OnCreateDialog() is for communication with activity" as error
+note "ActivityResultLauncher is used by fragment to get a \npicture from photoalbum for the recipe" as Lancher
+
+N1 . RecipeFragment
+RecipeActivity . N1
+
+IActivity2 . CustomRecipeArrayAdapter
+IActivity2 .. RecipeActivity
+
+IActivity3 ... RecipeActivity
+
+FireBaseFirestore . FireBase
+
+RecipeFragment .. error
+
+ActivityResultLauncher .. Lancher
+
+
+
+
+
 
 @enduml

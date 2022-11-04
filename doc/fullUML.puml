@@ -195,8 +195,8 @@ FireBaseFirestore "1" --o "0..*" IngredientFragment
 FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
 
 IngredientActivity <-> IngredientFragment
-RecipeActivity -> ActivityResultLancher
-ActivityResultLancher -> RecipeFragment
+ActivityResultLancher <- RecipeFragment
 
+note "this is the full more complicated UML where both IngredientsUML & RecipesUML and added\n together in full it is advised to only look at those individal state diagram" as N1
 
 @enduml
