@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.File;
 
 public class RecipeTest {
     private Solo solo;
@@ -69,8 +68,114 @@ public class RecipeTest {
         assertTrue(solo.waitForText("RecipeTitle", 1, 2000));
 
     }
+
     /**
-     * Test the adding of recipes
+     * Test the adding of recipes with no pictures
+     */
+    @Test
+    public void AddRecipeNoPicture(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertFalse(solo.waitForText("RecipeTitle"));
+    }
+    /**
+     * Test the adding of recipes with empty Title
+     */
+    @Test
+    public void AddRecipeEmptyTitle(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertFalse(solo.waitForText("RecipeTitle"));
+    }
+    /**
+     * Test the adding of recipes with bad prepTime
+     */
+    @Test
+    public void AddRecipeBadPrepTime(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "twenty");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertFalse(solo.waitForText("RecipeTitle"));
+    }
+
+    /**
+     * Test the adding of recipes with bad number of servings
+     */
+    @Test
+    public void AddRecipeBadServes(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "five");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertFalse(solo.waitForText("RecipeTitle"));
+    }
+
+    /**
+     * Test the adding of recipes with empty Category
+     */
+    @Test
+    public void AddRecipeEmptyCategory(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "five");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertFalse(solo.waitForText("RecipeTitle"));
+    }
+
+    /**
+     * Test the adding of recipes with empty Comments
+     */
+    @Test
+    public void AddRecipeEmptyComment(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "five");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+        assertTrue(solo.waitForText("RecipeTitle", 1, 2000));
+    }
+
+    /**
+     * Test the deletion of recipes
      */
     @Test
     public void DeleteRecipe(){
