@@ -89,7 +89,8 @@ public class RecipeFragment extends DialogFragment {
         if (args != null) {
             //edit recipe functionality
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
-            recipeImage.setImageURI(Uri.parse(currentRecipe.getPicture()));
+            imageURI = Uri.parse(currentRecipe.getPicture());
+            recipeImage.setImageURI(imageURI);
             recipeTitle.setText(currentRecipe.getTitle());
             recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
@@ -113,10 +114,10 @@ public class RecipeFragment extends DialogFragment {
                             ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
-                            if (!emptyStringsExist && imageURI != null) {
+                            int prepTimeInt = parsePrepTime(prepTime);
+                            int servesInt = parseServing(serves);
+                            if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int prepTimeInt = Integer.parseInt(prepTime);
-                                int servesInt = Integer.parseInt(serves);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                             }
@@ -148,7 +149,7 @@ public class RecipeFragment extends DialogFragment {
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
-                            int servesInt = parseServing(prepTime);
+                            int servesInt = parseServing(serves);
                             if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
