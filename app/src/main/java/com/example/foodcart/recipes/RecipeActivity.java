@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,11 +17,13 @@ import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.ingredients.IngredientFragment;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,10 +71,9 @@ public class RecipeActivity extends AppCompatActivity
         final CollectionReference recipeCollection = db.collection("Recipes");
 
 
-        recipeListView.setAdapter(recipeAdapter);
         // set adapter
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
-
+        recipeListView.setAdapter(recipeAdapter);
 
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
@@ -105,7 +109,7 @@ public class RecipeActivity extends AppCompatActivity
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
                     FirebaseFirestoreException error) {
-                //recipeList.clear();
+                recipeList.clear();
                 ArrayList<Ingredient> ingredientList = new ArrayList<>();
                 assert queryDocumentSnapshots != null;
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
@@ -115,30 +119,39 @@ public class RecipeActivity extends AppCompatActivity
                     String servings = (String) doc.getData().get("Servings");
                     String comments = (String) doc.getData().get("Comments");
                     String category = (String) doc.getData().get("Category");
-                    String picture = (String) doc.getData().get("Picture");
-                    DocumentReference ingredients = db.collection("Recipe").document(title);
-                    ingredients.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    String picture =  (String) doc.getData().get("Picture");
+
+                    CollectionReference ingredients = db.collection("Recipes")
+                                                        .document(title).collection("Ingredients");
+                    ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
-                        public void onSuccess(DocumentSnapshot ing) {
-                            String description = ing.getId();
-                            String location = (String) ing.getData().get("Location");
-                            String tempDate = (String) ing.getData().get("Date");
-                            String count = (String) ing.getData().get("Count");
-                            String unit = (String) ing.getData().get("Unit");
-                            String category = (String) ing.getData().get("Category");
-                            String picture = (String) ing.getData().get("Picture");
-                            // Convert date string into Date class
-                            Date date = null;
-                            try {
-                                date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()) {
+                                for(QueryDocumentSnapshot ing : task.getResult()) {
+                                    String description = ing.getId();
+                                    String location = (String) ing.getData().get("Location");
+                                    String tempDate = (String) ing.getData().get("Date");
+                                    String count = (String) ing.getData().get("Count");
+                                    String unit = (String) ing.getData().get("Unit");
+                                    String category = (String) ing.getData().get("Category");
+                                    // Convert date string into Date class
+                                    Date date = null;
+                                    try {
+                                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    int countInt = Integer.parseInt(count);
+                                    // add ingredient to list
+                                    ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
+                                }
+                            } else {
+                                Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
                             }
-                            int countInt = Integer.parseInt(count);
-                            // add ingredient to list
-                            ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
                         }
                     });
+
+
                     //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                     int servInt = Integer.parseInt(servings);
                     int prepInt = Integer.parseInt(prep_time);
@@ -148,6 +161,7 @@ public class RecipeActivity extends AppCompatActivity
                     try {
                         recipe = new Recipe(title, prepInt, servInt, picture,
                                             comments, category, ingredientList);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
