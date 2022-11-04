@@ -71,13 +71,51 @@ public class IngredientTest {
         assertTrue(solo.searchText("Test1"));
     }
 
+    /**
+     */
+    @Test
+    public void AddIngredient_BadDate(){
+        solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_ingredient_button));
+
+        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Test2");
+        solo.enterText((EditText) solo.getView(R.id.ingredientBestBeforeDateET), "00000000");
+        solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
+        solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "g");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Test");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+
+        assertFalse(solo.searchText("Test2"));
+    }
+
+    /**
+     */
+    @Test
+    public void AddIngredient_BadCount(){
+        solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_ingredient_button));
+
+        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Test3");
+        solo.enterText((EditText) solo.getView(R.id.ingredientBestBeforeDateET), "2022-01-21");
+        solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "five");
+        solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "g");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Test");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+
+        assertFalse(solo.searchText("Test3"));
+    }
+
     @Test
     public void DeleteIngredient(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
-        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Test2");
+        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Test4");
         solo.enterText((EditText) solo.getView(R.id.ingredientBestBeforeDateET), "2022-01-21");
         solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
@@ -85,18 +123,18 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Test");
         solo.clickOnButton("Add");
 
-        assertTrue(solo.waitForText("Test2", 1, 2000));
+        assertTrue(solo.waitForText("Test4", 1, 2000));
 
         ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
         int pos;
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
             TextView ing_name = (TextView)child.findViewById(R.id.ingredient_item_name);
-            if(ing_name.getText().toString().equals("Test2")){
+            if(ing_name.getText().toString().equals("Test4")){
                 solo.clickOnImageButton(i);
             }
         }
 
-        assertFalse(solo.searchText("Test2"));
+        assertFalse(solo.searchText("Test4"));
     }
 }
