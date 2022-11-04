@@ -60,7 +60,6 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
             public void onClick(View view) {
                 if (ingredients.size() > 0) {
                     // find selection
-                    ingredients.remove(Math.min(position, ingredients.size() - 1));
 
                     // Access a Cloud Firestore instance from your Activity
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -83,6 +82,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                                     Log.d("Sample", "Data could not be deleted!" + e.toString());
                                 }
                             });
+                    ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();
                 }
             }
