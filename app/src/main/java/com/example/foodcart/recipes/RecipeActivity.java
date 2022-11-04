@@ -36,7 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class RecipeActivity extends AppCompatActivity implements RecipeFragment.OnFragmentInteractionListener{
+public class RecipeActivity extends AppCompatActivity
+        implements RecipeFragment.OnFragmentInteractionListener{
 
     ListView recipeListView;
     ArrayAdapter<Recipe> recipeAdapter;
