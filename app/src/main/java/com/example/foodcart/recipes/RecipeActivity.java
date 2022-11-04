@@ -71,8 +71,6 @@ public class RecipeActivity extends AppCompatActivity
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
 
 
-
-
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
         addRecipeButton.setOnClickListener(new View.OnClickListener() {
