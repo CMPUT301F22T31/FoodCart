@@ -23,8 +23,8 @@ import java.util.ArrayList;
 
 
 public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
-    private ArrayList<Ingredient> ingredients;
-    private Context context;
+    private final ArrayList<Ingredient> ingredients;
+    private final Context context;
 
     public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
@@ -53,7 +53,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
 
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
+        ImageButton deleteButton = view.findViewById(R.id.ingredient_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +80,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
+                                    Log.d("Sample", "Data could not be deleted!" + e);
                                 }
                             });
                     notifyDataSetChanged();

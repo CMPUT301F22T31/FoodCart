@@ -9,11 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,9 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
@@ -58,7 +52,7 @@ public class RecipeFragment extends DialogFragment {
         if (context instanceof RecipeFragment.OnFragmentInteractionListener){
             listener = (RecipeFragment.OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + "must implement OnFragmentInteractionListener ");
         }
     }
@@ -77,8 +71,10 @@ public class RecipeFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
-        final Button recipeTakeImage = view.findViewById(R.id.recipeImgUploadButton);
-        recipeTakeImage.setOnClickListener(new View.OnClickListener() {
+
+        //add image function
+        final Button recipeTakeImageButton = view.findViewById(R.id.recipeImgUploadButton);
+        recipeTakeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent cameraIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -86,6 +82,17 @@ public class RecipeFragment extends DialogFragment {
                 cameraActivity.launch((Intent.createChooser(cameraIntent, "Select Image")));
             }
         });
+
+        //add/view/edit ingredients
+        final Button recipeIngredientButton = view.findViewById(R.id.recipeIngredientButton);
+        recipeIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //should take to some new fragment/activity
+                //WIP asset
+            }
+        });
+
         recipeTitle = view.findViewById(R.id.recipeTitleET);
         recipePrepareTime = view.findViewById(R.id.recipePrepareTimeET);
         recipeServings = view.findViewById(R.id.recipeServingsET);

@@ -17,8 +17,8 @@ import com.example.foodcart.ingredients.Ingredient;
 import java.util.ArrayList;
 
 public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
-    private ArrayList<Recipe> recipes;
-    private Context context;
+    private final ArrayList<Recipe> recipes;
+    private final Context context;
 
     public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes) {
         super(context, 0, recipes);
@@ -45,7 +45,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
 
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
+        ImageButton deleteButton = view.findViewById(R.id.recipe_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
