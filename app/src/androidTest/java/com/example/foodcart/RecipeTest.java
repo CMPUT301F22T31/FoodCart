@@ -2,11 +2,13 @@ package com.example.foodcart;
 
 import static junit.framework.TestCase.assertTrue;
 
+import static org.junit.Assert.assertFalse;
+
 import android.app.Activity;
-import android.media.Image;
-import android.os.Environment;
+import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -56,16 +58,47 @@ public class RecipeTest {
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
 
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
-        solo.takeScreenshot();
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
-        solo.clickOnImage(0);
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
         solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle");
         solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
         solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
         solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
         solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
         solo.clickOnButton("Add"); //Select CONFIRM Button
-        //no data added as photo was missing
+        assertTrue(solo.waitForText("RecipeTitle", 1, 2000));
+
+    }
+    /**
+     * Test the adding of recipes
+     */
+    @Test
+    public void DeleteRecipe(){
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_recipe_button));
+        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+        //REQUIREMENT: A picture is required in gallery and should be manually selected
+        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "RecipeTitle2");
+        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
+        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Breakfast");
+        solo.enterText((EditText) solo.getView(R.id.recipeCommentsET), "This is a comment");
+        solo.clickOnButton("Add"); //Select CONFIRM Button
+
+        assertTrue(solo.waitForText("RecipeTitle2", 1, 2000));
+
+        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
+        int pos;
+        for(int i =0;i<mylist.getCount();i++){
+            View child = mylist.getChildAt(i);
+            TextView ing_name = (TextView)child.findViewById(R.id.recipe_name);
+            if(ing_name.getText().toString().equals("RecipeTitle2")){
+                solo.clickOnImageButton(i);
+            }
+        }
+
+        assertFalse(solo.searchText("RecipeTitle2"));
     }
     /**
      * Closes the activity after each test

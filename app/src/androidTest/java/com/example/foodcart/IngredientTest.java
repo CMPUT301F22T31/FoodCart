@@ -53,7 +53,7 @@ public class IngredientTest {
     /**
      */
     @Test
-    public void AddCity(){
+    public void AddIngredient(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
@@ -72,7 +72,7 @@ public class IngredientTest {
     }
 
     @Test
-    public void DeleteCity(){
+    public void DeleteIngredient(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
@@ -92,9 +92,7 @@ public class IngredientTest {
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
             TextView ing_name = (TextView)child.findViewById(R.id.ingredient_item_name);
-            System.out.println(ing_name.getText().toString());
             if(ing_name.getText().toString().equals("Test2")){
-                System.out.println("Yes");
                 solo.clickOnImageButton(i);
             }
         }
