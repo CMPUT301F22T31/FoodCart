@@ -113,8 +113,8 @@ public class IngredientFragment extends DialogFragment {
                             if (!emptyStringsExist) {
                                 //try to parse the date
                                 Date BBD = parseDate(date);
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int countInt = Integer.parseInt(count);
+                                //try to parse the count
+                                int countInt = parseCount(count);
                                 if (BBD != null) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
@@ -171,7 +171,7 @@ public class IngredientFragment extends DialogFragment {
                             if (!emptyStringsExist) {
                                 //try to parse the date
                                 Date BBD = parseDate(date);
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                                //try to parse the count
                                 int countInt = parseCount(count);
                                 if (BBD != null && countInt != -1) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
@@ -224,6 +224,11 @@ public class IngredientFragment extends DialogFragment {
         return date;
     }
 
+    /**
+     * Tests the count if it is an integer otherwise print out an exception
+     * @param count
+     * @return -1 if parsing failed or the result if it succeeded
+     */
     private int parseCount(String count) {
         int result = -1;
         try {
