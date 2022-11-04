@@ -21,6 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+/**
+ * Custom array adapter for Recipe class
+ */
 public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private ArrayList<Recipe> recipes;
     private Context context;
