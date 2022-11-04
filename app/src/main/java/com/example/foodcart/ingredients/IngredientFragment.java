@@ -48,7 +48,7 @@ public class IngredientFragment extends DialogFragment {
         if (context instanceof OnFragmentInteractionListener){
             listener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                 + "must implement OnFragmentInteractionListener ");
         }
     }
