@@ -115,7 +115,7 @@ public class IngredientFragment extends DialogFragment {
                                 Date BBD = parseDate(date);
                                 //try to parse the count
                                 int countInt = parseCount(count);
-                                if (BBD != null) {
+                                if (BBD != null && countInt != -1) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
                                     // Add new ingredient to DataBase
