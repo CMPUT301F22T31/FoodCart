@@ -172,8 +172,8 @@ public class IngredientFragment extends DialogFragment {
                                 //try to parse the date
                                 Date BBD = parseDate(date);
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int countInt = Integer.parseInt(count);
-                                if (BBD != null) {
+                                int countInt = parseCount(count);
+                                if (BBD != null && countInt != -1) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                     // Add new ingredient to DataBase
@@ -222,6 +222,17 @@ public class IngredientFragment extends DialogFragment {
             Toast.makeText(getContext(), "Invalid Date", Toast.LENGTH_SHORT).show();
         }
         return date;
+    }
+
+    private int parseCount(String count) {
+        int result = -1;
+        try {
+            result = Integer.parseInt(count);
+        }
+        catch (Exception e) {
+            Toast.makeText(getContext(), "Invalid Count", Toast.LENGTH_SHORT).show();
+        }
+        return result;
     }
 
     //code is not reused as it also toasts specific errors
