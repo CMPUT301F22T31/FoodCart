@@ -63,12 +63,15 @@ public class RecipeActivity extends AppCompatActivity
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
+        final CollectionReference recipeCollection = db.collection("Recipes");
+
+
         recipeListView.setAdapter(recipeAdapter);
         // set adapter
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
 
 
-        final CollectionReference recipeCollection = db.collection("Recipes");
+
 
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);

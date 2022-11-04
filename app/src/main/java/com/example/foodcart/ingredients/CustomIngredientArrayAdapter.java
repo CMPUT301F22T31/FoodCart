@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
+    private FirebaseFirestore db;
 
     public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
@@ -59,11 +60,10 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
             @Override
             public void onClick(View view) {
                 if (ingredients.size() > 0) {
-
-                    // find selection
-
+                    // find and remove selection
+                    ingredients.remove(Math.min(position, ingredients.size() - 1));
                     // Access a Cloud Firestore instance from your Activity
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
                     IngredientCollection
@@ -83,11 +83,6 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                                     Log.d("Sample", "Data could not be deleted!" + e.toString());
                                 }
                             });
-
-
-                    // find and remove selection
-
-                    ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();
                 }
             }

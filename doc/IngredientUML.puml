@@ -71,6 +71,7 @@ interface OnFragmentInteractionListener {
 class CustomIngredientArrayAdapter extends ArrayAdapter {
 - ArrayList<Ingredient> ingredients
 - Context context
+- FireBaseFirestore db
 
 + View getView(int, @Nullable View, @NonNull ViewGroup)
 }
@@ -82,9 +83,11 @@ Ingredient "0..*" *->  IngredientActivity
 IngredientActivity <-* ListView
 CustomIngredientArrayAdapter --o IngredientActivity
 FireBaseFirestore --o "0..*" IngredientActivity
+
 IngredientActivity o-- ArrayList
 AppCompatActivity <|--- IngredientActivity
 DialogFragment <|--- IngredientFragment
+FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
 
 IngredientFragment *-> "6" EditText
 OnFragmentInteractionListener <-* IngredientFragment
