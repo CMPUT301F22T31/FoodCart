@@ -142,6 +142,7 @@ public class RecipeFragment extends DialogFragment {
                                 data.put("Servings", serves);
                                 data.put("Category", category);
                                 data.put("Comments", comments);
+                                data.put("Picture", imageURI.toString());
                                 recipeCollection
                                         .document(title)
                                         .set(data)
@@ -168,10 +169,11 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     // Put all ingredient members into hashmap
                                     data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().formattedBestBeforeDate());
+                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
                                     data.put("Count", Integer.toString(iter.next().getCount()));
                                     data.put("Unit", iter.next().getUnit());
                                     data.put("Category", iter.next().getCategory());
+
                                     // get reference to sub-collection
                                     CollectionReference IngredientCollection = db.collection("Recipes")
                                                                                 .document(title).collection("Ingredients");
@@ -229,12 +231,14 @@ public class RecipeFragment extends DialogFragment {
                             if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
+
                                 // Add new recipe to database
                                 HashMap<String, String> data = new HashMap<>();
                                 data.put("Prep Time", prepTime);
                                 data.put("Servings", serves);
                                 data.put("Category", category);
                                 data.put("Comments", comments);
+                                data.put("Picture", imageURI.toString());
                                 recipeCollection
                                         .document(title)
                                         .set(data)
@@ -252,6 +256,7 @@ public class RecipeFragment extends DialogFragment {
                                                 Log.d("ERROR Add Recipe", String.valueOf(data.get("Title")) + e.toString());
                                             }
                                         });
+
                                 Iterator<Ingredient> iter = ingredients.iterator();
                                 // While ingredients are in ArrayList
                                 while(iter.hasNext())
@@ -260,7 +265,7 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     // Put all ingredient members into hashmap
                                     data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().formattedBestBeforeDate());
+                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
                                     data.put("Count", Integer.toString(iter.next().getCount()));
                                     data.put("Unit", iter.next().getUnit());
                                     data.put("Category", iter.next().getCategory());
