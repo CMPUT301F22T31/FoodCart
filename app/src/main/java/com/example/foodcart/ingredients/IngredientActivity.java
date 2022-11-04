@@ -8,8 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +27,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class IngredientActivity extends AppCompatActivity
@@ -38,7 +40,7 @@ public class IngredientActivity extends AppCompatActivity
     private ArrayList<Ingredient> dataList;
     private int selected;
     private FirebaseFirestore db;
-
+    private String[] sortValues = { "description", "best before date", "location", "category" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,42 @@ public class IngredientActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference IngredientCollection = db.collection("Ingredients");
+
+        // set spinner adapter for drop down sort list
+        Spinner sortDropDown = (Spinner) findViewById(R.id.ingredients_sort_select);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortDropDown.setAdapter(adapter);
+        sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // sort the db by the sortValue
+                String sortValue = sortValues[position];
+                IngredientCollection.orderBy(sortValue);
+                Collections.sort(dataList, new Comparator<Ingredient>(){
+                    public int compare(Ingredient ing1, Ingredient ing2)
+                    {
+                        switch(sortValue) {
+                            case "description":
+                                return ing1.getDescription().compareTo(ing2.getDescription());
+                            case "best before date":
+                                return ing1.getBestBeforeDate().compareTo(ing2.getBestBeforeDate());
+                            case "location":
+                                return ing1.getLocation().compareTo(ing2.getLocation());
+                            case "category":
+                                return ing1.getCategory().compareTo(ing2.getCategory());
+                        }
+                        return 0;
+                    }
+                });
+                ingredientAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         final ImageButton RecipeTab = findViewById(R.id.recipes_tab);
         RecipeTab.setOnClickListener(new View.OnClickListener() {
