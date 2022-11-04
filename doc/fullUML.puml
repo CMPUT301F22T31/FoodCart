@@ -178,20 +178,21 @@ RecipeActivity <--> RecipeFragment
 Serializable ()-- Ingredient : Implements
 Date "1" <--* "1..*" Ingredient
 
-IngredientActivity "1" *-> "0..*" Ingredient
-ListView "1" <-* IngredientActivity
-CustomIngredientArrayAdapter "1" --o IngredientActivity
+Ingredient "1" *-> "0..*" IngredientActivity
+IngredientActivity <-* "1" ListView
+CustomIngredientArrayAdapter "1" -o IngredientActivity
 FireBaseFirestore "1" --o "0..*" IngredientActivity
-IngredientActivity o-- ArrayList
+IngredientActivity o- ArrayList
 AppCompatActivity <|--- IngredientActivity
 DialogFragment <|--- IngredientFragment
 
-IngredientFragment *-> "6" EditText
-OnFragmentInteractionListener "1" <-* IngredientFragment
+IngredientFragment *--> "6" EditText
+IngredientFragment "1" *->  OnFragmentInteractionListener
 FireBaseFirestore "1" --o "0..*" IngredientFragment
 
-IngredientActivity <--> IngredientFragment
-
+IngredientActivity <-> IngredientFragment
+RecipeActivity -> ActivityResultLancher
+ActivityResultLancher -> RecipeFragment
 
 
 @enduml
