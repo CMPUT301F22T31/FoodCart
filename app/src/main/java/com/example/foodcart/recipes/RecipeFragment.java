@@ -168,7 +168,7 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     // Put all ingredient members into hashmap
                                     data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().formattedBestBeforeDate());
+                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
                                     data.put("Count", Integer.toString(iter.next().getCount()));
                                     data.put("Unit", iter.next().getUnit());
                                     data.put("Category", iter.next().getCategory());
@@ -260,7 +260,7 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     // Put all ingredient members into hashmap
                                     data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().formattedBestBeforeDate());
+                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
                                     data.put("Count", Integer.toString(iter.next().getCount()));
                                     data.put("Unit", iter.next().getUnit());
                                     data.put("Category", iter.next().getCategory());
