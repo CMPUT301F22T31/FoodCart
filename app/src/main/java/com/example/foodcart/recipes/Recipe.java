@@ -81,8 +81,8 @@ public class Recipe implements Serializable {
         this.ingredientList.remove(ingredient);
     }
 
-    public Recipe(String title, int prep_time, int servings, String comments, String picture, String category,
-                  ArrayList<Ingredient> ingredients)  {
+    public Recipe(String title, int prep_time, int servings, String comments,
+                  String picture, String category, ArrayList<Ingredient> ingredients)  {
         setTitle(title);
         setPrep_time(prep_time);
         setServings(servings);

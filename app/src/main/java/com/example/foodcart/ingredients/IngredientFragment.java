@@ -35,6 +35,7 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientUnit;
     private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
+    private FirebaseFirestore db;
 
     public interface OnFragmentInteractionListener {
         void onOkPressed(Ingredient newIngredient);
@@ -78,7 +79,7 @@ public class IngredientFragment extends DialogFragment {
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
 
         // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference IngredientCollection = db.collection("Ingredients");
 
@@ -88,7 +89,7 @@ public class IngredientFragment extends DialogFragment {
             Ingredient ingredient = (Ingredient) args.getSerializable("ingredient");
             ingredientDescription.setText(ingredient.getDescription());
             ingredientLocation.setText(ingredient.getLocation());
-            ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.bestBeforeDate));
+            ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
             ingredientCount.setText(ingredient.getCount().toString());
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
@@ -112,9 +113,9 @@ public class IngredientFragment extends DialogFragment {
                             if (!emptyStringsExist) {
                                 //try to parse the date
                                 Date BBD = parseDate(date);
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int countInt = Integer.parseInt(count);
-                                if (BBD != null) {
+                                //try to parse the count
+                                int countInt = parseCount(count);
+                                if (BBD != null && countInt != -1) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
                                     // Add new ingredient to DataBase
@@ -170,9 +171,9 @@ public class IngredientFragment extends DialogFragment {
                             if (!emptyStringsExist) {
                                 //try to parse the date
                                 Date BBD = parseDate(date);
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int countInt = Integer.parseInt(count);
-                                if (BBD != null) {
+                                //try to parse the count
+                                int countInt = parseCount(count);
+                                if (BBD != null && countInt != -1) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                     // Add new ingredient to DataBase
@@ -221,6 +222,22 @@ public class IngredientFragment extends DialogFragment {
             Toast.makeText(getContext(), "Invalid Date", Toast.LENGTH_SHORT).show();
         }
         return date;
+    }
+
+    /**
+     * Tests the count if it is an integer otherwise print out an exception
+     * @param count
+     * @return -1 if parsing failed or the result if it succeeded
+     */
+    private int parseCount(String count) {
+        int result = -1;
+        try {
+            result = Integer.parseInt(count);
+        }
+        catch (Exception e) {
+            Toast.makeText(getContext(), "Invalid Count", Toast.LENGTH_SHORT).show();
+        }
+        return result;
     }
 
     //code is not reused as it also toasts specific errors

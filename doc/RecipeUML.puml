@@ -1,0 +1,142 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ArrayAdapter {
++View getView(Context, ArrayList)
+}
+
+class EditText {
++Editable getText()
++void setText()
+}
+
+class Ingredient {
+-String description
+-Date bestBeforeDate
+-String location
+-int count
+-String unit
+-String category
+
+-String formattedBestBeforeDate()
+}
+
+class FireBaseFirestore {
++CollectionReference collection(String)
+}
+
+class ActivityResultLauncher {
+    +void onActivityResult(ActivityResult)
+}
+
+class Recipe {
+-String title
+-int prep_time
+-int servings
+-String comments
+-String category
+-String picture
+
++void addIngredient(Ingredient)
++void removeIngredient(Ingredient)
+}
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class RecipeActivity {
+-ListView recipeListView
+-ArrayAdapter<Recipe> recipeAdapter
+-ArrayList<Recipe> recipeList
+-int selected
+-FireBaseFirestore db
+
+*void onCreate(Bundle)
++void onOkPressedRecipe(Recipe)
++void onOkPressedEditRecipe(Recipe)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class RecipeFragment {
+-ImageView recipeImage
+-EditText recipeTitle
+-EditText recipePrepareTime
+-EditText recipeServings
+-EditText recipeCategory
+-EditText recipeComments
+-Uri imageURI
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+
++ {static} void onAttach(@NonNull Context)
++ {static} RecipeFragment NewInstance(Recipe)
++ Dialog onCreateDialog(@Nullable Bundle)
+- boolean emptyStringCheck(String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class CustomRecipeArrayAdapter extends ArrayAdapter {
+- ArrayList<Recipe> recipes
+- Context context
+- FireBaseFirestore db
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+Serializable ()-- Recipe : Implements
+Serializable ()-- Ingredient : Implements
+Recipe "0..*" -o "0..*" Ingredient
+
+RecipeActivity *-> "0..*" Recipe
+ListView <-* RecipeActivity
+CustomRecipeArrayAdapter --o RecipeActivity
+FireBaseFirestore --o "0..*" RecipeActivity
+RecipeActivity o-- ArrayList
+AppCompatActivity <|--- RecipeActivity
+DialogFragment <|--- RecipeFragment
+
+RecipeFragment *-> "6" EditText
+OnFragmentInteractionListener <-* RecipeFragment
+FireBaseFirestore --o "0..*" RecipeFragment
+FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
+
+RecipeActivity --> RecipeFragment
+RecipeFragment --> ActivityResultLauncher
+
+
+note "Activity and Fragment can move between each other via button clicks; onOkPressed() \nand onOkEdit() are the methods used by fragment to make changes to activity" as N1
+note "CustomIngredientArrayAdapter is to properly \ndisplay the ingredient class in the listview" as IActivity2
+note "selected is the position of the user chosen Ingredient from ListView" as IActivity3
+note "This is the firebase firestore that the application references\n all recipeList modifications are made to FireStore" as FireBase
+note "emptyString() checks for valid user input \n& OnCreateDialog() is for communication with activity" as error
+note "ActivityResultLauncher is used by fragment to get a \npicture from photoalbum for the recipe" as Lancher
+
+N1 . RecipeFragment
+RecipeActivity . N1
+
+IActivity2 . CustomRecipeArrayAdapter
+IActivity2 .. RecipeActivity
+
+IActivity3 ... RecipeActivity
+
+FireBaseFirestore . FireBase
+
+RecipeFragment .. error
+
+ActivityResultLauncher .. Lancher
+
+
+
+
+
+
+@enduml

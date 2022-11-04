@@ -10,12 +10,12 @@ import java.util.Date;
  * count, units (for count), and category an ingredient
  */
 public class Ingredient implements Serializable {
-    String description;
-    Date bestBeforeDate;
-    String location;
-    int count;
-    String unit;
-    String category;
+    private String description;
+    private Date bestBeforeDate;
+    private String location;
+    private int count;
+    private String unit;
+    private String category;
 
     /**
      * Gets the description of an ingredient
