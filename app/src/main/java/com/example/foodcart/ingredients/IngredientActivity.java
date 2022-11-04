@@ -29,13 +29,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener {
+public class IngredientActivity extends AppCompatActivity
+        implements IngredientFragment.OnFragmentInteractionListener {
 
     // Declare the variables
-    ListView ingredientList;
-    ArrayAdapter<Ingredient> ingredientAdapter;
-    ArrayList<Ingredient> dataList;
-    int selected;
+    private ListView ingredientList;
+    private ArrayAdapter<Ingredient> ingredientAdapter;
+    private ArrayList<Ingredient> dataList;
+    private int selected;
+    private FirebaseFirestore db;
 
 
     @Override
@@ -43,7 +45,7 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
-        FirebaseFirestore db;
+
 
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
@@ -62,7 +64,8 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
         RecipeTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(), RecipeActivity.class);
+                Intent switchActivityIntent = new Intent(getApplicationContext(),
+                                                    RecipeActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
             }

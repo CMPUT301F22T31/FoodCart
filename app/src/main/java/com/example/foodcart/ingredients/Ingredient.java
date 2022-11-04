@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Ingredient implements Serializable {
-    String description;
-    Date bestBeforeDate;
-    String location;
-    int count;
-    String unit;
-    String category;
+    private String description;
+    private Date bestBeforeDate;
+    private String location;
+    private int count;
+    private String unit;
+    private String category;
 
     public String getDescription() {
         return description;

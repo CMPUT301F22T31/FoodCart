@@ -124,6 +124,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
                             String count = (String) ing.getData().get("Count");
                             String unit = (String) ing.getData().get("Unit");
                             String category = (String) ing.getData().get("Category");
+                            String picture = (String) ing.getData().get("Picture");
                             // Convert date string into Date class
                             Date date = null;
                             try {
@@ -143,7 +144,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
                     // add recipe to list
                     Recipe recipe = null;
                     try {
-                        recipe = new Recipe(title, prepInt, servInt, comments, category, ingredientList);
+                        recipe = new Recipe(title, prepInt, servInt, picture,
+                                            comments, category, ingredientList);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

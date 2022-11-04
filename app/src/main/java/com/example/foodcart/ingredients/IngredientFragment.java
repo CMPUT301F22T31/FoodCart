@@ -35,6 +35,7 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientUnit;
     private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
+    private FirebaseFirestore db;
 
     public interface OnFragmentInteractionListener {
         void onOkPressed(Ingredient newIngredient);
@@ -78,7 +79,7 @@ public class IngredientFragment extends DialogFragment {
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
 
         // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference IngredientCollection = db.collection("Ingredients");
 
@@ -88,7 +89,7 @@ public class IngredientFragment extends DialogFragment {
             Ingredient ingredient = (Ingredient) args.getSerializable("ingredient");
             ingredientDescription.setText(ingredient.getDescription());
             ingredientLocation.setText(ingredient.getLocation());
-            ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.bestBeforeDate));
+            ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
             ingredientCount.setText(ingredient.getCount().toString());
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
