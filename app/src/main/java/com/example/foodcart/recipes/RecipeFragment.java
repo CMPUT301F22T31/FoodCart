@@ -9,11 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,9 +23,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
@@ -95,7 +89,8 @@ public class RecipeFragment extends DialogFragment {
         if (args != null) {
             //edit recipe functionality
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
-            recipeImage.setImageURI(Uri.parse(currentRecipe.getPicture()));
+            imageURI = Uri.parse(currentRecipe.getPicture());
+            recipeImage.setImageURI(imageURI);
             recipeTitle.setText(currentRecipe.getTitle());
             recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
@@ -119,10 +114,10 @@ public class RecipeFragment extends DialogFragment {
                             ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
-                            if (!emptyStringsExist && imageURI != null) {
+                            int prepTimeInt = parsePrepTime(prepTime);
+                            int servesInt = parseServing(serves);
+                            if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int prepTimeInt = Integer.parseInt(prepTime);
-                                int servesInt = Integer.parseInt(serves);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                             }
@@ -153,10 +148,9 @@ public class RecipeFragment extends DialogFragment {
                             ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
-                            if (!emptyStringsExist && imageURI != null) {
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                int prepTimeInt = Integer.parseInt(prepTime);
-                                int servesInt = Integer.parseInt(serves);
+                            int prepTimeInt = parsePrepTime(prepTime);
+                            int servesInt = parseServing(serves);
+                            if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
                             }
@@ -180,6 +174,28 @@ public class RecipeFragment extends DialogFragment {
                     }
                 }
             });
+
+    private int parsePrepTime(String prepTime) {
+        int result = -1;
+        try {
+            result = Integer.parseInt(prepTime);
+        }
+        catch(Exception e) {
+            Toast.makeText(getContext(), "Please Enter a number for Preparation Time", Toast.LENGTH_SHORT).show();
+        }
+        return result;
+    }
+
+    private int parseServing(String serving) {
+        int result = -1;
+        try {
+            result = Integer.parseInt(serving);
+        }
+        catch(Exception e) {
+            Toast.makeText(getContext(), "Please Enter a number for Servings", Toast.LENGTH_SHORT).show();
+        }
+        return result;
+    }
 
 
     //code is not reused as it also toasts specific errors
