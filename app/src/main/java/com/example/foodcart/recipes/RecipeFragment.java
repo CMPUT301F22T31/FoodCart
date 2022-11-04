@@ -1,6 +1,5 @@
 package com.example.foodcart.recipes;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -36,7 +35,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 
 public class RecipeFragment extends DialogFragment {
     private ImageView recipeImage;
