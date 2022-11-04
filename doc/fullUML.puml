@@ -1,0 +1,69 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Ingredient {
+-String description
+-Date bestBeforeDate
+-String location
+-int count
+-String unit
+-String category
+
+-String formattedBestBeforeDate()
+}
+
+class Recipe {
+-String title
+-int prep_time
+-int servings
+-String comments
+-String category
+-ArrayList<Ingredient> ingredientList
+-String picture
+}
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class IngredientActivity extends AppCompatActivity
+{
+ListView ingredientList
+ArrayAdapter<Ingredient> ingredientAdapter
+ArrayList<Ingredient> dataList
+int selected
+
+*void onCreate(Bundle)
++void onOkPressed(Ingredient)
++void onOkPressedEdit(Ingredient)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class IngredientFragment extends DialogFragment
+{
+-EditText ingredientDescription;
+-EditText ingredientLocation;
+-EditText ingredientBestBeforeDate;
+-EditText ingredientCount;
+-EditText ingredientUnit;
+-EditText ingredientCategory;
+-OnFragmentInteractionListener listener;
+
++ {static} void onAttach(@NonNull Context)
++ {static} IngredientFragment NewInstance(Ingredient)
++ Dialog onCreateDialog(@Nullable Bundle)
+- Date parseDate(String)
+- boolean emptyStringCheck(String, String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+
+@enduml

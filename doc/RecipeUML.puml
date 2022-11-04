@@ -1,0 +1,14 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Recipe {
+-String title
+-int prep_time
+-int servings
+-String comments
+-String category
+-ArrayList<Ingredient> ingredientList
+-String picture
+}
+
+@enduml
