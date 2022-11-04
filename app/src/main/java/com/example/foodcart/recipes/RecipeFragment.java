@@ -37,7 +37,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
+/**
+ * Fragment for Recipe
+ * Gives each recipe in the ListView on the recipe page
+ */
 public class RecipeFragment extends DialogFragment {
     private ImageView recipeImage;
     private EditText recipeTitle;
@@ -313,6 +316,11 @@ public class RecipeFragment extends DialogFragment {
                 }
             });
 
+    /**
+     * Parse prepTime to an integer with error catching
+     * @param prepTime
+     * @return the prepTime as an integer
+     */
     private int parsePrepTime(String prepTime) {
         int result = -1;
         try {
@@ -324,6 +332,11 @@ public class RecipeFragment extends DialogFragment {
         return result;
     }
 
+    /**
+     * Parse the num of servings to an integer with error catching
+     * @param serving
+     * @return the number of servings as an integer
+     */
     private int parseServing(String serving) {
         int result = -1;
         try {
@@ -335,8 +348,15 @@ public class RecipeFragment extends DialogFragment {
         return result;
     }
 
-
-    //code is not reused as it also toasts specific errors
+    /**
+     * Checks if title, prepTime, serves, or category are empty strings
+     * @param title
+     * @param prepTime
+     * @param serves
+     * @param category
+     * @return boolean if any of these are empty strings
+     */
+    // code is not reused as it also toasts specific errors
     private boolean emptyStringCheck(String title, String prepTime, String serves, String category) {
         boolean emptyStringExist = false;
         if(title.isEmpty()) {
