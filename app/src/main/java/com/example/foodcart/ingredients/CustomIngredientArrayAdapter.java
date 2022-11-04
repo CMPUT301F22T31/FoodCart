@@ -72,20 +72,22 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
             System.out.println(sortValue);
             switch (sortValue){
                 case "description":
-                    System.out.println(ingredientSort.getText());
                     ingredientSort.setText("");
+                    break;
                 case "best before date":
                     ingredientSort.setText(ingredient.getFormattedBestBeforeDate());
+                    break;
                 case "location":
                     ingredientSort.setText(ingredient.getLocation());
+                    break;
                 case "category":
                     ingredientSort.setText(ingredient.getCategory());
+                    break;
             }
         } else {
             String sortValue = "description";
             ingredientSort.setText("");
         }
-        notifyDataSetChanged();
 
 
         // set up delete button on each list item and onClick
