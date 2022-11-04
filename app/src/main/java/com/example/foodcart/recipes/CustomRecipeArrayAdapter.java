@@ -51,8 +51,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         ingredientDescription.setText(recipe.getTitle());
         ingredientSort.setText("Sort value");
-
-
+        notifyDataSetChanged();
         // set up delete button on each list item and onClick
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
         deleteButton.setFocusable(false);
@@ -60,8 +59,6 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
             @Override
             public void onClick(View view) {
                 if (recipes.size() > 0) {
-                    // find selection
-                    recipes.remove(Math.min(position, recipes.size() - 1));
                     // Access a Cloud Firestore instance from your Activity
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
@@ -83,6 +80,8 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
                                     Log.d("Delete Recipe", "Data could not be deleted!" + e.toString());
                                 }
                             });
+                    // find selection
+                    recipes.remove(Math.min(position, recipes.size() - 1));
                     notifyDataSetChanged();
                 }
             }

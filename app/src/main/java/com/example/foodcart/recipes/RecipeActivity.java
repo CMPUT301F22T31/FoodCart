@@ -70,9 +70,10 @@ public class RecipeActivity extends AppCompatActivity
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
 
-        recipeListView.setAdapter(recipeAdapter);
+
         // set adapter
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
+        recipeListView.setAdapter(recipeAdapter);
 
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
@@ -120,7 +121,7 @@ public class RecipeActivity extends AppCompatActivity
                     String category = (String) doc.getData().get("Category");
                     String picture =  (String) doc.getData().get("Picture");
 
-                    CollectionReference ingredients = db.collection("Recipe")
+                    CollectionReference ingredients = db.collection("Recipes")
                                                         .document(title).collection("Ingredients");
                     ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -133,7 +134,6 @@ public class RecipeActivity extends AppCompatActivity
                                     String count = (String) ing.getData().get("Count");
                                     String unit = (String) ing.getData().get("Unit");
                                     String category = (String) ing.getData().get("Category");
-                                    String picture = (String) ing.getData().get("Picture");
                                     // Convert date string into Date class
                                     Date date = null;
                                     try {
@@ -150,6 +150,8 @@ public class RecipeActivity extends AppCompatActivity
                             }
                         }
                     });
+
+
                     //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                     int servInt = Integer.parseInt(servings);
                     int prepInt = Integer.parseInt(prep_time);
@@ -159,6 +161,7 @@ public class RecipeActivity extends AppCompatActivity
                     try {
                         recipe = new Recipe(title, prepInt, servInt, picture,
                                             comments, category, ingredientList);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
