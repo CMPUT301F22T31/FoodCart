@@ -22,11 +22,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-
+/**
+ * The custom array adapter for ingredients. Also includes delete
+ * and sort functionality for items in the ingredients list
+ */
 public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
 
+    /**
+     * Constructor for custom array of ingredients adapter
+     * @param context
+     * @param ingredients
+     */
     public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
         this.ingredients = ingredients;
@@ -35,6 +43,10 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
     @NonNull
     @Override
+    /**
+     * Get the view of the ingredients list and provides delete
+     * and sort functionality for the ingredients in the list
+     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         // return super.getView(position, convertView, parent);
         View view = convertView;
@@ -44,6 +56,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
         com.example.foodcart.ingredients.Ingredient ingredient = ingredients.get(position);
 
+        // Get the views of the TextViews
         TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
         TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);
         TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
@@ -55,11 +68,23 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
         if (sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
-            ingredientSort.setText(sortValue);
+            System.out.println(sortValue);
+            switch (sortValue){
+                case "description":
+                    System.out.println(ingredientSort.getText());
+                    ingredientSort.setText("");
+                case "best before date":
+                    ingredientSort.setText(ingredient.getFormattedBestBeforeDate());
+                case "location":
+                    ingredientSort.setText(ingredient.getLocation());
+                case "category":
+                    ingredientSort.setText(ingredient.getCategory());
+            }
         } else {
             String sortValue = "description";
-            ingredientSort.setText(sortValue);
+            ingredientSort.setText("");
         }
+        notifyDataSetChanged();
 
 
         // set up delete button on each list item and onClick
@@ -67,6 +92,10 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /**
+             * OnClick for delete button on each item in ingredients list
+             * Deletes an ingredient from the Ingredients database
+             */
             public void onClick(View view) {
                 if (ingredients.size() > 0) {
                     // Access a Cloud Firestore instance from your Activity

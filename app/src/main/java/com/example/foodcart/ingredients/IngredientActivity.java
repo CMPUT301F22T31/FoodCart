@@ -27,6 +27,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener {
@@ -53,6 +55,11 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
         ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
 
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference IngredientCollection = db.collection("Ingredients");
+
         // set spinner adapter for drop down sort list
         Spinner sortDropDown = (Spinner) findViewById(R.id.ingredients_sort_select);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
@@ -63,6 +70,23 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // sort the db by the sortValue
                 String sortValue = sortValues[position];
+                IngredientCollection.orderBy(sortValue);
+                Collections.sort(dataList, new Comparator<Ingredient>(){
+                    public int compare(Ingredient ing1, Ingredient ing2)
+                    {
+                        switch(sortValue) {
+                            case "description":
+                                return ing1.getDescription().compareTo(ing2.getDescription());
+                            case "best before date":
+                                return ing1.getBestBeforeDate().compareTo(ing2.getBestBeforeDate());
+                            case "location":
+                                return ing1.getLocation().compareTo(ing2.getLocation());
+                            case "category":
+                                return ing1.getCategory().compareTo(ing2.getCategory());
+                        }
+                        return 0;
+                    }
+                });
                 ingredientAdapter.notifyDataSetChanged();
             }
 
@@ -71,11 +95,6 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
 
             }
         });
-
-        // Access a Cloud Firestore instance from your Activity
-        db = FirebaseFirestore.getInstance();
-        // Get a top level reference to the collection
-        final CollectionReference IngredientCollection = db.collection("Ingredients");
 
         final ImageButton RecipeTab = findViewById(R.id.recipes_tab);
         RecipeTab.setOnClickListener(new View.OnClickListener() {
