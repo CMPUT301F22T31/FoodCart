@@ -1,9 +1,11 @@
 package com.example.foodcart.recipes;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,22 +14,40 @@ import android.widget.ListView;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
+
+
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.ingredients.IngredientFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class RecipeActivity extends AppCompatActivity implements RecipeFragment.OnFragmentInteractionListener{
+public class RecipeActivity extends AppCompatActivity
+        implements RecipeFragment.OnFragmentInteractionListener{
 
     ListView recipeListView;
     ArrayAdapter<Recipe> recipeAdapter;
     ArrayList<Recipe> recipeList;
     int selected;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseFirestore db;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
@@ -40,9 +60,18 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
             e.printStackTrace();
         }
 
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference recipeCollection = db.collection("Recipes");
+
+
+        recipeListView.setAdapter(recipeAdapter);
         // set adapter
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
-        recipeListView.setAdapter(recipeAdapter);
+
+
+
 
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
@@ -71,6 +100,62 @@ public class RecipeActivity extends AppCompatActivity implements RecipeFragment.
                 Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
+            }
+        });
+
+        recipeCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                //recipeList.clear();
+                ArrayList<Ingredient> ingredientList = new ArrayList<>();
+                assert queryDocumentSnapshots != null;
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                    Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
+                    String title = doc.getId();
+                    String prep_time = (String) doc.getData().get("Prep Time");
+                    String servings = (String) doc.getData().get("Servings");
+                    String comments = (String) doc.getData().get("Comments");
+                    String category = (String) doc.getData().get("Category");
+                    String picture = (String) doc.getData().get("Picture");
+                    DocumentReference ingredients = db.collection("Recipe").document(title);
+                    ingredients.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot ing) {
+                            String description = ing.getId();
+                            String location = (String) ing.getData().get("Location");
+                            String tempDate = (String) ing.getData().get("Date");
+                            String count = (String) ing.getData().get("Count");
+                            String unit = (String) ing.getData().get("Unit");
+                            String category = (String) ing.getData().get("Category");
+                            String picture = (String) ing.getData().get("Picture");
+                            // Convert date string into Date class
+                            Date date = null;
+                            try {
+                                date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            int countInt = Integer.parseInt(count);
+                            // add ingredient to list
+                            ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
+                        }
+                    });
+                    //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                    int servInt = Integer.parseInt(servings);
+                    int prepInt = Integer.parseInt(prep_time);
+
+                    // add recipe to list
+                    Recipe recipe = null;
+                    try {
+                        recipe = new Recipe(title, prepInt, servInt, picture,
+                                            comments, category, ingredientList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    recipeList.add(recipe);
+                }
+                recipeAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
             }
         });
     }

@@ -1,0 +1,202 @@
+@startuml
+'https://plantuml.com/class-diagram
+class ArrayAdapter {
++View getView(Context, ArrayList)
+}
+
+class EditText {
++Editable getText()
++void setText()
+}
+
+class FireBaseFirestore {
++CollectionReference collection(String)
+}
+
+class Ingredient {
+-String description
+-Date bestBeforeDate
+-String location
+-int count
+-String unit
+-String category
+
+-String formattedBestBeforeDate()
+}
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class IngredientActivity {
+-ListView ingredientList
+-ArrayAdapter<Ingredient> ingredientAdapter
+-ArrayList<Ingredient> dataList
+-int selected
+-FireBaseFirestore db
+
+*void onCreate(Bundle)
++void onOkPressed(Ingredient)
++void onOkPressedEdit(Ingredient)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class IngredientFragment {
+-EditText ingredientDescription;
+-EditText ingredientLocation;
+-EditText ingredientBestBeforeDate;
+-EditText ingredientCount;
+-EditText ingredientUnit;
+-EditText ingredientCategory;
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+
++ {static} void onAttach(@NonNull Context)
++ {static} IngredientFragment NewInstance(Ingredient)
++ Dialog onCreateDialog(@Nullable Bundle)
+- Date parseDate(String)
+- boolean emptyStringCheck(String, String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class CustomIngredientArrayAdapter extends ArrayAdapter {
+- ArrayList<Ingredient> ingredients
+- Context context
+- FireBaseFirestore db
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+
+
+class ArrayAdapter {
++View getView(Context, ArrayList)
+}
+
+class EditText {
++Editable getText()
++void setText()
+}
+
+class FireBaseFirestore {
++CollectionReference collection(String)
+}
+
+class ActivityResultLancher {
+    +void onActivityResult(ActivityResult)
+}
+
+class Recipe {
+-String title
+-int prep_time
+-int servings
+-String comments
+-String category
+-String picture
+
++void addIngredient(Ingredient)
++void removeIngredient(Ingredient)
+}
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class RecipeActivity {
+-ListView recipeListView
+-ArrayAdapter<Recipe> recipeAdapter
+-ArrayList<Recipe> recipeList
+-int selected
+-FireBaseFirestore db
+
+*void onCreate(Bundle)
++void onOkPressedRecipe(Recipe)
++void onOkPressedEditRecipe(Recipe)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class RecipeFragment {
+-ImageView recipeImage
+-EditText recipeTitle
+-EditText recipePrepareTime
+-EditText recipeServings
+-EditText recipeCategory
+-EditText recipeComments
+-Uri imageURI
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+
++ {static} void onAttach(@NonNull Context)
++ {static} RecipeFragment NewInstance(Recipe)
++ Dialog onCreateDialog(@Nullable Bundle)
+- boolean emptyStringCheck(String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class CustomRecipeArrayAdapter extends ArrayAdapter {
+- ArrayList<Recipe> recipes
+- Context context
+- FireBaseFirestore db
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+Serializable ()-- Recipe : Implements
+Ingredient "0..*" --o "0..*" Recipe
+
+RecipeActivity "1" *-> "0..*" Recipe
+ListView "1" <-* RecipeActivity
+CustomRecipeArrayAdapter "1" --o RecipeActivity
+FireBaseFirestore "1" --o "0..*" RecipeActivity
+RecipeActivity o-- ArrayList
+AppCompatActivity <|--- RecipeActivity
+DialogFragment <|--- RecipeFragment
+
+RecipeFragment *-> "6" EditText
+OnFragmentInteractionListener "1" <-* RecipeFragment
+FireBaseFirestore "1" --o "0..*" RecipeFragment
+FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
+
+RecipeActivity <--> RecipeFragment
+
+
+
+
+Serializable ()-- Ingredient : Implements
+Date "1" <--* "1..*" Ingredient
+
+Ingredient "1" *-> "0..*" IngredientActivity
+IngredientActivity <-* "1" ListView
+CustomIngredientArrayAdapter "1" -o IngredientActivity
+FireBaseFirestore "1" --o "0..*" IngredientActivity
+IngredientActivity o- ArrayList
+AppCompatActivity <|--- IngredientActivity
+DialogFragment <|--- IngredientFragment
+
+IngredientFragment *--> "6" EditText
+IngredientFragment "1" *->  OnFragmentInteractionListener
+FireBaseFirestore "1" --o "0..*" IngredientFragment
+FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
+
+IngredientActivity <-> IngredientFragment
+ActivityResultLancher <- RecipeFragment
+
+note "this is the full more complicated UML where both IngredientsUML & RecipesUML and added\n together in full it is advised to only look at those individal state diagram" as N1
+
+@enduml

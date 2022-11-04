@@ -31,21 +31,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
-public class IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener {
+public class IngredientActivity extends AppCompatActivity
+        implements IngredientFragment.OnFragmentInteractionListener {
 
     // Declare the variables
-    ListView ingredientList;
-    ArrayAdapter<Ingredient> ingredientAdapter;
-    ArrayList<Ingredient> dataList;
-    int selected;
-    FirebaseFirestore db;
-    String[] sortValues = { "description", "best before date", "location", "category" };
+    private ListView ingredientList;
+    private ArrayAdapter<Ingredient> ingredientAdapter;
+    private ArrayList<Ingredient> dataList;
+    private int selected;
+    private FirebaseFirestore db;
+    private String[] sortValues = { "description", "best before date", "location", "category" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
+
 
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
@@ -100,7 +102,8 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
         RecipeTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(), RecipeActivity.class);
+                Intent switchActivityIntent = new Intent(getApplicationContext(),
+                                                    RecipeActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
             }

@@ -1,0 +1,124 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ArrayAdapter {
++View getView(Context, ArrayList)
+}
+
+class EditText {
++Editable getText()
++void setText()
+}
+
+class FireBaseFirestore {
++CollectionReference collection(String)
++DocumentReference document(String)
+}
+
+class Ingredient {
+-String description
+-Date bestBeforeDate
+-String location
+-int count
+-String unit
+-String category
+
+-String formattedBestBeforeDate()
+}
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class IngredientActivity {
+-ListView ingredientList
+-ArrayAdapter<Ingredient> ingredientAdapter
+-ArrayList<Ingredient> dataList
+-int selected
+-FireBaseFirestore db
+
+*void onCreate(Bundle)
++void onOkPressed(Ingredient)
++void onOkPressedEdit(Ingredient)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class IngredientFragment {
+-EditText ingredientDescription;
+-EditText ingredientLocation;
+-EditText ingredientBestBeforeDate;
+-EditText ingredientCount;
+-EditText ingredientUnit;
+-EditText ingredientCategory;
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+
++ {static} void onAttach(@NonNull Context)
++ {static} IngredientFragment NewInstance(Ingredient)
++ Dialog onCreateDialog(@Nullable Bundle)
+- Date parseDate(String)
+- boolean emptyStringCheck(String, String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class CustomIngredientArrayAdapter extends ArrayAdapter {
+- ArrayList<Ingredient> ingredients
+- Context context
+- FireBaseFirestore db
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+Serializable ()-- Ingredient : Implements
+Date "1" <--* "1..*" Ingredient
+
+Ingredient "0..*" <-*  IngredientActivity
+IngredientActivity *-> ListView
+CustomIngredientArrayAdapter --o IngredientActivity
+FireBaseFirestore --o "0..*" IngredientActivity
+
+IngredientActivity o-- ArrayList
+AppCompatActivity <|--- IngredientActivity
+DialogFragment <|--- IngredientFragment
+FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
+
+IngredientFragment *-> "6" EditText
+OnFragmentInteractionListener <-* IngredientFragment
+FireBaseFirestore --o "0..*" IngredientFragment
+IngredientActivity <--> IngredientFragment
+
+note "Activity and Fragment can move between each other via button clicks; onOkPressed() \nand onOkEdit() are the methods used by fragment to make changes to activity" as N1
+note "formattedBestBeforeDate() is for returning a String \nrepresentation of the Date object similar to toSring() " as N2
+note "CustomIngredientArrayAdapter is to properly \ndisplay the ingredient class in the listview" as IActivity2
+note "selected is the position of the user chosen Ingredient from ListView" as IActivity3
+note "This is the firebase firestore that the application references\n all ingredientList modifications are made to FireStore" as FireBase
+note "emptyString() checks for valid user input \n& OnCreateDialog() is for communication with activty" as error
+
+N1 . IngredientFragment
+IngredientActivity . N1
+
+N2 . Ingredient
+Date .. N2
+
+IActivity2 . CustomIngredientArrayAdapter
+IActivity2 .. IngredientActivity
+
+IActivity3 .. IngredientActivity
+
+FireBaseFirestore . FireBase
+
+error .. IngredientFragment
+
+
+
+
+
+@enduml
