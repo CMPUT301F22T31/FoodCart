@@ -8,8 +8,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +37,7 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
     ArrayList<Ingredient> dataList;
     int selected;
     FirebaseFirestore db;
+    String[] sortValues = { "description", "best before date", "location", "category" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,25 @@ public class IngredientActivity extends AppCompatActivity implements IngredientF
         // set adapter
         ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
+
+        // set spinner adapter for drop down sort list
+        Spinner sortDropDown = (Spinner) findViewById(R.id.ingredients_sort_select);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortDropDown.setAdapter(adapter);
+        sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // sort the db by the sortValue
+                String sortValue = sortValues[position];
+                ingredientAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();

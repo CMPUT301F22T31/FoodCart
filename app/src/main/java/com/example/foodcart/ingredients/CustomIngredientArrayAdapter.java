@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,10 +47,19 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
         TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);
         TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
+        View parentView = (View) parent.getParent();
+        Spinner sortDropDown = parentView.findViewById(R.id.ingredients_sort_select);
 
         ingredientDescription.setText(ingredient.getDescription());
         ingredientQuantity.setText(ingredient.getCount().toString());
-        ingredientSort.setText("Sort value");
+
+        if (sortDropDown.getSelectedItem() != null) {
+            String sortValue = sortDropDown.getSelectedItem().toString();
+            ingredientSort.setText(sortValue);
+        } else {
+            String sortValue = "description";
+            ingredientSort.setText(sortValue);
+        }
 
 
         // set up delete button on each list item and onClick
