@@ -1,10 +1,5 @@
 @startuml
 'https://plantuml.com/class-diagram
-class Date
-
-class ArrayList
-
-class ListView
 
 class ArrayAdapter {
 +View getView(Context, ArrayList)
@@ -94,5 +89,6 @@ DialogFragment <|--- IngredientFragment
 IngredientFragment *-> "6" EditText
 OnFragmentInteractionListener "1" <-* IngredientFragment
 FireBaseFirestore "1" --o "0..*" IngredientFragment
+IngredientActivity <--> IngredientFragment
 
 @enduml

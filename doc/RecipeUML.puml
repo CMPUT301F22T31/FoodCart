@@ -1,14 +1,102 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+class ArrayAdapter {
++View getView(Context, ArrayList)
+}
+
+class EditText {
++Editable getText()
++void setText()
+}
+
+class FireBaseFirestore {
++CollectionReference collection(String)
+}
+
+class ActivityResultLancher {
+    +void onActivityResult(ActivityResult)
+}
+
 class Recipe {
 -String title
 -int prep_time
 -int servings
 -String comments
 -String category
--ArrayList<Ingredient> ingredientList
 -String picture
+
++void addIngredient(Ingredient)
++void removeIngredient(Ingredient)
 }
+
+class AppCompatActivity {
+*void onCreate(Bundle)
+}
+
+class RecipeActivity {
+-ListView recipeListView
+-ArrayAdapter<Recipe> recipeAdapter
+-ArrayList<Recipe> recipeList
+-int selected
+-FireBaseFirestore db
+
+*void onCreate(Bundle)
++void onOkPressedRecipe(Recipe)
++void onOkPressedEditRecipe(Recipe)
+}
+
+class DialogFragment {
++void onAttach(@NonNull Context))
++Dialog onCreateDialog(@Nullable Bundle))
+}
+
+class RecipeFragment {
+-ImageView recipeImage
+-EditText recipeTitle
+-EditText recipePrepareTime
+-EditText recipeServings
+-EditText recipeCategory
+-EditText recipeComments
+-Uri imageURI
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+
++ {static} void onAttach(@NonNull Context)
++ {static} RecipeFragment NewInstance(Recipe)
++ Dialog onCreateDialog(@Nullable Bundle)
+- boolean emptyStringCheck(String, String, String, String, String)
+}
+
+interface OnFragmentInteractionListener {
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class CustomRecipeArrayAdapter extends ArrayAdapter {
+- ArrayList<Recipe> recipes
+- Context context
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+Serializable ()-- Recipe : Implements
+Ingredient "0..*" --o "0..*" Recipe
+
+RecipeActivity "1" *-> "0..*" Recipe
+ListView "1" <-* RecipeActivity
+CustomRecipeArrayAdapter "1" --o RecipeActivity
+FireBaseFirestore "1" --o "0..*" RecipeActivity
+RecipeActivity o-- ArrayList
+AppCompatActivity <|--- RecipeActivity
+DialogFragment <|--- RecipeFragment
+
+RecipeFragment *-> "6" EditText
+OnFragmentInteractionListener "1" <-* RecipeFragment
+FireBaseFirestore "1" --o "0..*" RecipeFragment
+
+RecipeActivity --> RecipeFragment
+RecipeFragment --> ActivityResultLancher
+ActivityResultLancher --> RecipeActivity
 
 @enduml
