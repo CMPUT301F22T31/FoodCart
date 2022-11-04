@@ -4,8 +4,11 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 import android.app.Activity;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.robotium.solo.Solo;
@@ -66,5 +69,36 @@ public class IngredientTest {
         assertTrue(solo.waitForText("Test1", 1, 2000));
 
         assertTrue(solo.searchText("Test1"));
+    }
+
+    @Test
+    public void DeleteCity(){
+        solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
+
+        solo.clickOnView(solo.getView(R.id.add_ingredient_button));
+
+        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Test2");
+        solo.enterText((EditText) solo.getView(R.id.ingredientBestBeforeDateET), "2022-01-21");
+        solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
+        solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "g");
+        solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Test");
+        solo.clickOnButton("Add");
+
+        assertTrue(solo.waitForText("Test2", 1, 2000));
+
+        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
+        int pos;
+        for(int i =0;i<mylist.getCount();i++){
+            View child = mylist.getChildAt(i);
+            TextView ing_name = (TextView)child.findViewById(R.id.ingredient_item_name);
+            System.out.println(ing_name.getText().toString());
+            if(ing_name.getText().toString().equals("Test2")){
+                System.out.println("Yes");
+                solo.clickOnImageButton(i);
+            }
+        }
+
+        assertFalse(solo.searchText("Test2"));
     }
 }
