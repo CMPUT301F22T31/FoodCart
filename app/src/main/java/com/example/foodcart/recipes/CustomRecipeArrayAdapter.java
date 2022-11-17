@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,11 +47,33 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         Recipe recipe = recipes.get(position);
 
-        TextView ingredientDescription = view.findViewById(R.id.recipe_name);
-        TextView ingredientSort = view.findViewById(R.id.recipe_item_sort);
+        TextView recipeDescription = view.findViewById(R.id.recipe_name);
+        TextView recipeSort = view.findViewById(R.id.recipe_item_sort);
 
-        ingredientDescription.setText(recipe.getTitle());
-        ingredientSort.setText("Sort value");
+        recipeDescription.setText(recipe.getTitle());
+        View parentView = (View) parent.getParent();
+        Spinner sortDropDown = parentView.findViewById(R.id.recipes_sort_select);
+
+        if (sortDropDown.getSelectedItem() != null) {
+            String sortValue = sortDropDown.getSelectedItem().toString();
+            System.out.println(sortValue);
+            switch (sortValue){
+                case "title":
+                    recipeSort.setText("");
+                    break;
+                case "prep time":
+                    recipeSort.setText(String.valueOf(recipe.getPrep_time()));
+                    break;
+                case "# of servings":
+                    recipeSort.setText(String.valueOf(recipe.getServings()));
+                    break;
+                case "category":
+                    recipeSort.setText(recipe.getCategory());
+                    break;
+            }
+        } else {
+            recipeSort.setText("");
+        }
         notifyDataSetChanged();
         // set up delete button on each list item and onClick
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
