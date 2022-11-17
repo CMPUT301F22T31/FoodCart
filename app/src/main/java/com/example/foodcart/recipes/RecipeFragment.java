@@ -7,8 +7,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +62,20 @@ public class RecipeFragment extends DialogFragment {
         void onOkPressedRecipe(Recipe newRecipe);
         void onOkPressedEditRecipe(Recipe newRecipe);
     }
+
+    ActivityResultLauncher<Intent> cameraActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            imageURI = result.getData().getData();
+                            recipeImage.setImageURI(imageURI);
+                        }
+                    }
+                }
+            });
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -303,18 +322,7 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    ActivityResultLauncher<Intent> cameraActivity = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        if (result.getData() != null) {
-                            imageURI = result.getData().getData();
-                            recipeImage.setImageURI(imageURI);
-                        }
-                    }
-                }
-            });
+
 
     /**
      * Parse prepTime to an integer with error catching

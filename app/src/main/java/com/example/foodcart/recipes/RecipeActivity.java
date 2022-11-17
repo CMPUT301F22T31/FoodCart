@@ -159,8 +159,8 @@ public class RecipeActivity extends AppCompatActivity
                     // add recipe to list
                     Recipe recipe = null;
                     try {
-                        recipe = new Recipe(title, prepInt, servInt, picture,
-                                            comments, category, ingredientList);
+                        recipe = new Recipe(title, prepInt, servInt, comments,
+                                            picture, category, ingredientList);
 
                     } catch (Exception e) {
                         e.printStackTrace();
