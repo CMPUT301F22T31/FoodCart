@@ -7,7 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +29,6 @@ import com.example.foodcart.ingredients.Ingredient;
 
 import java.util.ArrayList;
 
-
 public class RecipeFragment extends DialogFragment {
     private ImageView recipeImage;
     private EditText recipeTitle;
@@ -37,7 +36,8 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServings;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Uri imageURI;
+    private Bitmap imageBitmap;
+    private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
 
 
@@ -72,13 +72,14 @@ public class RecipeFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
 
+        ingredients = new ArrayList<>();
+
         //add image function
         final Button recipeTakeImageButton = view.findViewById(R.id.recipeImgUploadButton);
         recipeTakeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cameraIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                cameraIntent.setType("image/*");
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraActivity.launch((Intent.createChooser(cameraIntent, "Select Image")));
             }
         });
@@ -88,8 +89,8 @@ public class RecipeFragment extends DialogFragment {
         recipeIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //should take to some new fragment/activity
-                //WIP asset
+                Intent ingredientIntent = new Intent(getContext(), RecipeIngredientsActivity.class);
+                ingredientActivity.launch((Intent.createChooser(ingredientIntent, "Select Image")));
             }
         });
 
@@ -102,7 +103,7 @@ public class RecipeFragment extends DialogFragment {
         if (args != null) {
             //edit recipe functionality
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
-            recipeImage.setImageURI(Uri.parse(currentRecipe.getPicture()));
+            recipeImage.setImageBitmap(currentRecipe.getPicture());
             recipeTitle.setText(currentRecipe.getTitle());
             recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
@@ -122,15 +123,13 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
-                            //replace this with ingredient arraylist
-                            ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
-                            if (!emptyStringsExist && imageURI != null) {
+                            if (!emptyStringsExist && imageBitmap != null) {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                                 int prepTimeInt = Integer.parseInt(prepTime);
                                 int servesInt = Integer.parseInt(serves);
-                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
+                            Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageBitmap, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                             }
                             else {
@@ -156,15 +155,13 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
-                            //replace this with ingredient arraylist
-                            ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
-                            if (!emptyStringsExist && imageURI != null) {
+                            if (!emptyStringsExist && imageBitmap != null) {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                                 int prepTimeInt = Integer.parseInt(prepTime);
                                 int servesInt = Integer.parseInt(serves);
-                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageBitmap, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
                             }
                             else {
@@ -181,13 +178,24 @@ public class RecipeFragment extends DialogFragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
-                            imageURI = result.getData().getData();
-                            recipeImage.setImageURI(imageURI);
+                            imageBitmap = (Bitmap) result.getData().getExtras().get("data");
+                            recipeImage.setImageBitmap(imageBitmap);
                         }
                     }
                 }
             });
 
+    ActivityResultLauncher<Intent> ingredientActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            ingredients = (ArrayList) result.getData().getExtras().get("data");
+                        }
+                    }
+                }
+            });
 
     //code is not reused as it also toasts specific errors
     private boolean emptyStringCheck(String title, String prepTime, String serves, String category) {

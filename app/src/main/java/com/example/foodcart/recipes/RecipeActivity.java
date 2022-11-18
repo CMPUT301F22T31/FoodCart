@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -119,7 +120,7 @@ public class RecipeActivity extends AppCompatActivity
                     String servings = (String) doc.getData().get("Servings");
                     String comments = (String) doc.getData().get("Comments");
                     String category = (String) doc.getData().get("Category");
-                    String picture =  (String) doc.getData().get("Picture");
+                    Bitmap picture =  (Bitmap) doc.getData().get("Picture");
 
                     CollectionReference ingredients = db.collection("Recipes")
                                                         .document(title).collection("Ingredients");
@@ -159,8 +160,8 @@ public class RecipeActivity extends AppCompatActivity
                     // add recipe to list
                     Recipe recipe = null;
                     try {
-                        recipe = new Recipe(title, prepInt, servInt, picture,
-                                            comments, category, ingredientList);
+                        recipe = new Recipe(title, prepInt, servInt, comments,
+                                            picture, category, ingredientList);
 
                     } catch (Exception e) {
                         e.printStackTrace();

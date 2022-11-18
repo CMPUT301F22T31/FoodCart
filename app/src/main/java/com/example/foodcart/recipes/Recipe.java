@@ -1,5 +1,7 @@
 package com.example.foodcart.recipes;
 
+import android.graphics.Bitmap;
+
 import com.example.foodcart.ingredients.Ingredient;
 
 import java.io.Serializable;
@@ -19,7 +21,7 @@ public class Recipe implements Serializable {
     String comments;
     String category;
     ArrayList<Ingredient> ingredientList;
-    String picture;
+    Bitmap picture;
 
     /**
      * Gets the title of the recipe
@@ -121,7 +123,7 @@ public class Recipe implements Serializable {
      * Sets the picture for the recipe
      * @param picture
      */
-    public void setPicture(String picture) {
+    public void setPicture(Bitmap picture) {
         this.picture = picture;
     }
 
@@ -129,7 +131,7 @@ public class Recipe implements Serializable {
      * Gets the picture for the recipe
      * @return the picture of the recipe
      */
-    public String getPicture() {
+    public Bitmap getPicture() {
         return picture;
     }
 
@@ -160,7 +162,7 @@ public class Recipe implements Serializable {
      * @param ingredients
      */
     public Recipe(String title, int prep_time, int servings, String comments,
-                  String picture, String category, ArrayList<Ingredient> ingredients)  {
+                  Bitmap picture, String category, ArrayList<Ingredient> ingredients)  {
         setTitle(title);
         setPrep_time(prep_time);
         setServings(servings);
