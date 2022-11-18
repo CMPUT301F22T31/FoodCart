@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,20 +21,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-/**
- * The custom array adapter for ingredients. Also includes delete
- * and sort functionality for items in the ingredients list
- */
-public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
-    private ArrayList<Ingredient> ingredients;
-    private Context context;
-    private FirebaseFirestore db;
 
-    /**
-     * Constructor for custom array of ingredients adapter
-     * @param context
-     * @param ingredients
-     */
+public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
+    private final ArrayList<Ingredient> ingredients;
+    private final Context context;
+
     public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
         this.ingredients = ingredients;
@@ -44,10 +34,6 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
     @NonNull
     @Override
-    /**
-     * Get the view of the ingredients list and provides delete
-     * and sort functionality for the ingredients in the list
-     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         // return super.getView(position, convertView, parent);
         View view = convertView;
@@ -57,53 +43,27 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
         com.example.foodcart.ingredients.Ingredient ingredient = ingredients.get(position);
 
-        // Get the views of the TextViews
         TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
         TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);
         TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
-        View parentView = (View) parent.getParent();
-        Spinner sortDropDown = parentView.findViewById(R.id.ingredients_sort_select);
 
         ingredientDescription.setText(ingredient.getDescription());
         ingredientQuantity.setText(ingredient.getCount().toString());
-
-        if (sortDropDown.getSelectedItem() != null) {
-            String sortValue = sortDropDown.getSelectedItem().toString();
-            System.out.println(sortValue);
-            switch (sortValue){
-                case "description":
-                    ingredientSort.setText("");
-                    break;
-                case "best before date":
-                    ingredientSort.setText(ingredient.getFormattedBestBeforeDate());
-                    break;
-                case "location":
-                    ingredientSort.setText(ingredient.getLocation());
-                    break;
-                case "category":
-                    ingredientSort.setText(ingredient.getCategory());
-                    break;
-            }
-        } else {
-            String sortValue = "description";
-            ingredientSort.setText("");
-        }
+        ingredientSort.setText("Sort value");
 
 
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
+        ImageButton deleteButton = view.findViewById(R.id.ingredient_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            /**
-             * OnClick for delete button on each item in ingredients list
-             * Deletes an ingredient from the Ingredients database
-             */
             public void onClick(View view) {
                 if (ingredients.size() > 0) {
+                    // find selection
+                    ingredients.remove(Math.min(position, ingredients.size() - 1));
 
                     // Access a Cloud Firestore instance from your Activity
-                    db = FirebaseFirestore.getInstance();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
                     IngredientCollection
@@ -120,11 +80,9 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
+                                    Log.d("Sample", "Data could not be deleted!" + e);
                                 }
                             });
-                    // find and remove selection
-                    ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();
                 }
             }
