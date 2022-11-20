@@ -29,8 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recipeImgView"
-            android:text="Select Image from Gallery">
-
+            android:text="Take Image (required)">
         </Button>
 
         <TextView
@@ -135,34 +134,22 @@
             android:textColorHint="#757575"
             tools:ignore="SpeakableTextPresentCheck" />
 
-        <TextView
-            android:id="@+id/recipeIngredientsHeading"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/recipeIngredientButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ingredients"
             android:layout_below="@+id/recipeCategoryTV"
-            android:layout_centerHorizontal="true"
-            android:minHeight="48dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+            android:layout_alignParentEnd="true"
+            android:text="Ingredients">
 
-        <TextView
-            android:id="@+id/recipeIngredientsTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/recipeIngredientsHeading"
-            android:minHeight="48dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:gravity="center"/>
+        </Button>
 
         <TextView
             android:id="@+id/recipeCommentsTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/recipeComments"
-            android:layout_below="@+id/recipeIngredientsTV"
+            android:layout_below="@+id/recipeIngredientButton"
             android:layout_centerHorizontal="true"
             android:minHeight="48dp"
             android:textSize="20sp"

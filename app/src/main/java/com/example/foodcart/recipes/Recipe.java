@@ -1,7 +1,12 @@
 package com.example.foodcart.recipes;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import com.example.foodcart.ingredients.Ingredient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -129,8 +134,8 @@ public class Recipe implements Serializable {
      * Gets the picture for the recipe
      * @return the picture of the recipe
      */
-    public String getPicture() {
-        return picture;
+    public Bitmap getPicture() {
+        return stringToBitmap(picture);
     }
 
     /**
@@ -150,6 +155,29 @@ public class Recipe implements Serializable {
     }
 
     /**
+     * Converts bitmap picture to string value
+     * @param picture
+     * @return
+     * string encoded picture
+     */
+    public String bitmapToString(Bitmap picture) {
+        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG,100, byteArrayStream);
+        return Base64.encodeToString(byteArrayStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    /**
+     * Converts encoded string value to picture
+     * @param picture
+     * @return
+     * picture Bitmap
+     */
+    public Bitmap stringToBitmap(String picture) {
+        byte[] decodedImage = Base64.decode(picture, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+    }
+
+    /**
      * Constructor for recipe
      * @param title
      * @param prep_time
@@ -160,12 +188,12 @@ public class Recipe implements Serializable {
      * @param ingredients
      */
     public Recipe(String title, int prep_time, int servings, String comments,
-                  String picture, String category, ArrayList<Ingredient> ingredients)  {
+                  Bitmap picture, String category, ArrayList<Ingredient> ingredients)  {
         setTitle(title);
         setPrep_time(prep_time);
         setServings(servings);
         setComments(comments);
-        setPicture(picture);
+        setPicture(bitmapToString(picture));
         setCategory(category);
         setIngredientList(ingredients);
     }

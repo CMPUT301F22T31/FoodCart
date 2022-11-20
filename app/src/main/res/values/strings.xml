@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">FoodCart</string>
     <string name="ingredients">Ingredients</string>
-    <string name="ingredientDescription">Description</string>
-    <string name="ingredientBestBeforeDate">Best Before Date</string>
-    <string name="ingredientLocation">Storage Location</string>
-    <string name="ingredientCount">Quantity</string>
-    <string name="ingredientUnit">Unit</string>
-    <string name="ingredientCategory">Category</string>
-    <string name="recipeTitle">Title</string>
-    <string name="recipeCookingTime">Cooking Time</string>
-    <string name="recipeServings">Number of Servings</string>
+    <string name="ingredientDescription">Description*</string>
+    <string name="ingredientBestBeforeDate">Best Before Date*</string>
+    <string name="ingredientLocation">Storage Location*</string>
+    <string name="ingredientCount">Quantity*</string>
+    <string name="ingredientUnit">Unit*</string>
+    <string name="ingredientCategory">Category*</string>
+    <string name="recipeTitle">Title*</string>
+    <string name="recipeCookingTime">Cooking Time*</string>
+    <string name="recipeServings">Number of Servings*</string>
     <string name="recipeComments">Additional Comments</string>
 </resources>
