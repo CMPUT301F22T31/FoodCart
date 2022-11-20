@@ -1,9 +1,12 @@
 package com.example.foodcart.recipes;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
 import com.example.foodcart.ingredients.Ingredient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,7 +24,7 @@ public class Recipe implements Serializable {
     String comments;
     String category;
     ArrayList<Ingredient> ingredientList;
-    Bitmap picture;
+    String picture;
 
     /**
      * Gets the title of the recipe
@@ -123,7 +126,7 @@ public class Recipe implements Serializable {
      * Sets the picture for the recipe
      * @param picture
      */
-    public void setPicture(Bitmap picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
@@ -132,7 +135,7 @@ public class Recipe implements Serializable {
      * @return the picture of the recipe
      */
     public Bitmap getPicture() {
-        return picture;
+        return stringToBitmap(picture);
     }
 
     /**
@@ -152,6 +155,29 @@ public class Recipe implements Serializable {
     }
 
     /**
+     * Converts bitmap picture to string value
+     * @param picture
+     * @return
+     * string encoded picture
+     */
+    public String bitmapToString(Bitmap picture) {
+        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG,100, byteArrayStream);
+        return Base64.encodeToString(byteArrayStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    /**
+     * Converts encoded string value to picture
+     * @param picture
+     * @return
+     * picture Bitmap
+     */
+    public Bitmap stringToBitmap(String picture) {
+        byte[] decodedImage = Base64.decode(picture, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+    }
+
+    /**
      * Constructor for recipe
      * @param title
      * @param prep_time
@@ -167,7 +193,7 @@ public class Recipe implements Serializable {
         setPrep_time(prep_time);
         setServings(servings);
         setComments(comments);
-        setPicture(picture);
+        setPicture(bitmapToString(picture));
         setCategory(category);
         setIngredientList(ingredients);
     }
