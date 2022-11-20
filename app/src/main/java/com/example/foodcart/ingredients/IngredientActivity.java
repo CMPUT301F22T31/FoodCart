@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodcart.R;
 import com.example.foodcart.recipes.RecipeActivity;
+import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -104,6 +105,28 @@ public class IngredientActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent switchActivityIntent = new Intent(getApplicationContext(),
                                                     RecipeActivity.class);
+                startActivity(switchActivityIntent);
+                finish();
+            }
+        });
+
+        final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
+        MealPlanTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent switchActivityIntent = new Intent(getApplicationContext(),
+//                        RecipeActivity.class);
+//                startActivity(switchActivityIntent);
+//                finish();
+            }
+        });
+
+        final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
+        ShoppingListTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent switchActivityIntent = new Intent(getApplicationContext(),
+                        ShoppingListActivity.class);
                 startActivity(switchActivityIntent);
                 finish();
             }

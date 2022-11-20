@@ -18,6 +18,7 @@ import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 
 
+import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -134,11 +135,33 @@ public class RecipeActivity extends AppCompatActivity
             });
 
             // Switch to Ingredient Activity
-            final ImageButton RecipeTab = findViewById(R.id.ingredients_tab);
-            RecipeTab.setOnClickListener(new View.OnClickListener() {
+            final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
+            IngredientTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientActivity.class);
+                    startActivity(switchActivityIntent);
+                    finish();
+                }
+            });
+
+            final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
+            MealPlanTab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+    //                Intent switchActivityIntent = new Intent(getApplicationContext(),
+    //                        MealPlanActivity.class);
+    //                startActivity(switchActivityIntent);
+    //                finish();
+                }
+            });
+
+            final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
+            ShoppingListTab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent switchActivityIntent = new Intent(getApplicationContext(),
+                            ShoppingListActivity.class);
                     startActivity(switchActivityIntent);
                     finish();
                 }
