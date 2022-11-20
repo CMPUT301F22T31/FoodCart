@@ -19,6 +19,7 @@ import com.example.foodcart.ingredients.Ingredient;
 
 
 import com.example.foodcart.shoppingList.ShoppingListActivity;
+import com.example.foodcart.mealplans.MealPlanActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -57,6 +58,23 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseFirestore db;
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recipe);
+
+        // initialize lists
+        recipeListView = findViewById(R.id.recipes_list);
+        recipeList = new ArrayList<>();
+        try {
+            ArrayList<Ingredient> ingredients = new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference recipeCollection = db.collection("Recipes");
             FirebaseFirestore db;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_recipe);
@@ -115,24 +133,24 @@ public class RecipeActivity extends AppCompatActivity
             recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
             recipeListView.setAdapter(recipeAdapter);
 
-            // onClick for Add Food Button (floating action + button)
-            final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
-            addRecipeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new RecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
-                }
-            });
+        // onClick for Add Food Button (floating action + button)
+        final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
+        addRecipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new RecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
+            }
+        });
 
-            // onClick for selecting items from list. When item is selected, Edit Food pops up
-            recipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    Recipe selectedRecipe = recipeList.get(position);
-                    selected = position;
-                    new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
-                }
-            });
+        // onClick for selecting items from list. When item is selected, Edit Food pops up
+        recipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Recipe selectedRecipe = recipeList.get(position);
+                selected = position;
+                new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
+            }
+        });
 
             // Switch to Ingredient Activity
             final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
@@ -149,10 +167,10 @@ public class RecipeActivity extends AppCompatActivity
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-    //                Intent switchActivityIntent = new Intent(getApplicationContext(),
-    //                        MealPlanActivity.class);
-    //                startActivity(switchActivityIntent);
-    //                finish();
+                    Intent switchActivityIntent = new Intent(getApplicationContext(),
+                            MealPlanActivity.class);
+                    startActivity(switchActivityIntent);
+                    finish();
                 }
             });
 
@@ -183,55 +201,55 @@ public class RecipeActivity extends AppCompatActivity
                         String category = (String) doc.getData().get("Category");
                         String picture =  (String) doc.getData().get("Picture");
 
-                        CollectionReference ingredients = db.collection("Recipes")
-                                                            .document(title).collection("Ingredients");
-                        ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()) {
-                                    for(QueryDocumentSnapshot ing : task.getResult()) {
-                                        String description = ing.getId();
-                                        String location = (String) ing.getData().get("Location");
-                                        String tempDate = (String) ing.getData().get("Date");
-                                        String count = (String) ing.getData().get("Count");
-                                        String unit = (String) ing.getData().get("Unit");
-                                        String category = (String) ing.getData().get("Category");
-                                        // Convert date string into Date class
-                                        Date date = null;
-                                        try {
-                                            date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-                                        int countInt = Integer.parseInt(count);
-                                        // add ingredient to list
-                                        ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
+                    CollectionReference ingredients = db.collection("Recipes")
+                                                        .document(title).collection("Ingredients");
+                    ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful()) {
+                                for(QueryDocumentSnapshot ing : task.getResult()) {
+                                    String description = ing.getId();
+                                    String location = (String) ing.getData().get("Location");
+                                    String tempDate = (String) ing.getData().get("Date");
+                                    String count = (String) ing.getData().get("Count");
+                                    String unit = (String) ing.getData().get("Unit");
+                                    String category = (String) ing.getData().get("Category");
+                                    // Convert date string into Date class
+                                    Date date = null;
+                                    try {
+                                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
                                     }
-                                } else {
-                                    Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
+                                    int countInt = Integer.parseInt(count);
+                                    // add ingredient to list
+                                    ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
                                 }
+                            } else {
+                                Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
                             }
-                        });
-
-
-                        //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                        int servInt = Integer.parseInt(servings);
-                        int prepInt = Integer.parseInt(prep_time);
-
-                        // add recipe to list
-                        Recipe recipe = null;
-                        try {
-                            recipe = new Recipe(title, prepInt, servInt, picture,
-                                                comments, category, ingredientList);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-                        recipeList.add(recipe);
+                    });
+
+
+                    //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                    int servInt = Integer.parseInt(servings);
+                    int prepInt = Integer.parseInt(prep_time);
+
+                    // add recipe to list
+                    Recipe recipe = null;
+                    try {
+                        recipe = new Recipe(title, prepInt, servInt, picture,
+                                            comments, category, ingredientList);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    recipeAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
+                    recipeList.add(recipe);
                 }
-            });
+                recipeAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
+            }
+        });
     }
 
     @Override

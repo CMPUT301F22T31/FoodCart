@@ -18,6 +18,7 @@ import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.ingredients.IngredientFragment;
+import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -123,10 +124,10 @@ public class ShoppingListActivity extends AppCompatActivity
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    Intent switchActivityIntent = new Intent(getApplicationContext(),
-//                            MealPlanActivity.class);
-//                    startActivity(switchActivityIntent);
-//                    finish();
+                    Intent switchActivityIntent = new Intent(getApplicationContext(),
+                            MealPlanActivity.class);
+                    startActivity(switchActivityIntent);
+                    finish();
                 }
             });
 
