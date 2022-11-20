@@ -30,16 +30,18 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
     private FirebaseFirestore db;
+    private boolean sort = true;
 
     /**
      * Constructor for custom array of ingredients adapter
      * @param context
      * @param ingredients
      */
-    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
+    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients, boolean sort) {
         super(context, 0, ingredients);
         this.ingredients = ingredients;
         this.context = context;
+        this.sort = sort;
     }
 
     @NonNull
