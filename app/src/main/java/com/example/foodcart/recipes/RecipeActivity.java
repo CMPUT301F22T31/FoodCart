@@ -18,7 +18,6 @@ import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 
 
-import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,113 +57,6 @@ public class RecipeActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseFirestore db;
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe);
-
-        // initialize lists
-        recipeListView = findViewById(R.id.recipes_list);
-        recipeList = new ArrayList<>();
-        try {
-            ArrayList<Ingredient> ingredients = new ArrayList<>();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Access a Cloud Firestore instance from your Activity
-        db = FirebaseFirestore.getInstance();
-        // Get a top level reference to the collection
-        final CollectionReference recipeCollection = db.collection("Recipes");
-
-
-        // set adapter
-        recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList, true);
-        recipeListView.setAdapter(recipeAdapter);
-
-        // onClick for Add Food Button (floating action + button)
-        final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
-        addRecipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new RecipeFragment().show(getSupportFragmentManager(), "ADD_RECIPE");
-            }
-        });
-
-        // onClick for selecting items from list. When item is selected, Edit Food pops up
-        recipeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Recipe selectedRecipe = recipeList.get(position);
-                selected = position;
-                new RecipeFragment().newInstance(selectedRecipe).show(getSupportFragmentManager(), "EDIT_RECIPE");
-            }
-        });
-
-        // Switch to Ingredient Activity
-        final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
-        IngredientTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(), IngredientActivity.class);
-                startActivity(switchActivityIntent);
-                finish();
-            }
-        });
-
-        final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
-        MealPlanTab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent switchActivityIntent = new Intent(getApplicationContext(),
-                        MealPlanActivity.class);
-                startActivity(switchActivityIntent);
-                finish();
-            }
-        });
-
-
-        recipeCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                    FirebaseFirestoreException error) {
-                recipeList.clear();
-                ArrayList<Ingredient> ingredientList = new ArrayList<>();
-                assert queryDocumentSnapshots != null;
-                for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                    Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
-                    String title = doc.getId();
-                    String prep_time = (String) doc.getData().get("Prep Time");
-                    String servings = (String) doc.getData().get("Servings");
-                    String comments = (String) doc.getData().get("Comments");
-                    String category = (String) doc.getData().get("Category");
-                    String picture =  (String) doc.getData().get("Picture");
-
-                    CollectionReference ingredients = db.collection("Recipes")
-                                                        .document(title).collection("Ingredients");
-                    ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful()) {
-                                for(QueryDocumentSnapshot ing : task.getResult()) {
-                                    String description = ing.getId();
-                                    String location = (String) ing.getData().get("Location");
-                                    String tempDate = (String) ing.getData().get("Date");
-                                    String count = (String) ing.getData().get("Count");
-                                    String unit = (String) ing.getData().get("Unit");
-                                    String category = (String) ing.getData().get("Category");
-                                    // Convert date string into Date class
-                                    Date date = null;
-                                    try {
-                                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    int countInt = Integer.parseInt(count);
-                                    // add ingredient to list
-                                    ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
-                                }
-                            } else {
-                                Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
             FirebaseFirestore db;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_recipe);
@@ -257,10 +149,10 @@ public class RecipeActivity extends AppCompatActivity
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                     Intent switchActivityIntent = new Intent(getApplicationContext(),
-                             MealPlanActivity.class);
-                    startActivity(switchActivityIntent);
-                    finish();
+    //                Intent switchActivityIntent = new Intent(getApplicationContext(),
+    //                        MealPlanActivity.class);
+    //                startActivity(switchActivityIntent);
+    //                finish();
                 }
             });
 
