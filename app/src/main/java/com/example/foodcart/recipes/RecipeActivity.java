@@ -75,63 +75,55 @@ public class RecipeActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
-            FirebaseFirestore db;
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_recipe);
 
-            // initialize lists
-            recipeListView = findViewById(R.id.recipes_list);
-            recipeList = new ArrayList<>();
-            try {
-                ArrayList<Ingredient> ingredients = new ArrayList<>();
-            } catch (Exception e) {
-                e.printStackTrace();
+        // initialize lists
+        recipeListView = findViewById(R.id.recipes_list);
+        recipeList = new ArrayList<>();
+        try {
+            ArrayList<Ingredient> ingredients = new ArrayList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // set spinner adapter for drop down sort list
+        Spinner sortDropDown = findViewById(R.id.recipes_sort_select);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortDropDown.setAdapter(adapter);
+        sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // sort the db by the sortValue
+                String sortValue = sortValues[position];
+                recipeCollection.orderBy(sortValue);
+                Collections.sort(recipeList, new Comparator<Recipe>(){
+                    public int compare(Recipe rec1, Recipe rec2)
+                    {
+                        switch(sortValue) {
+                            case "title":
+                                return rec1.getTitle().compareTo(rec2.getTitle());
+                            case "prep time":
+                                return rec1.getPrep_time() - rec2.getPrep_time();
+                            case "# of servings":
+                                return rec1.getServings() - rec2.getServings();
+                            case "category":
+                                return rec1.getCategory().compareTo(rec2.getCategory());
+                        }
+                        return 0;
+                    }
+                });
+                recipeAdapter.notifyDataSetChanged();
             }
 
-            // Access a Cloud Firestore instance from your Activity
-            db = FirebaseFirestore.getInstance();
-            // Get a top level reference to the collection
-            final CollectionReference recipeCollection = db.collection("Recipes");
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-            // set spinner adapter for drop down sort list
-            Spinner sortDropDown = findViewById(R.id.recipes_sort_select);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sortDropDown.setAdapter(adapter);
-            sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    // sort the db by the sortValue
-                    String sortValue = sortValues[position];
-                    recipeCollection.orderBy(sortValue);
-                    Collections.sort(recipeList, new Comparator<Recipe>(){
-                        public int compare(Recipe rec1, Recipe rec2)
-                        {
-                            switch(sortValue) {
-                                case "title":
-                                    return rec1.getTitle().compareTo(rec2.getTitle());
-                                case "prep time":
-                                    return rec1.getPrep_time() - rec2.getPrep_time();
-                                case "# of servings":
-                                    return rec1.getServings() - rec2.getServings();
-                                case "category":
-                                    return rec1.getCategory().compareTo(rec2.getCategory());
-                            }
-                            return 0;
-                        }
-                    });
-                    recipeAdapter.notifyDataSetChanged();
-                }
+            }
+        });
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
-
-            // set adapter
-            recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
-            recipeListView.setAdapter(recipeAdapter);
+        // set adapter
+        recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList, true);
+        recipeListView.setAdapter(recipeAdapter);
 
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addRecipeButton = findViewById(R.id.add_recipe_button);
