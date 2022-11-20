@@ -29,13 +29,11 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private ArrayList<Recipe> recipes;
     private Context context;
     private FirebaseFirestore db;
-    private boolean sort = true;
 
-    public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes, boolean sort) {
+    public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes) {
         super(context, 0, recipes);
         this.recipes = recipes;
         this.context = context;
-        this.sort = sort;
     }
 
     @NonNull
@@ -77,44 +75,40 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
             recipeSort.setText("");
         }
         notifyDataSetChanged();
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
         // set up delete button on each list item and onClick
-        if(sort) {
-            deleteButton.setFocusable(false);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (recipes.size() > 0) {
-                        // Access a Cloud Firestore instance from your Activity
-                        db = FirebaseFirestore.getInstance();
-                        // Get a top level reference to the collection
-                        final CollectionReference recipeCollection = db.collection("Recipes");
-                        recipeCollection
-                                .document(recipes.get(position).getTitle())
-                                .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        // These are a method which gets executed when the task is succeeded
-                                        Log.d("Delete Recipe", "Data has been deleted successfully!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // These are a method which gets executed if there’s any problem
-                                        Log.d("Delete Recipe", "Data could not be deleted!" + e.toString());
-                                    }
-                                });
-                        // find selection
-                        recipes.remove(Math.min(position, recipes.size() - 1));
-                        notifyDataSetChanged();
-                    }
+        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
+        deleteButton.setFocusable(false);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (recipes.size() > 0) {
+                    // Access a Cloud Firestore instance from your Activity
+                    db = FirebaseFirestore.getInstance();
+                    // Get a top level reference to the collection
+                    final CollectionReference recipeCollection = db.collection("Recipes");
+                    recipeCollection
+                            .document(recipes.get(position).getTitle())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // These are a method which gets executed when the task is succeeded
+                                    Log.d("Delete Recipe", "Data has been deleted successfully!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // These are a method which gets executed if there’s any problem
+                                    Log.d("Delete Recipe", "Data could not be deleted!" + e.toString());
+                                }
+                            });
+                    // find selection
+                    recipes.remove(Math.min(position, recipes.size() - 1));
+                    notifyDataSetChanged();
                 }
-            });
-        } else {
-            deleteButton.setVisibility(View.GONE);
-        }
+            }
+        });
 
         return view;
     }

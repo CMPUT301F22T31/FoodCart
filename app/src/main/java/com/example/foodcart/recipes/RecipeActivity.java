@@ -75,6 +75,23 @@ public class RecipeActivity extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
+            FirebaseFirestore db;
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_recipe);
+
+            // initialize lists
+            recipeListView = findViewById(R.id.recipes_list);
+            recipeList = new ArrayList<>();
+            try {
+                ArrayList<Ingredient> ingredients = new ArrayList<>();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Access a Cloud Firestore instance from your Activity
+            db = FirebaseFirestore.getInstance();
+            // Get a top level reference to the collection
+            final CollectionReference recipeCollection = db.collection("Recipes");
 
             // set spinner adapter for drop down sort list
             Spinner sortDropDown = findViewById(R.id.recipes_sort_select);
@@ -150,10 +167,10 @@ public class RecipeActivity extends AppCompatActivity
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-    //                Intent switchActivityIntent = new Intent(getApplicationContext(),
-    //                        MealPlanActivity.class);
-    //                startActivity(switchActivityIntent);
-    //                finish();
+                    Intent switchActivityIntent = new Intent(getApplicationContext(),
+                            MealPlanActivity.class);
+                    startActivity(switchActivityIntent);
+                    finish();
                 }
             });
 

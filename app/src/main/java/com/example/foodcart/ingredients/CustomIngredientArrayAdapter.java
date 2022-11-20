@@ -30,18 +30,16 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
     private FirebaseFirestore db;
-    private boolean sort = true;
 
     /**
      * Constructor for custom array of ingredients adapter
      * @param context
      * @param ingredients
      */
-    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients, boolean sort) {
+    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients) {
         super(context, 0, ingredients);
         this.ingredients = ingredients;
         this.context = context;
-        this.sort = sort;
     }
 
     @NonNull
@@ -69,7 +67,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         ingredientDescription.setText(ingredient.getDescription());
         ingredientQuantity.setText(ingredient.getCount().toString());
 
-        if (sort && sortDropDown.getSelectedItem() != null) {
+        if (sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             System.out.println(sortValue);
             switch (sortValue){
@@ -91,49 +89,46 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
             ingredientSort.setText("");
         }
 
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
-        if(sort) {
-            // set up delete button on each list item and onClick
-            deleteButton.setFocusable(false);
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                /**
-                 * OnClick for delete button on each item in ingredients list
-                 * Deletes an ingredient from the Ingredients database
-                 */
-                public void onClick(View view) {
-                    if (ingredients.size() > 0) {
 
-                        // Access a Cloud Firestore instance from your Activity
-                        db = FirebaseFirestore.getInstance();
-                        // Get a top level reference to the collection
-                        final CollectionReference IngredientCollection = db.collection("Ingredients");
-                        IngredientCollection
-                                .document(ingredients.get(position).getDescription())
-                                .delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        // These are a method which gets executed when the task is succeeded
-                                        Log.d("Sample", "Data has been deleted successfully!");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        // These are a method which gets executed if there’s any problem
-                                        Log.d("Sample", "Data could not be deleted!" + e.toString());
-                                    }
-                                });
-                        // find and remove selection
-                        ingredients.remove(Math.min(position, ingredients.size() - 1));
-                        notifyDataSetChanged();
-                    }
+        // set up delete button on each list item and onClick
+        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
+        deleteButton.setFocusable(false);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            /**
+             * OnClick for delete button on each item in ingredients list
+             * Deletes an ingredient from the Ingredients database
+             */
+            public void onClick(View view) {
+                if (ingredients.size() > 0) {
+
+                    // Access a Cloud Firestore instance from your Activity
+                    db = FirebaseFirestore.getInstance();
+                    // Get a top level reference to the collection
+                    final CollectionReference IngredientCollection = db.collection("Ingredients");
+                    IngredientCollection
+                            .document(ingredients.get(position).getDescription())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // These are a method which gets executed when the task is succeeded
+                                    Log.d("Sample", "Data has been deleted successfully!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // These are a method which gets executed if there’s any problem
+                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
+                                }
+                            });
+                    // find and remove selection
+                    ingredients.remove(Math.min(position, ingredients.size() - 1));
+                    notifyDataSetChanged();
                 }
-            });
-        } else {
-            deleteButton.setVisibility(View.GONE);
-        }
+            }
+        });
 
         return view;
     }

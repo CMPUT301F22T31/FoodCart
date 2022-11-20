@@ -120,6 +120,17 @@ public class IngredientActivity extends AppCompatActivity
             }
         });
 
+        final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
+        ShoppingListTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent switchActivityIntent = new Intent(getApplicationContext(),
+                        ShoppingListActivity.class);
+                startActivity(switchActivityIntent);
+                finish();
+            }
+        });
+
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addFoodButton = findViewById(R.id.add_ingredient_button);
         addFoodButton.setOnClickListener(new View.OnClickListener() {
