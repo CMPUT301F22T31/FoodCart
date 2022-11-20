@@ -129,7 +129,7 @@ public class RecipeFragment extends DialogFragment {
                                 //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                                 int prepTimeInt = Integer.parseInt(prepTime);
                                 int servesInt = Integer.parseInt(serves);
-                            Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageBitmap, category, ingredients);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageBitmap, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                             }
                             else {

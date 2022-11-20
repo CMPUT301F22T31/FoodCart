@@ -1,6 +1,7 @@
 package com.example.foodcart.recipes;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.foodcart.R;
-import com.example.foodcart.ingredients.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private final ArrayList<Recipe> recipes;
     private final Context context;
+    private FirebaseFirestore db;
 
     public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes) {
         super(context, 0, recipes);
@@ -37,7 +38,6 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // return super.getView(position, convertView, parent);
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.content_recipes_item, parent, false);
@@ -45,8 +45,8 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         Recipe recipe = recipes.get(position);
 
-        TextView ingredientDescription = view.findViewById(R.id.recipe_name);
-        TextView ingredientSort = view.findViewById(R.id.recipe_item_sort);
+        TextView recipeDescription = view.findViewById(R.id.recipe_name);
+        TextView recipeSort = view.findViewById(R.id.recipe_item_sort);
 
         recipeDescription.setText(recipe.getTitle());
         View parentView = (View) parent.getParent();
@@ -73,8 +73,8 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
             recipeSort.setText("");
         }
         notifyDataSetChanged();
-        ingredientDescription.setText(recipe.getTitle());
-        ingredientSort.setText("Sort value");
+        recipeDescription.setText(recipe.getTitle());
+        recipeSort.setText("Sort value");
 
 
         // set up delete button on each list item and onClick
