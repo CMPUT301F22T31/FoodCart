@@ -55,7 +55,7 @@ public class IngredientActivity extends AppCompatActivity
         dataList = new ArrayList<>();
 
         // set adapter
-        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
+        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList, true);
         ingredientList.setAdapter(ingredientAdapter);
 
         // Access a Cloud Firestore instance from your Activity

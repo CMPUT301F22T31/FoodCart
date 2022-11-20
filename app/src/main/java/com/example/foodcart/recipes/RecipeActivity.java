@@ -73,7 +73,7 @@ public class RecipeActivity extends AppCompatActivity
 
 
         // set adapter
-        recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
+        recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList, true);
         recipeListView.setAdapter(recipeAdapter);
 
         // onClick for Add Food Button (floating action + button)
