@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_shopping_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:paddingBottom="0dp"
+            android:text="sample_text"
+            android:textSize="25sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/item_quantity"
+            app:layout_constraintEnd_toStartOf="@+id/item_quantity"
+            app:layout_constraintStart_toStartOf="parent">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/item_quantity"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="31dp"
+            android:text="sample_text"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@+id/item_sort"
+            app:layout_constraintStart_toEndOf="@+id/item_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_sort"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:text="sample_text"
+            android:textSize="15sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/item_quantity"
+            app:layout_constraintEnd_toStartOf="@+id/item_deleteButton"
+            app:layout_constraintStart_toEndOf="@+id/item_quantity" />
+
+        <ImageButton
+            android:id="@+id/item_deleteButton"
+            android:layout_width="33dp"
+            android:layout_height="72dp"
+            android:background="@null"
+            android:contentDescription="Delete Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/item_sort"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_delete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
