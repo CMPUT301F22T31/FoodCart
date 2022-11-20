@@ -13,11 +13,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 
 
+import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -40,6 +42,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 public class RecipeActivity extends AppCompatActivity
@@ -49,6 +53,7 @@ public class RecipeActivity extends AppCompatActivity
     ArrayAdapter<Recipe> recipeAdapter;
     ArrayList<Recipe> recipeList;
     int selected;
+    private String[] sortValues = { "title", "prep time", "# of servings", "category" };
 
 
     @Override
@@ -71,6 +76,41 @@ public class RecipeActivity extends AppCompatActivity
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
 
+            // set spinner adapter for drop down sort list
+            Spinner sortDropDown = findViewById(R.id.recipes_sort_select);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sortDropDown.setAdapter(adapter);
+            sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // sort the db by the sortValue
+                    String sortValue = sortValues[position];
+                    recipeCollection.orderBy(sortValue);
+                    Collections.sort(recipeList, new Comparator<Recipe>(){
+                        public int compare(Recipe rec1, Recipe rec2)
+                        {
+                            switch(sortValue) {
+                                case "title":
+                                    return rec1.getTitle().compareTo(rec2.getTitle());
+                                case "prep time":
+                                    return rec1.getPrep_time() - rec2.getPrep_time();
+                                case "# of servings":
+                                    return rec1.getServings() - rec2.getServings();
+                                case "category":
+                                    return rec1.getCategory().compareTo(rec2.getCategory());
+                            }
+                            return 0;
+                        }
+                    });
+                    recipeAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
 
         // set adapter
         recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
@@ -162,6 +202,11 @@ public class RecipeActivity extends AppCompatActivity
                     try {
                         recipe = new Recipe(title, prepInt, servInt, comments,
                                             picture, category, ingredientList);
+                        // add recipe to list
+                        Recipe recipe = null;
+                        try {
+                            recipe = new Recipe(title, prepInt, servInt, picture,
+                                                comments, category, ingredientList);
 
                     } catch (Exception e) {
                         e.printStackTrace();
