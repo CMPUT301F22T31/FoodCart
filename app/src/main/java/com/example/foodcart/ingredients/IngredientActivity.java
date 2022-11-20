@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodcart.R;
-import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,7 +55,7 @@ public class IngredientActivity extends AppCompatActivity
         dataList = new ArrayList<>();
 
         // set adapter
-        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList, true);
+        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
 
         // Access a Cloud Firestore instance from your Activity
@@ -115,13 +114,10 @@ public class IngredientActivity extends AppCompatActivity
         MealPlanTab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent switchActivityIntent = new Intent(getApplicationContext(),
-                        MealPlanActivity.class);
-                Intent switchActivityIntent = new Intent(getApplicationContext(),
-                       RecipeActivity.class);
-                 startActivity(switchActivityIntent);
-                  finish();
+//                Intent switchActivityIntent = new Intent(getApplicationContext(),
+//                        RecipeActivity.class);
+//                startActivity(switchActivityIntent);
+//                finish();
             }
         });
 
