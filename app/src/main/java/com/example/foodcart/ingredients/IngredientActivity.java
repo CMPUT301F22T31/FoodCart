@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.foodcart.R;
-import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -55,7 +54,7 @@ public class IngredientActivity extends AppCompatActivity
         dataList = new ArrayList<>();
 
         // set adapter
-        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList, true);
+        ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList);
         ingredientList.setAdapter(ingredientAdapter);
 
         // Access a Cloud Firestore instance from your Activity

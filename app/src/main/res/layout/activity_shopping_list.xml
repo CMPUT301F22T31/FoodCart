@@ -4,31 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".recipes.RecipeActivity">
+    tools:context=".ingredients.IngredientActivity">
 
     <TextView
-        android:id="@+id/recipes_title"
+        android:id="@+id/shopping_list_title"
         android:layout_width="192dp"
         android:layout_height="30dp"
         android:layout_marginTop="16dp"
-        android:text="RECIPES"
+        android:text="SHOPPING LIST"
         android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/recipes_sort"
+        app:layout_constraintEnd_toStartOf="@+id/shopping_list_sort"
         app:layout_constraintHorizontal_bias="0.566"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/recipes_sort"
+        android:id="@+id/shopping_list_sort"
         android:layout_width="51dp"
         android:layout_height="22dp"
         android:layout_marginTop="24dp"
         android:text="Sort By: "
-        app:layout_constraintEnd_toStartOf="@+id/recipes_sort_select"
+        app:layout_constraintEnd_toStartOf="@+id/shopping_list_sort_select"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/recipes_sort_select"
+        android:id="@+id/shopping_list_sort_select"
         android:layout_width="123dp"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
@@ -39,26 +39,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
-        android:id="@+id/recipes_list"
-        android:layout_width="384dp"
-        android:layout_height="511dp"
+        android:id="@+id/shopping_list"
+        android:layout_width="match_parent"
+        android:layout_height="533dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.629"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.586">
+        app:layout_constraintTop_toBottomOf="@+id/shopping_list_sort_select">
 
     </ListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_recipe_button"
+        android:id="@+id/add_item_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:clipToPadding="false"
+        android:clipChildren="false"
         android:layout_marginTop="24dp"
-        android:contentDescription="Add Food Button"
+        android:contentDescription="Add Item Button"
         app:layout_constraintBottom_toTopOf="@+id/shoppinglist_tab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.954"
@@ -68,18 +69,20 @@
 
     <ImageButton
         android:id="@+id/ingredients_tab"
-        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="12dp"
+        android:background="@color/grey"
+        android:contentDescription="Go To Ingredients"
         android:src="@android:drawable/ic_menu_today"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:contentDescription="Go To Ingredients"
-        app:layout_constraintEnd_toStartOf="@+id/recipes_tab" />
+        app:layout_constraintEnd_toStartOf="@+id/recipes_tab"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/recipes_tab"
-        android:background="@color/green"
+        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:layout_marginEnd="20dp"
@@ -101,7 +104,7 @@
 
     <ImageButton
         android:id="@+id/shoppinglist_tab"
-        android:background="@color/grey"
+        android:background="@color/green"
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:contentDescription="Go To Shopping List"
