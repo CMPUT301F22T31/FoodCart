@@ -45,10 +45,10 @@ public class IngredientFragment extends DialogFragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof IngredientFragment.OnFragmentInteractionListener){
-            listener = (IngredientFragment.OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener){
+            listener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context
+            throw new RuntimeException(context.toString()
                 + "must implement OnFragmentInteractionListener ");
         }
     }
