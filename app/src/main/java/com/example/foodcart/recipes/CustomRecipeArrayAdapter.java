@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.foodcart.R;
+import com.example.foodcart.ingredients.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,8 +26,8 @@ import java.util.ArrayList;
  * Custom array adapter for Recipe class
  */
 public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
-    private final ArrayList<Recipe> recipes;
-    private final Context context;
+    private ArrayList<Recipe> recipes;
+    private Context context;
     private FirebaseFirestore db;
 
     public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes) {
@@ -38,6 +39,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // return super.getView(position, convertView, parent);
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.content_recipes_item, parent, false);
@@ -73,10 +75,6 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
             recipeSort.setText("");
         }
         notifyDataSetChanged();
-        recipeDescription.setText(recipe.getTitle());
-        recipeSort.setText("Sort value");
-
-
         // set up delete button on each list item and onClick
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
         deleteButton.setFocusable(false);
