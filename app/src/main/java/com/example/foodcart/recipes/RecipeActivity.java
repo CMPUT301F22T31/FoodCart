@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,16 +19,12 @@ import com.example.foodcart.ingredients.Ingredient;
 
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.foodcart.ingredients.IngredientActivity;
-import com.example.foodcart.ingredients.IngredientFragment;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -221,8 +216,7 @@ public class RecipeActivity extends AppCompatActivity
                         // add recipe to list
                         Recipe recipe = null;
                         try {
-                            recipe = new Recipe(title, prepInt, servInt, picture,
-                                                comments, category, ingredientList);
+                            recipe = new Recipe(title, prepInt, servInt, comments, picture, category, ingredientList);
 
                         } catch (Exception e) {
                             e.printStackTrace();

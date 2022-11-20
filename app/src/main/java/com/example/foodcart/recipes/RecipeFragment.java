@@ -7,8 +7,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,7 +51,8 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServings;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private Uri imageURI;
+    private Bitmap imageBitmap;
+    private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
     private FirebaseFirestore db;
 
@@ -83,12 +87,15 @@ public class RecipeFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
-        final Button recipeTakeImage = view.findViewById(R.id.recipeImgUploadButton);
-        recipeTakeImage.setOnClickListener(new View.OnClickListener() {
+
+        ingredients = new ArrayList<>();
+
+        //add image function
+        final Button recipeTakeImageButton = view.findViewById(R.id.recipeImgUploadButton);
+        recipeTakeImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cameraIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                cameraIntent.setType("image/*");
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 cameraActivity.launch((Intent.createChooser(cameraIntent, "Select Image")));
             }
         });
@@ -108,8 +115,7 @@ public class RecipeFragment extends DialogFragment {
         //edit recipe functionality
         if (args != null) {
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
-            imageURI = Uri.parse(currentRecipe.getPicture());
-            recipeImage.setImageURI(imageURI);
+            recipeImage.setImageBitmap(currentRecipe.getBitmapPicture());
             recipeTitle.setText(currentRecipe.getTitle());
             recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
@@ -135,9 +141,9 @@ public class RecipeFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
-                                //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1) {
+                                String picture  = bitmapToString(imageBitmap);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                                 // Add new edited recipe to database
                                 HashMap<String, String> data = new HashMap<>();
@@ -145,7 +151,7 @@ public class RecipeFragment extends DialogFragment {
                                 data.put("Servings", serves);
                                 data.put("Category", category);
                                 data.put("Comments", comments);
-                                data.put("Picture", imageURI.toString());
+                                data.put("Picture", picture);
                                 recipeCollection
                                         .document(title)
                                         .set(data)
@@ -231,8 +237,9 @@ public class RecipeFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            if (!emptyStringsExist && imageURI != null && prepTimeInt != -1 && servesInt != -1) {
-                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, imageURI.toString(), category, ingredients);
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1) {
+                                String picture  = bitmapToString(imageBitmap);
+                                Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
 
                                 // Add new recipe to database
@@ -241,7 +248,7 @@ public class RecipeFragment extends DialogFragment {
                                 data.put("Servings", serves);
                                 data.put("Category", category);
                                 data.put("Comments", comments);
-                                data.put("Picture", imageURI.toString());
+                                data.put("Picture", picture);
                                 recipeCollection
                                         .document(title)
                                         .set(data)
@@ -309,8 +316,8 @@ public class RecipeFragment extends DialogFragment {
                 public void onActivityResult(ActivityResult result) {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
-                            imageURI = result.getData().getData();
-                            recipeImage.setImageURI(imageURI);
+                            imageBitmap = (Bitmap) result.getData().getExtras().get("data");
+                            recipeImage.setImageBitmap(imageBitmap);
                         }
                     }
                 }
@@ -376,5 +383,17 @@ public class RecipeFragment extends DialogFragment {
             Toast.makeText(getContext(), "Please Enter Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
+    }
+
+    /**
+     * Converts bitmap picture to string value
+     * @param picture
+     * @return
+     * string encoded picture
+     */
+    private String bitmapToString(Bitmap picture) {
+        ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG,100, byteArrayStream);
+        return Base64.encodeToString(byteArrayStream.toByteArray(), Base64.DEFAULT);
     }
 }
