@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodcart.R;
 import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.recipes.RecipeActivity;
+import com.example.foodcart.recipes.RecipeIngredientsActivity;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -195,6 +196,5 @@ public class IngredientActivity extends AppCompatActivity
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
     }
-
 }
 

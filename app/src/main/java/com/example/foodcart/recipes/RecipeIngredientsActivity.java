@@ -1,5 +1,6 @@
 package com.example.foodcart.recipes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
@@ -23,7 +25,7 @@ public class RecipeIngredientsActivity extends AppCompatActivity
     // Declare the variables
     private ListView ingredientList;
     private ArrayAdapter<Ingredient> ingredientAdapter;
-    private ArrayList<Ingredient> dataList;
+    public ArrayList<Ingredient> dataList;
     private int selected;
 
     @Override
@@ -33,9 +35,8 @@ public class RecipeIngredientsActivity extends AppCompatActivity
 
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
-        Bundle bundle = getIntent().getExtras();
-        dataList = (ArrayList<Ingredient>) bundle.get("IngredientList");
 
+        dataList = (ArrayList<Ingredient>) getIntent().getSerializableExtra("IngredientList");
         // set adapter
         ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList, false);
         ingredientList.setAdapter(ingredientAdapter);
@@ -53,7 +54,7 @@ public class RecipeIngredientsActivity extends AppCompatActivity
         activityComplete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onFinish();
+                Done();
             }
         });
 
@@ -70,7 +71,8 @@ public class RecipeIngredientsActivity extends AppCompatActivity
 
     @Override
     public void onOkPressed(Ingredient newIngredient) {
-        ingredientAdapter.add(newIngredient);
+        dataList.add(newIngredient);
+        ingredientAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -78,10 +80,10 @@ public class RecipeIngredientsActivity extends AppCompatActivity
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
     }
-
-    protected void onFinish() {
-        Bundle newBundle = new Bundle();
-        newBundle.putSerializable("EditedList", dataList);
+    public void Done() {
+        Intent intent = new Intent();
+        intent.putExtra("EditedList", dataList);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }

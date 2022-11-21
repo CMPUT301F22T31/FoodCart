@@ -34,8 +34,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -86,7 +92,6 @@ public class RecipeFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
-
         ingredients = new ArrayList<>();
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
@@ -115,9 +120,9 @@ public class RecipeFragment extends DialogFragment {
         viewIngredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent ingredientIntent = new Intent(getContext(), RecipeIngredientsActivity.class);
+                Intent ingredientIntent = new Intent(getActivity(), RecipeIngredientsActivity.class);
                 ingredientIntent.putExtra("IngredientList", ingredients);
-                ingredientActivity.launch((Intent.createChooser(ingredientIntent, "Ingredient")));
+                ingredientActivity.launch(ingredientIntent);
             }
         });
 
@@ -131,6 +136,8 @@ public class RecipeFragment extends DialogFragment {
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
             recipeCategory.setText(currentRecipe.getCategory());
             recipeComments.setText(currentRecipe.getComments());
+            ingredients = currentRecipe.getIngredientList();
+            System.out.println(ingredients.get(0).getDescription());
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
@@ -202,7 +209,7 @@ public class RecipeFragment extends DialogFragment {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit RecipeI", String.valueOf(iter.next().getDescription()));
+                                                    Log.d("Edit RecipeI", String.valueOf(currentIngredient.getDescription()));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -210,7 +217,7 @@ public class RecipeFragment extends DialogFragment {
                                                 public void onFailure(@NonNull Exception e) {
                                                     // These are a method which gets executed if there’s any problem
                                                     Log.d("ERROR Edit RecipeI",
-                                                            String.valueOf(iter.next().getDescription()) + e.toString());
+                                                            String.valueOf(currentIngredient.getDescription()) + e.toString());
                                                 }
                                             });
                                 }
@@ -295,14 +302,14 @@ public class RecipeFragment extends DialogFragment {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Add RecipeI", String.valueOf(iter.next().getDescription()));
+                                                    Log.d("Add RecipeI", String.valueOf(currentIngredient.getDescription()));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Add RecipeI", String.valueOf(iter.next().getDescription()));
+                                                    Log.d("ERROR Add RecipeI", String.valueOf(currentIngredient.getDescription()));
                                                 }
                                             });
                                 }
@@ -338,11 +345,12 @@ public class RecipeFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    Bundle list = new Bundle();
-                    ingredients = (ArrayList<Ingredient>) list.getSerializable("EditedList");
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        ingredients = (ArrayList<Ingredient>) result.getData().
+                                getSerializableExtra("EditedList");
+                    }
                 }
             });
-
 
     /**
      * Parse prepTime to an integer with error catching
