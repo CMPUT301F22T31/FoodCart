@@ -19,18 +19,14 @@ import com.example.foodcart.ingredients.Ingredient;
 
 
 import com.example.foodcart.shoppingList.ShoppingListActivity;
-import com.example.foodcart.mealplans.MealPlanActivity;
+//import com.example.foodcart.mealplans.MealPlanActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import com.example.foodcart.ingredients.IngredientActivity;
-import com.example.foodcart.ingredients.IngredientFragment;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -39,13 +35,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-
 public class RecipeActivity extends AppCompatActivity
         implements RecipeFragment.OnFragmentInteractionListener{
 
@@ -65,11 +57,6 @@ public class RecipeActivity extends AppCompatActivity
             // initialize lists
             recipeListView = findViewById(R.id.recipes_list);
             recipeList = new ArrayList<>();
-            try {
-                ArrayList<Ingredient> ingredients = new ArrayList<>();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
             // Access a Cloud Firestore instance from your Activity
             db = FirebaseFirestore.getInstance();
@@ -113,7 +100,7 @@ public class RecipeActivity extends AppCompatActivity
             });
 
             // set adapter
-            recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList);
+            recipeAdapter = new CustomRecipeArrayAdapter(this, recipeList, true);
             recipeListView.setAdapter(recipeAdapter);
 
             // onClick for Add Food Button (floating action + button)

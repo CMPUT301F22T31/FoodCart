@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientUnit;
     private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
+    private static String triggerFlag; //differentiates the fragment called from ingredient class and recipe class
     private FirebaseFirestore db;
 
     public interface OnFragmentInteractionListener {
@@ -53,15 +55,24 @@ public class IngredientFragment extends DialogFragment {
     }
 
     /**
-    Create new instance to make it possible to edit some food objects
+     * Create new instance to make it possible to edit some food objects
+     * @param ingredient
+     * @param flag
+     * @return
+     * object of Ingredient fragment
      */
-    public static IngredientFragment newInstance(Ingredient ingredient) {
-        Bundle args = new Bundle();
-        args.putSerializable("ingredient", ingredient);
-
-        IngredientFragment fragment = new IngredientFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static IngredientFragment newInstance(Ingredient ingredient, String flag) {
+        triggerFlag = flag;
+        if (flag.equals("edit") || flag.equals("editFromRecipe")) {
+            Bundle args = new Bundle();
+            args.putSerializable("ingredient", ingredient);
+            IngredientFragment fragment = new IngredientFragment();
+            fragment.setArguments(args);
+            return fragment;
+        }
+        else {
+            return new IngredientFragment();
+        }
     }
 
 
@@ -84,11 +95,22 @@ public class IngredientFragment extends DialogFragment {
 
         Bundle args = getArguments();
         //Edit Ingredient functionality
-        if(args != null) {
+        if (triggerFlag.equals("edit") || triggerFlag.equals("editFromRecipe")) {
             Ingredient ingredient = (Ingredient) args.getSerializable("ingredient");
             ingredientDescription.setText(ingredient.getDescription());
-            ingredientLocation.setText(ingredient.getLocation());
-            ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
+
+            if (triggerFlag.equals("edit")) {
+                ingredientLocation.setText(ingredient.getLocation());
+                ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
+            } else {
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+                TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
+                ingredientLocation.setVisibility(view.INVISIBLE);
+                locationTextView.setVisibility(view.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
+                BBDTextView.setVisibility(view.INVISIBLE);
+            }
+
             ingredientCount.setText(ingredient.getCount().toString());
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
@@ -97,24 +119,32 @@ public class IngredientFragment extends DialogFragment {
                     .setTitle("View/Edit Ingredient")
                     .setView(view)
                     .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Edit", new DialogInterface.OnClickListener(){
+                    .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                         //edit button on Edit food functionality
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
-                            String location = ingredientLocation.getText().toString();
-                            String date = ingredientBestBeforeDate.getText().toString();
+                            String location = "";
+                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
+                            if (triggerFlag.equals("edit")) {
+                                location = ingredientLocation.getText().toString();
+                                date = ingredientBestBeforeDate.getText().toString();
+                            } else {
+                                //just to make them pass empty string tests
+                                location = "defaultLocation";
+                                date = "1970-01-01"; //EPOCH date
+                            }
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            if (!emptyStringsExist) {
-                                //try to parse the date
-                                Date BBD = parseDate(date);
-                                //try to parse the count
-                                int countInt = parseCount(count);
-                                if (BBD != null && countInt != -1) {
+                            //try to parse the date
+                            Date BBD = parseDate(date);
+                            //try to parse the count
+                            int countInt = parseCount(count);
+                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                                if (triggerFlag.equals("edit")) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
                                     // Add new ingredient to DataBase
@@ -141,9 +171,11 @@ public class IngredientFragment extends DialogFragment {
                                                     Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
                                                 }
                                             });
+                                } else {
+                                    Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
+                                    listener.onOkPressedEdit(newIngredient);
                                 }
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -151,6 +183,14 @@ public class IngredientFragment extends DialogFragment {
         }
         //add ingredient functionality
         else {
+            if (triggerFlag.equals("addFromRecipe")) {
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+                TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
+                ingredientLocation.setVisibility(view.INVISIBLE);
+                locationTextView.setVisibility(view.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
+                BBDTextView.setVisibility(view.INVISIBLE);
+            }
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
                     .setView(view)
@@ -160,19 +200,27 @@ public class IngredientFragment extends DialogFragment {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
-                            String location = ingredientLocation.getText().toString();
-                            String date = ingredientBestBeforeDate.getText().toString();
+                            String location = "";
+                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
+                            if (triggerFlag.equals("add")) {
+                                location = ingredientLocation.getText().toString();
+                                date = ingredientBestBeforeDate.getText().toString();
+                            } else {
+                                //just to make them pass empty string tests
+                                location = "defaultLocation";
+                                date = "1970-01-01"; //EPOCH date
+                            }
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            if (!emptyStringsExist) {
-                                //try to parse the date
-                                Date BBD = parseDate(date);
-                                //try to parse the count
-                                int countInt = parseCount(count);
-                                if (BBD != null && countInt != -1) {
+                            //try to parse the date
+                            Date BBD = parseDate(date);
+                            //try to parse the count
+                            int countInt = parseCount(count);
+                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                                if (triggerFlag.equals("add")) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                     // Add new ingredient to DataBase
@@ -199,9 +247,11 @@ public class IngredientFragment extends DialogFragment {
                                                     Log.d("ERROR Add Ingredient", String.valueOf(data.get("Description")));
                                                 }
                                             });
+                                } else {
+                                    Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
+                                    listener.onOkPressed(newIngredient);
                                 }
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
                             }
 

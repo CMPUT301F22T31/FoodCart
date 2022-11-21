@@ -50,10 +50,6 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServings;
     private EditText recipeCategory;
     private EditText recipeComments;
-    private EditText ingredientDescription;
-    private EditText ingredientCount;
-    private EditText ingredientUnit;
-    private EditText ingredientCategory;
     private Bitmap imageBitmap;
     private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
@@ -102,10 +98,6 @@ public class RecipeFragment extends DialogFragment {
         recipeServings = view.findViewById(R.id.recipeServingsET);
         recipeCategory = view.findViewById(R.id.recipeCategoryET);
         recipeComments = view.findViewById(R.id.recipeCommentsET);
-        ingredientDescription = view.findViewById(R.id.ingredientDescriptionET);
-        ingredientCount = view.findViewById(R.id.ingredientCountET);
-        ingredientUnit = view.findViewById(R.id.ingredientUnitET);
-        ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
         Bundle args = getArguments();
 
         //add image function
@@ -118,39 +110,14 @@ public class RecipeFragment extends DialogFragment {
             }
         });
 
-        //add ingredients function
-        final Button recipeAddIngredientButton = view.findViewById(R.id.recipeAddIngredientButton);
-        recipeAddIngredientButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String ingDes = ingredientDescription.getText().toString();
-                String ingCount = ingredientCount.getText().toString();
-                String ingUnit = ingredientUnit.getText().toString();
-                String ingCategory = ingredientCategory.getText().toString();
-                //validate empty strings
-                IngredientFragment ingredientFragment = new IngredientFragment();
-                boolean emptyStringsExist = ingredientFragment.emptyStringCheck(ingDes, "date", "location", ingCount, ingUnit, ingCategory);
-                int countInt = ingredientFragment.parseCount(ingCount);
-                if (!emptyStringsExist && countInt != -1) {
-                    Ingredient newIngredient = new Ingredient(ingDes,countInt, ingUnit, ingCategory);
-                    ingredients.add(newIngredient);
-                }
-                else {
-                    Toast.makeText(getContext(), "Make sure mandatory fields are filled", Toast.LENGTH_SHORT).show();
-                }
-                ingredientDescription.setText("");
-                ingredientCount.setText("");
-                ingredientUnit.setText("");
-                ingredientCategory.setText("");
-            }
-        });
-
         // view/edit ingredients function
         final Button viewIngredients = view.findViewById(R.id.recipeIngredientButton);
         viewIngredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent ingredientIntent = new Intent(getContext(), RecipeIngredientsActivity.class);
+                ingredientIntent.putExtra("Ingredient List", ingredients);
+                ingredientActivity.launch((Intent.createChooser(ingredientIntent, "Ingredient")));
             }
         });
 
@@ -182,8 +149,8 @@ public class RecipeFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheckRecipe(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            Iterator<Ingredient> iter = ingredients.iterator();
-                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && iter.hasNext()) {
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
+                                Iterator<Ingredient> iter = ingredients.iterator();
                                 String picture = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
@@ -276,8 +243,8 @@ public class RecipeFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheckRecipe(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            Iterator<Ingredient> iter = ingredients.iterator();
-                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && iter.hasNext()) {
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
+                                Iterator<Ingredient> iter = ingredients.iterator();
                                 String picture  = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
@@ -348,6 +315,9 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Camera Activity. Opens the Camera app takes the picture and sets the image view with that picture
+     */
     ActivityResultLauncher<Intent> cameraActivity = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
@@ -360,6 +330,20 @@ public class RecipeFragment extends DialogFragment {
                     }
                 }
             });
+
+    /**
+     * Opens the ingredient activity to add/edit/view ingredients
+     */
+    ActivityResultLauncher<Intent> ingredientActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    Context currentContext = getContext();
+                    Bundle list = new Bundle();
+                    ingredients = (ArrayList<Ingredient>) list.getSerializable("Edited List");
+                }
+            });
+
 
     /**
      * Parse prepTime to an integer with error catching

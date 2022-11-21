@@ -5,9 +5,13 @@
       <map>
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.113" />
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/drawable/ic_launcher_background.xml" value="0.113" />
-        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/activity_ingredients.xml" value="0.1526268115942029" />
+        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/activity_ingredients.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/activity_recipe.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/activity_recipe_ingredients.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/activity_shopping_list.xml" value="0.536" />
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/content_ingredients_item.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/content_recipes_item.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/content_shopping_list_item.xml" value="0.19384057971014493" />
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/fragment_ingredient.xml" value="0.264" />
         <entry key="..\:/AndroidStudioApps/FoodCart/app/src/main/res/layout/fragment_recipe.xml" value="0.264" />
         <entry key="..\:/AndroidStudioApps/anarkhedFoodBook/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.1" />

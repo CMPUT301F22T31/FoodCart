@@ -136,126 +136,18 @@
 
         <Button
             android:id="@+id/recipeIngredientButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/recipeCategoryTV"
             android:layout_alignParentEnd="true"
-            android:text="View Ingredients" />
+            android:text="Go to Ingredients" />
 
-        <TextView
-            android:id="@+id/ingredientDescriptionTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/recipeIngredientButton"
-            android:gravity="center"
-            android:minHeight="48dp"
-            android:text="@string/ingredientDescription"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/ingredientDescriptionET"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/recipeIngredientButton"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="45dp"
-            android:layout_toEndOf="@id/ingredientDescriptionTV"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:textColorHint="#757575"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <TextView
-            android:id="@+id/ingredientCountTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ingredientDescriptionTV"
-            android:gravity="center"
-            android:minHeight="48dp"
-            android:text="@string/ingredientCount"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/ingredientCountET"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ingredientDescriptionET"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="75dp"
-            android:layout_toEndOf="@id/ingredientCountTV"
-            android:importantForAutofill="no"
-            android:inputType="number"
-            android:minHeight="48dp"
-            android:textColorHint="#757575"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <TextView
-            android:id="@+id/ingredientUnitTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ingredientCountTV"
-            android:gravity="center"
-            android:minHeight="48dp"
-            android:text="@string/ingredientUnit"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/ingredientUnitET"
-            android:layout_width="246dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ingredientCountET"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="110dp"
-            android:layout_marginTop="0dp"
-            android:layout_toEndOf="@+id/ingredientUnitTV"
-            android:hint="Unit of Measure"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:textColorHint="#757575"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <TextView
-            android:id="@+id/ingredientCategoryTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ingredientUnitTV"
-            android:gravity="center"
-            android:minHeight="48dp"
-            android:text="@string/ingredientCategory"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/ingredientCategoryET"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ingredientUnitET"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@id/ingredientCategoryTV"
-            android:importantForAutofill="no"
-            android:inputType="textPersonName"
-            android:minHeight="48dp"
-            android:textColorHint="#757575"
-            tools:ignore="SpeakableTextPresentCheck" />
-
-        <Button
-            android:id="@+id/recipeAddIngredientButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ingredientCategoryET"
-            android:layout_alignParentEnd="true"
-            android:text="Add Ingredient" />
 
         <TextView
             android:id="@+id/recipeCommentsTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/recipeAddIngredientButton"
+            android:layout_below="@+id/recipeIngredientButton"
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:minHeight="48dp"

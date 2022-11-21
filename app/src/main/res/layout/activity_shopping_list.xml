@@ -69,20 +69,18 @@
 
     <ImageButton
         android:id="@+id/ingredients_tab"
+        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/grey"
-        android:contentDescription="Go To Ingredients"
+        android:layout_marginEnd="20dp"
         android:src="@android:drawable/ic_menu_today"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/recipes_tab"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:contentDescription="Go To Ingredients"
+        app:layout_constraintEnd_toStartOf="@+id/recipes_tab" />
 
     <ImageButton
         android:id="@+id/recipes_tab"
-        android:background="@color/grey"
+        android:background="@color/green"
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:layout_marginEnd="20dp"

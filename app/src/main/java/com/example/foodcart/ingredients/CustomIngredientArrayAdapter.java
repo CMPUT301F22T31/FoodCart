@@ -69,7 +69,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         ingredientDescription.setText(ingredient.getDescription());
         ingredientQuantity.setText(ingredient.getCount().toString());
 
-        if (sortDropDown.getSelectedItem() != null) {
+        if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             System.out.println(sortValue);
             switch (sortValue){
