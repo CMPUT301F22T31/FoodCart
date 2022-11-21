@@ -8,7 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import com.example.foodcart.ingredients.*;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -32,7 +32,6 @@ import com.example.foodcart.ingredients.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -51,6 +50,10 @@ public class RecipeFragment extends DialogFragment {
     private EditText recipeServings;
     private EditText recipeCategory;
     private EditText recipeComments;
+    private EditText ingredientDescription;
+    private EditText ingredientCount;
+    private EditText ingredientUnit;
+    private EditText ingredientCategory;
     private Bitmap imageBitmap;
     private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
@@ -89,6 +92,21 @@ public class RecipeFragment extends DialogFragment {
         recipeImage = view.findViewById(R.id.recipeImgView);
 
         ingredients = new ArrayList<>();
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference recipeCollection = db.collection("Recipes");
+
+        recipeTitle = view.findViewById(R.id.recipeTitleET);
+        recipePrepareTime = view.findViewById(R.id.recipePrepareTimeET);
+        recipeServings = view.findViewById(R.id.recipeServingsET);
+        recipeCategory = view.findViewById(R.id.recipeCategoryET);
+        recipeComments = view.findViewById(R.id.recipeCommentsET);
+        ingredientDescription = view.findViewById(R.id.ingredientDescriptionET);
+        ingredientCount = view.findViewById(R.id.ingredientCountET);
+        ingredientUnit = view.findViewById(R.id.ingredientUnitET);
+        ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
+        Bundle args = getArguments();
 
         //add image function
         final Button recipeTakeImageButton = view.findViewById(R.id.recipeImgUploadButton);
@@ -100,22 +118,47 @@ public class RecipeFragment extends DialogFragment {
             }
         });
 
-        // Access a Cloud Firestore instance from your Activity
-        db = FirebaseFirestore.getInstance();
-        // Get a top level reference to the collection
-        final CollectionReference recipeCollection = db.collection("Recipes");
+        //add ingredients function
+        final Button recipeAddIngredientButton = view.findViewById(R.id.recipeAddIngredientButton);
+        recipeAddIngredientButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String ingDes = ingredientDescription.getText().toString();
+                String ingCount = ingredientCount.getText().toString();
+                String ingUnit = ingredientUnit.getText().toString();
+                String ingCategory = ingredientCategory.getText().toString();
+                //validate empty strings
+                IngredientFragment ingredientFragment = new IngredientFragment();
+                boolean emptyStringsExist = ingredientFragment.emptyStringCheck(ingDes, "date", "location", ingCount, ingUnit, ingCategory);
+                int countInt = ingredientFragment.parseCount(ingCount);
+                if (!emptyStringsExist && countInt != -1) {
+                    Ingredient newIngredient = new Ingredient(ingDes,countInt, ingUnit, ingCategory);
+                    ingredients.add(newIngredient);
+                }
+                else {
+                    Toast.makeText(getContext(), "Make sure mandatory fields are filled", Toast.LENGTH_SHORT).show();
+                }
+                ingredientDescription.setText("");
+                ingredientCount.setText("");
+                ingredientUnit.setText("");
+                ingredientCategory.setText("");
+            }
+        });
 
-        recipeTitle = view.findViewById(R.id.recipeTitleET);
-        recipePrepareTime = view.findViewById(R.id.recipePrepareTimeET);
-        recipeServings = view.findViewById(R.id.recipeServingsET);
-        recipeCategory = view.findViewById(R.id.recipeCategoryET);
-        recipeComments = view.findViewById(R.id.recipeCommentsET);
-        Bundle args = getArguments();
+        // view/edit ingredients function
+        final Button viewIngredients = view.findViewById(R.id.recipeIngredientButton);
+        viewIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         //edit recipe functionality
         if (args != null) {
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
-            recipeImage.setImageBitmap(currentRecipe.getBitmapPicture());
+            imageBitmap = currentRecipe.getBitmapPicture();
+            recipeImage.setImageBitmap(imageBitmap);
             recipeTitle.setText(currentRecipe.getTitle());
             recipePrepareTime.setText(Integer.toString(currentRecipe.getPrep_time()));
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
@@ -135,14 +178,13 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
-                            //replace this with ingredient arraylist
-                            ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
+                            boolean emptyStringsExist = emptyStringCheckRecipe(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1) {
-                                String picture  = bitmapToString(imageBitmap);
+                            Iterator<Ingredient> iter = ingredients.iterator();
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && iter.hasNext()) {
+                                String picture = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
                                 // Add new edited recipe to database
@@ -170,25 +212,25 @@ public class RecipeFragment extends DialogFragment {
                                                         String.valueOf(data.get("Title")) + e.toString());
                                             }
                                         });
-                                Iterator<Ingredient> iter = ingredients.iterator();
+
                                 // While ingredients are in ArrayList
                                 while(iter.hasNext())
                                 {
                                     // Erase all previous entries to add Ingredient
                                     data.clear();
+                                    Ingredient currentIngredient = iter.next();
                                     // Put all ingredient members into hashmap
-                                    data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
-                                    data.put("Count", Integer.toString(iter.next().getCount()));
-                                    data.put("Unit", iter.next().getUnit());
-                                    data.put("Category", iter.next().getCategory());
+                                    data.put("Location", currentIngredient.getLocation());;
+                                    data.put("Count", Integer.toString(currentIngredient.getCount()));
+                                    data.put("Unit", currentIngredient.getUnit());
+                                    data.put("Category", currentIngredient.getCategory());
 
                                     // get reference to sub-collection
                                     CollectionReference IngredientCollection = db.collection("Recipes")
                                                                                 .document(title).collection("Ingredients");
                                     // put ingredient into sub-collection
                                     IngredientCollection
-                                            .document(iter.next().getDescription())
+                                            .document(currentIngredient.getDescription())
                                             .set(data)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -209,7 +251,7 @@ public class RecipeFragment extends DialogFragment {
 
                             }
                             else {
-                                Toast.makeText(getContext(), "Please Try Again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Make sure all mandatory fields are filled", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).create();
@@ -231,13 +273,12 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
-                            //replace this with ingredient arraylist
-                            ArrayList<Ingredient> ingredients = new ArrayList<>();
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
+                            boolean emptyStringsExist = emptyStringCheckRecipe(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
-                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1) {
+                            Iterator<Ingredient> iter = ingredients.iterator();
+                            if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && iter.hasNext()) {
                                 String picture  = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
@@ -267,43 +308,42 @@ public class RecipeFragment extends DialogFragment {
                                             }
                                         });
 
-                                Iterator<Ingredient> iter = ingredients.iterator();
                                 // While ingredients are in ArrayList
                                 while(iter.hasNext())
                                 {
                                     // Erase all previous entries to add Ingredient
                                     data.clear();
+                                    Ingredient currentIngredient = iter.next();
                                     // Put all ingredient members into hashmap
-                                    data.put("Location", iter.next().getLocation());
-                                    data.put("Date", iter.next().getFormattedBestBeforeDate());
-                                    data.put("Count", Integer.toString(iter.next().getCount()));
-                                    data.put("Unit", iter.next().getUnit());
-                                    data.put("Category", iter.next().getCategory());
+                                    data.put("Location", currentIngredient.getLocation());;
+                                    data.put("Count", Integer.toString(currentIngredient.getCount()));
+                                    data.put("Unit", currentIngredient.getUnit());
+                                    data.put("Category", currentIngredient.getCategory());
                                     // get reference to sub-collection ingredients in recipe document
                                     CollectionReference IngredientCollection = db.collection("Recipes")
                                             .document(title).collection("Ingredients");
                                     // put ingredient into sub-collection
                                     IngredientCollection
-                                            .document(iter.next().getDescription())
+                                            .document(currentIngredient.getDescription())
                                             .set(data)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit RecipeI", String.valueOf(iter.next().getDescription()));
+                                                    Log.d("Add RecipeI", String.valueOf(iter.next().getDescription()));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Edit RecipeI", String.valueOf(iter.next().getDescription()));
+                                                    Log.d("ERROR Add RecipeI", String.valueOf(iter.next().getDescription()));
                                                 }
                                             });
                                 }
                             }
                             else {
-                                Toast.makeText(getContext(), "Please Try Again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Make sure all mandatory fields are filled", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).create();
@@ -364,11 +404,11 @@ public class RecipeFragment extends DialogFragment {
      * @return boolean if any of these are empty strings
      */
     // code is not reused as it also toasts specific errors
-    private boolean emptyStringCheck(String title, String prepTime, String serves, String category) {
+    private boolean emptyStringCheckRecipe(String title, String prepTime, String serves, String category) {
         boolean emptyStringExist = false;
         if(title.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Title", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Recipe Title", Toast.LENGTH_SHORT).show();
         }
         else if(prepTime.isEmpty()) {
             emptyStringExist = true;
@@ -380,7 +420,7 @@ public class RecipeFragment extends DialogFragment {
         }
         else if(category.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Recipe Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
     }

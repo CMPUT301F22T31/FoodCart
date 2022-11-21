@@ -186,21 +186,13 @@ public class RecipeActivity extends AppCompatActivity
                                 if(task.isSuccessful()) {
                                     for(QueryDocumentSnapshot ing : task.getResult()) {
                                         String description = ing.getId();
-                                        String location = (String) ing.getData().get("Location");
-                                        String tempDate = (String) ing.getData().get("Date");
                                         String count = (String) ing.getData().get("Count");
                                         String unit = (String) ing.getData().get("Unit");
                                         String category = (String) ing.getData().get("Category");
                                         // Convert date string into Date class
-                                        Date date = null;
-                                        try {
-                                            date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
                                         int countInt = Integer.parseInt(count);
                                         // add ingredient to list
-                                        ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
+                                        ingredientList.add(new Ingredient(description, countInt, unit, category));
                                     }
                                 } else {
                                     Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));

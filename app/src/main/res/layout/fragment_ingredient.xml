@@ -156,7 +156,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/ingredientUnitET"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="70dp"
             android:layout_toEndOf="@id/ingredientCategoryTV"
             android:importantForAutofill="no"
             android:inputType="textPersonName"

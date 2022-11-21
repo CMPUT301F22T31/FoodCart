@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
-import com.example.foodcart.recipes.RecipeFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -229,7 +228,7 @@ public class IngredientFragment extends DialogFragment {
      * @param count
      * @return -1 if parsing failed or the result if it succeeded
      */
-    private int parseCount(String count) {
+    public int parseCount(String count) {
         int result = -1;
         try {
             result = Integer.parseInt(count);
@@ -241,31 +240,31 @@ public class IngredientFragment extends DialogFragment {
     }
 
     //code is not reused as it also toasts specific errors
-    private boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
+    public boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Description", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Description", Toast.LENGTH_SHORT).show();
         }
         else if(date.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Best Before Date", Toast.LENGTH_SHORT).show();
         }
         else if(location.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Location", Toast.LENGTH_SHORT).show();
         }
         else if(count.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Count", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Count", Toast.LENGTH_SHORT).show();
         }
         else if(unit.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Unit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Unit", Toast.LENGTH_SHORT).show();
         }
         else if(category.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
     }
