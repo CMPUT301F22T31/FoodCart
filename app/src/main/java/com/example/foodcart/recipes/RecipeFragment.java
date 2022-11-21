@@ -116,7 +116,7 @@ public class RecipeFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Intent ingredientIntent = new Intent(getContext(), RecipeIngredientsActivity.class);
-                ingredientIntent.putExtra("Ingredient List", ingredients);
+                ingredientIntent.putExtra("IngredientList", ingredients);
                 ingredientActivity.launch((Intent.createChooser(ingredientIntent, "Ingredient")));
             }
         });
@@ -338,9 +338,8 @@ public class RecipeFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
-                    Context currentContext = getContext();
                     Bundle list = new Bundle();
-                    ingredients = (ArrayList<Ingredient>) list.getSerializable("Edited List");
+                    ingredients = (ArrayList<Ingredient>) list.getSerializable("EditedList");
                 }
             });
 
