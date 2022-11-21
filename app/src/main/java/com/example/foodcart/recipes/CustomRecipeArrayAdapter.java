@@ -29,11 +29,13 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private ArrayList<Recipe> recipes;
     private Context context;
     private FirebaseFirestore db;
+    private boolean sort = true;
 
-    public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes) {
+    public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes, boolean sort) {
         super(context, 0, recipes);
         this.recipes = recipes;
         this.context = context;
+        this.sort = sort;
     }
 
     @NonNull
