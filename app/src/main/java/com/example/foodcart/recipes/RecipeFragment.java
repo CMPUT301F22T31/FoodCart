@@ -220,7 +220,6 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     Ingredient currentIngredient = iter.next();
                                     // Put all ingredient members into hashmap
-                                    data.put("Location", currentIngredient.getLocation());;
                                     data.put("Count", Integer.toString(currentIngredient.getCount()));
                                     data.put("Unit", currentIngredient.getUnit());
                                     data.put("Category", currentIngredient.getCategory());
@@ -315,7 +314,6 @@ public class RecipeFragment extends DialogFragment {
                                     data.clear();
                                     Ingredient currentIngredient = iter.next();
                                     // Put all ingredient members into hashmap
-                                    data.put("Location", currentIngredient.getLocation());;
                                     data.put("Count", Integer.toString(currentIngredient.getCount()));
                                     data.put("Unit", currentIngredient.getUnit());
                                     data.put("Category", currentIngredient.getCategory());
