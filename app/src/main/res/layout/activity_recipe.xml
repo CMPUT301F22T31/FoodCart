@@ -20,11 +20,21 @@
 
     <TextView
         android:id="@+id/recipes_sort"
-        android:layout_width="97dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="92dp"
+        android:layout_width="51dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="24dp"
         android:text="Sort By: "
+        app:layout_constraintEnd_toStartOf="@+id/recipes_sort_select"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/recipes_sort_select"
+        android:layout_width="123dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
