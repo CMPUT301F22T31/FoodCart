@@ -95,28 +95,12 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
              */
             public void onClick(View view) {
                 if (items.size() > 0) {
-
                     // Access a Cloud Firestore instance from your Activity
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference ShoppingListCollection = db.collection("Shopping List");
-                    ShoppingListCollection
-                            .document(items.get(position).getDescription())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Sample", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
-                                }
-                            });
+                    // delete item from database
+                    ShoppingItemFragment.delShoppingItem(items.get(position), ShoppingListCollection);
                     // find and remove selection
                     items.remove(Math.min(position, items.size() - 1));
                     notifyDataSetChanged();

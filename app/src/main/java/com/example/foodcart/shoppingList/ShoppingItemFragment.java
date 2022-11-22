@@ -58,6 +58,60 @@ public class ShoppingItemFragment extends DialogFragment {
         }
     }
 
+    public static void addShoppingItem(ShoppingItem addItem,
+                                       CollectionReference shoppingCollect) {
+        // Add new ingredient to DataBase
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Count", String.valueOf(addItem.getCount()));
+        data.put("Unit", addItem.getUnit());
+        data.put("Category", addItem.getCategory());
+        shoppingCollect
+                .document(addItem.getDescription())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Item", String.valueOf(data.get("Description")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Item", String.valueOf(data.get("Description")));
+                    }
+                });
+    }
+
+    public static void delShoppingItem(ShoppingItem delItem,
+                                       CollectionReference shoppingCollect) {
+        shoppingCollect
+                .document(delItem.getDescription())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Sample", "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("Sample", "Data could not be deleted!" + e.toString());
+                    }
+                });
+    }
+
+    public static void editShoppingItem(ShoppingItem oldItem,
+                                        ShoppingItem newItem,
+                                        CollectionReference shoppingCollect) {
+        delShoppingItem(oldItem, shoppingCollect);
+        addShoppingItem(newItem, shoppingCollect);
+    }
+
     /**
      Create new instance to make it possible to edit some food objects
      */
@@ -115,28 +169,8 @@ public class ShoppingItemFragment extends DialogFragment {
                                 if (countInt > 0) {
                                     ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
                                     listener.onOkPressedEdit(newItem);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    ShoppingListCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit Item", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Edit Item", String.valueOf(data.get("Description")));
-                                                }
-                                            });
+                                    // edit item in database
+                                    editShoppingItem(item, newItem, ShoppingListCollection);
                                 }
                             }
                             else {
@@ -167,28 +201,8 @@ public class ShoppingItemFragment extends DialogFragment {
                                 if (countInt > 0) {
                                     ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
                                     listener.onOkPressed(newItem);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    ShoppingListCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Add Item", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Add Item", String.valueOf(data.get("Description")));
-                                                }
-                                            });
+                                    // add item to database
+                                    addShoppingItem(newItem, ShoppingListCollection);
                                 }
                             }
                             else {
