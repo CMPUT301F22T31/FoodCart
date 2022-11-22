@@ -18,6 +18,7 @@ import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 
 
+import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 //import com.example.foodcart.mealplans.MealPlanActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -137,10 +138,10 @@ public class RecipeActivity extends AppCompatActivity
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-    //                Intent switchActivityIntent = new Intent(getApplicationContext(),
-    //                        MealPlanActivity.class);
-    //                startActivity(switchActivityIntent);
-    //                finish();
+                   Intent switchActivityIntent = new Intent(getApplicationContext(),
+                           MealPlanActivity.class);
+                   startActivity(switchActivityIntent);
+                   finish();
                 }
             });
 
