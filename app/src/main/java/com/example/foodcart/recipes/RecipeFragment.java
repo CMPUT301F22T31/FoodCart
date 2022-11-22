@@ -158,12 +158,6 @@ public class RecipeFragment extends DialogFragment {
                }
             });
 
-
-            System.out.println(ingredients.size());
-
-
-
-
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
                     .setView(view)
