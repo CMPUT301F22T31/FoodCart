@@ -122,7 +122,6 @@ public class RecipeFragment extends DialogFragment {
 
     public static void addRecipeDB(Recipe addRecipe,
                                    CollectionReference addCollect) {
-
         // Add new edited recipe to database
         HashMap<String, String> data = new HashMap<>();
         data.put("Prep Time", String.valueOf(addRecipe.getPrep_time()));
@@ -185,11 +184,12 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    public static void editRecipeDB(Recipe editRecipe,
+    public static void editRecipeDB(Recipe curRecipe, Recipe editRecipe,
                                     CollectionReference editCollect) {
-        deleteRecipeDB(editRecipe.getTitle(), editCollect);
+        // Delete old recipe before adding new one
+        deleteRecipeDB(curRecipe, editCollect);
+        // Delete old recipe before adding new one
         addRecipeDB(editRecipe, editCollect);
-
     }
 
     @NonNull
@@ -269,11 +269,8 @@ public class RecipeFragment extends DialogFragment {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
 
-                                // Delete old recipe before adding new one
-                                deleteRecipeDB(currentRecipe, recipeCollection);
-
-                                // Delete old recipe before adding new one
-                                addRecipeDB(newRecipe, recipeCollection);
+                                // reflect changes to firebase
+                                editRecipeDB(newRecipe, currentRecipe, recipeCollection);
 
                                 /*
                                 // Add new edited recipe to database
@@ -374,6 +371,10 @@ public class RecipeFragment extends DialogFragment {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
 
+                                // Delete old recipe before adding new one
+                                addRecipeDB(newRecipe, recipeCollection);
+
+                                /*
                                 // Add new recipe to database
                                 HashMap<String, String> data = new HashMap<>();
                                 data.put("Prep Time", prepTime);
@@ -431,6 +432,8 @@ public class RecipeFragment extends DialogFragment {
                                                 }
                                             });
                                 }
+
+                                 */
                             }
                             else {
                                 Toast.makeText(getContext(), "Make sure all mandatory fields are filled", Toast.LENGTH_SHORT).show();
