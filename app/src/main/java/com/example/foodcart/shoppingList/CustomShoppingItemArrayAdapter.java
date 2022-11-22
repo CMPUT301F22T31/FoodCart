@@ -1,4 +1,4 @@
-package com.example.foodcart.ingredients;
+package com.example.foodcart.shoppingList;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,8 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.R;
+import com.example.foodcart.ingredients.Ingredient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,22 +26,20 @@ import java.util.ArrayList;
  * The custom array adapter for ingredients. Also includes delete
  * and sort functionality for items in the ingredients list
  */
-public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
-    private ArrayList<Ingredient> ingredients;
+public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
+    private ArrayList<ShoppingItem> items;
     private Context context;
     private FirebaseFirestore db;
-    private boolean sort = true;
 
     /**
      * Constructor for custom array of ingredients adapter
      * @param context
-     * @param ingredients
+     * @param items
      */
-    public CustomIngredientArrayAdapter(Context context, ArrayList<Ingredient> ingredients, boolean sort) {
-        super(context, 0, ingredients);
-        this.ingredients = ingredients;
+    public CustomShoppingItemArrayAdapter(Context context, ArrayList<ShoppingItem> items) {
+        super(context, 0, items);
+        this.items = items;
         this.context = context;
-        this.sort = sort;
     }
 
     @NonNull
@@ -54,46 +52,40 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         // return super.getView(position, convertView, parent);
         View view = convertView;
         if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.content_ingredients_item, parent, false);
+            view = LayoutInflater.from(context).inflate(R.layout.content_shopping_list_item, parent, false);
         }
 
-        com.example.foodcart.ingredients.Ingredient ingredient = ingredients.get(position);
+        ShoppingItem item = items.get(position);
 
         // Get the views of the TextViews
-        TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
-        TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);
-        TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
+        TextView itemDescription = view.findViewById(R.id.shopping_item_name);
+        TextView itemQuantity = view.findViewById(R.id.shopping_item_quantity);
+        TextView itemSort = view.findViewById(R.id.shopping_item_sort);
         View parentView = (View) parent.getParent();
-        Spinner sortDropDown = parentView.findViewById(R.id.ingredients_sort_select);
+        Spinner sortDropDown = parentView.findViewById(R.id.shopping_list_sort_select);
 
-        ingredientDescription.setText(ingredient.getDescription());
-        ingredientQuantity.setText(ingredient.getCount().toString());
+        itemDescription.setText(item.getDescription());
+        itemQuantity.setText(item.getCount().toString());
 
-        if (sort && sortDropDown.getSelectedItem() != null) {
+        if (sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             System.out.println(sortValue);
             switch (sortValue){
                 case "description":
-                    ingredientSort.setText("");
-                    break;
-                case "best before date":
-                    ingredientSort.setText(ingredient.getFormattedBestBeforeDate());
-                    break;
-                case "location":
-                    ingredientSort.setText(ingredient.getLocation());
+                    itemSort.setText("");
                     break;
                 case "category":
-                    ingredientSort.setText(ingredient.getCategory());
+                    itemSort.setText(item.getCategory());
                     break;
             }
         } else {
             String sortValue = "description";
-            ingredientSort.setText("");
+            itemSort.setText("");
         }
 
 
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
+        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.shopping_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,14 +94,14 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
              * Deletes an ingredient from the Ingredients database
              */
             public void onClick(View view) {
-                if (ingredients.size() > 0) {
+                if (items.size() > 0) {
 
                     // Access a Cloud Firestore instance from your Activity
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
-                    final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientCollection
-                            .document(ingredients.get(position).getDescription())
+                    final CollectionReference ShoppingListCollection = db.collection("Shopping List");
+                    ShoppingListCollection
+                            .document(items.get(position).getDescription())
                             .delete()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -126,7 +118,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                                 }
                             });
                     // find and remove selection
-                    ingredients.remove(Math.min(position, ingredients.size() - 1));
+                    items.remove(Math.min(position, items.size() - 1));
                     notifyDataSetChanged();
                 }
             }
