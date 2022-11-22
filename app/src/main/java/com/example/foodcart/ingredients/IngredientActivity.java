@@ -139,6 +139,7 @@ public class IngredientActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 new IngredientFragment().show(getSupportFragmentManager(), "ADD_INGREDIENT");
+                ingredientAdapter.notifyDataSetChanged();
             }
         });
 
@@ -149,6 +150,7 @@ public class IngredientActivity extends AppCompatActivity
                 Ingredient selectedIngredient = dataList.get(position);
                 selected = position;
                 new IngredientFragment().newInstance(selectedIngredient).show(getSupportFragmentManager(), "EDIT_INGREDIENT");
+                ingredientAdapter.notifyDataSetChanged();
         }
         });
 
@@ -159,25 +161,31 @@ public class IngredientActivity extends AppCompatActivity
                 dataList.clear();
                 assert queryDocumentSnapshots != null;
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                    Log.d("Update Ingredient", String.valueOf(doc.getData().get("Description")));
-                    String description = doc.getId();
-                    String location = (String) doc.getData().get("Location");
-                    String tempDate = (String) doc.getData().get("Date");
-                    String count = (String) doc.getData().get("Count");
-                    String unit = (String) doc.getData().get("Unit");
-                    String category = (String) doc.getData().get("Category");
+                    if (doc.getData().get("Description") != null) {
+                        Log.d("Update Ingredient", String.valueOf(doc.getData().get("Description")));
+                        String description = doc.getId();
+                        String location = (String) doc.getData().get("Location");
+                        String tempDate = (String) doc.getData().get("Date");
+                        String count = (String) doc.getData().get("Count");
+                        String unit = (String) doc.getData().get("Unit");
+                        String category = (String) doc.getData().get("Category");
 
-                    // Convert date string into Date class
-                    Date date = null;
-                    try {
-                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+                        // Convert date string into Date class
+                        Date date = null;
+                        if (tempDate != null) {
+                            try {
+                                date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                continue;
+                            }
+                        }
+                        //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
+                        int countInt = Integer.parseInt(count);
+
+                        // add ingredient to list
+                        dataList.add(new Ingredient(description, date, location, countInt, unit, category));
                     }
-                    //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                    int countInt = Integer.parseInt(count);
-                    // add ingredient to list
-                    dataList.add(new Ingredient(description, date, location, countInt, unit, category));
                 }
                 ingredientAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
             }

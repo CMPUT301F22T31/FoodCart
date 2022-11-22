@@ -178,6 +178,7 @@ public class IngredientFragment extends DialogFragment {
                                     listener.onOkPressed(newIngredient);
                                     // Add new ingredient to DataBase
                                     HashMap<String, String> data = new HashMap<>();
+                                    data.put("Description", description);
                                     data.put("Location", location);
                                     data.put("Date", date);
                                     data.put("Count", count);
