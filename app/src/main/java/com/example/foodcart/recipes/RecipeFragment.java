@@ -74,7 +74,6 @@ public class RecipeFragment extends DialogFragment {
     private Bitmap imageBitmap;
     private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
-    private FirebaseFirestore db;
 
 
     public interface OnFragmentInteractionListener {
@@ -101,7 +100,11 @@ public class RecipeFragment extends DialogFragment {
         return fragment;
     }
 
-
+    /**
+     * Recursively delete a recipe from a given firestore database collection
+     * @param delRecipe     The recipe to delete
+     * @param delCollect    The collection to delete from
+     */
     public static void deleteRecipeDB(Recipe delRecipe,
                                       CollectionReference delCollect) {
 
@@ -135,6 +138,11 @@ public class RecipeFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Add a recipe to a given firestore database collection
+     * @param addRecipe     The recipe to add
+     * @param addCollect    The collection to add it too
+     */
     public static void addRecipeDB(Recipe addRecipe,
                                    CollectionReference addCollect) {
         // Add new edited recipe to database
@@ -164,28 +172,25 @@ public class RecipeFragment extends DialogFragment {
                 });
 
         // While ingredients are in ArrayList
-        Iterator<Ingredient> iter = addRecipe.getIngredientList().iterator();
-        while(iter.hasNext())
-        {
+        for (Ingredient ingredient : addRecipe.getIngredientList()) {
             // Erase all previous entries to add Ingredient
             data.clear();
-            Ingredient currentIngredient = iter.next();
             // Put all ingredient members into hashmap
-            data.put("Count", Integer.toString(currentIngredient.getCount()));
-            data.put("Unit", currentIngredient.getUnit());
-            data.put("Category", currentIngredient.getCategory());
+            data.put("Count", Integer.toString(ingredient.getCount()));
+            data.put("Unit", ingredient.getUnit());
+            data.put("Category", ingredient.getCategory());
 
             // get reference to sub-collection
             CollectionReference IngredientCollection = addCollect.document(addRecipe.getTitle()).collection("Ingredients");
             // put ingredient into sub-collection
             IngredientCollection
-                    .document(currentIngredient.getDescription())
+                    .document(ingredient.getDescription())
                     .set(data)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             // These are a method which gets executed when the task is succeeded
-                            Log.d("Edit RecipeI", String.valueOf(currentIngredient.getDescription()));
+                            Log.d("Edit RecipeI", String.valueOf(ingredient.getDescription()));
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -193,12 +198,18 @@ public class RecipeFragment extends DialogFragment {
                         public void onFailure(@NonNull Exception e) {
                             // These are a method which gets executed if there’s any problem
                             Log.d("ERROR Edit RecipeI",
-                                    String.valueOf(currentIngredient.getDescription()) + e.toString());
+                                    String.valueOf(ingredient.getDescription()) + e.toString());
                         }
                     });
         }
     }
 
+    /**
+     * edit a recipe from a given firestore database collection
+     * @param oldRecipe     The old recipe to replace
+     * @param newRecipe     The new recipe to replace old recipe with
+     * @param editCollect   The collection with the oldRecipe
+     */
     public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
                                     CollectionReference editCollect) {
         // Delete old recipe before adding new one
@@ -213,7 +224,7 @@ public class RecipeFragment extends DialogFragment {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
         // Access a Cloud Firestore instance from your Activity
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
 
