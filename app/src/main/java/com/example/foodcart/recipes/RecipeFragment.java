@@ -35,10 +35,14 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 
 import java.io.File;
@@ -93,7 +97,6 @@ public class RecipeFragment extends DialogFragment {
     public static RecipeFragment newInstance(Recipe recipe) {
         Bundle args = new Bundle();
         args.putSerializable("recipe", recipe);
-
         RecipeFragment fragment = new RecipeFragment();
         fragment.setArguments(args);
         return fragment;
@@ -104,7 +107,6 @@ public class RecipeFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
-        ingredients = new ArrayList<>();
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
@@ -115,6 +117,7 @@ public class RecipeFragment extends DialogFragment {
         recipeServings = view.findViewById(R.id.recipeServingsET);
         recipeCategory = view.findViewById(R.id.recipeCategoryET);
         recipeComments = view.findViewById(R.id.recipeCommentsET);
+        ingredients = new ArrayList<>();
         Bundle args = getArguments();
 
         //add image function
@@ -148,8 +151,24 @@ public class RecipeFragment extends DialogFragment {
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
             recipeCategory.setText(currentRecipe.getCategory());
             recipeComments.setText(currentRecipe.getComments());
-            ingredients = currentRecipe.getIngredientList();
-            System.out.println(ingredients.get(0).getDescription());
+            CollectionReference ingredientData = recipeCollection.document(currentRecipe.getTitle()).collection("Ingredients");
+            ingredientData.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               @Override
+               public void onComplete(@org.checkerframework.checker.nullness.qual.NonNull Task<QuerySnapshot> task) {
+                   if (task.isSuccessful()) {
+                       for (QueryDocumentSnapshot ing : task.getResult()) {
+                           String description = ing.getId();
+                           String count = (String) ing.getData().get("Count");
+                           String unit = (String) ing.getData().get("Unit");
+                           String category = (String) ing.getData().get("Category");
+                           // Convert date string into Date class
+                           int countInt = Integer.parseInt(count);
+                           // add ingredient to list
+                           ingredients.add(new Ingredient(description, countInt, unit, category));
+                       }
+                   }
+               }
+            });
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder

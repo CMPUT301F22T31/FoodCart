@@ -29,18 +29,12 @@ public class RecipeIngredientsActivity extends AppCompatActivity
     private int selected;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe_ingredients);
-
-        // initialize lists
-        ingredientList = findViewById(R.id.ingredients_list);
-
+    protected void onResume() {
+        super.onResume();
         dataList = (ArrayList<Ingredient>) getIntent().getSerializableExtra("IngredientList");
         // set adapter
         ingredientAdapter = new CustomIngredientArrayAdapter(this, dataList, false);
         ingredientList.setAdapter(ingredientAdapter);
-
         // onClick for Add Food Button (floating action + button)
         final FloatingActionButton addFoodButton = findViewById(R.id.add_ingredient_button);
         addFoodButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +61,15 @@ public class RecipeIngredientsActivity extends AppCompatActivity
                 new IngredientFragment().newInstance(selectedIngredient, "editFromRecipe").show(getSupportFragmentManager(), "EDIT_INGREDIENT");
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_recipe_ingredients);
+
+        // initialize lists
+        ingredientList = findViewById(R.id.ingredients_list);
     }
 
     @Override
