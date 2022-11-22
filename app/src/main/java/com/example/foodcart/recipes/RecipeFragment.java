@@ -101,7 +101,7 @@ public class RecipeFragment extends DialogFragment {
     }
 
     /**
-     * Recursively delete a recipe from a given firestore database collection
+     * Recursively delete a recipe from a given database collection reference
      * @param delRecipe     The recipe to delete
      * @param delCollect    The collection to delete from
      */
@@ -139,7 +139,7 @@ public class RecipeFragment extends DialogFragment {
     }
 
     /**
-     * Add a recipe to a given firestore database collection
+     * Add a recipe to a given database collection reference
      * @param addRecipe     The recipe to add
      * @param addCollect    The collection to add it too
      */
@@ -205,10 +205,10 @@ public class RecipeFragment extends DialogFragment {
     }
 
     /**
-     * edit a recipe from a given firestore database collection
+     * edit a recipe from a given database collection reference
      * @param oldRecipe     The old recipe to replace
      * @param newRecipe     The new recipe to replace old recipe with
-     * @param editCollect   The collection with the oldRecipe
+     * @param editCollect   The collection containing oldRecipe
      */
     public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
                                     CollectionReference editCollect) {
@@ -311,7 +311,7 @@ public class RecipeFragment extends DialogFragment {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
 
-                                // reflect changes to firebase
+                                // reflect recipe changes to database
                                 editRecipeDB(newRecipe, currentRecipe, recipeCollection);
 
                             }
@@ -348,7 +348,7 @@ public class RecipeFragment extends DialogFragment {
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
 
-                                // Delete old recipe before adding new one
+                                // Add recipe to database
                                 addRecipeDB(newRecipe, recipeCollection);
                             }
                             else {
