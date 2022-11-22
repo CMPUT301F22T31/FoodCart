@@ -1,12 +1,14 @@
 package com.example.foodcart.recipes;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+
 import com.example.foodcart.ingredients.Ingredient;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Recipe object with the title, prep time, number of servings,
@@ -106,7 +108,7 @@ public class Recipe implements Serializable {
      * @return the list of ingredients for this recipe
      */
     public ArrayList<Ingredient> getIngredientList() {
-        return ingredientList;
+        return this.ingredientList;
     }
 
     /**
@@ -134,6 +136,14 @@ public class Recipe implements Serializable {
     }
 
     /**
+     * Gets the picture for the recipe (Bitmap Formatted)
+     * @return the picture of the recipe
+     */
+    public Bitmap getBitmapPicture() {
+        return stringToBitmap(picture);
+    }
+
+    /**
      * Adds a single ingredient to the
      * @param ingredient
      */
@@ -147,6 +157,17 @@ public class Recipe implements Serializable {
      */
     public void removeIngredient(Ingredient ingredient) {
         this.ingredientList.remove(ingredient);
+    }
+
+    /**
+     * Converts encoded string value to picture
+     * @param picture
+     * @return
+     * picture Bitmap
+     */
+    public Bitmap stringToBitmap(String picture) {
+        byte[] decodedImage = Base64.decode(picture, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
     }
 
     /**

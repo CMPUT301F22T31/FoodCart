@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.foodcart.R;
 import com.example.foodcart.mealplans.MealPlanActivity;
 import com.example.foodcart.recipes.RecipeActivity;
+import com.example.foodcart.recipes.RecipeIngredientsActivity;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -138,7 +139,7 @@ public class IngredientActivity extends AppCompatActivity
         addFoodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new IngredientFragment().show(getSupportFragmentManager(), "ADD_INGREDIENT");
+                new IngredientFragment().newInstance(null, "add").show(getSupportFragmentManager(), "ADD_INGREDIENT");
             }
         });
 
@@ -148,7 +149,7 @@ public class IngredientActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Ingredient selectedIngredient = dataList.get(position);
                 selected = position;
-                new IngredientFragment().newInstance(selectedIngredient).show(getSupportFragmentManager(), "EDIT_INGREDIENT");
+                new IngredientFragment().newInstance(selectedIngredient, "edit").show(getSupportFragmentManager(), "EDIT_INGREDIENT");
         }
         });
 
@@ -195,6 +196,5 @@ public class IngredientActivity extends AppCompatActivity
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
     }
-
 }
 
