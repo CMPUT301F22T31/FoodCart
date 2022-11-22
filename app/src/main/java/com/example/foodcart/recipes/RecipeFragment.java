@@ -120,7 +120,6 @@ public class RecipeFragment extends DialogFragment {
                 });
     }
 
-    /*      DO NOT DELETE
     public static void addRecipeDB(Recipe addRecipe,
                                    CollectionReference addCollect) {
 
@@ -192,7 +191,6 @@ public class RecipeFragment extends DialogFragment {
         addRecipeDB(editRecipe, editCollect);
 
     }
-    */
 
     @NonNull
     @Override
@@ -272,8 +270,12 @@ public class RecipeFragment extends DialogFragment {
                                 listener.onOkPressedEditRecipe(newRecipe);
 
                                 // Delete old recipe before adding new one
-                                deleteRecipeDB(newRecipe, recipeCollection);
+                                deleteRecipeDB(currentRecipe, recipeCollection);
 
+                                // Delete old recipe before adding new one
+                                addRecipeDB(newRecipe, recipeCollection);
+
+                                /*
                                 // Add new edited recipe to database
                                 HashMap<String, String> data = new HashMap<>();
                                 data.put("Prep Time", prepTime);
@@ -335,6 +337,8 @@ public class RecipeFragment extends DialogFragment {
                                                 }
                                             });
                                 }
+
+                                 */
 
                             }
                             else {
