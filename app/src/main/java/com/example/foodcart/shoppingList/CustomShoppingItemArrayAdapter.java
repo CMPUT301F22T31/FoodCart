@@ -100,7 +100,7 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
                     // Get a top level reference to the collection
                     final CollectionReference ShoppingListCollection = db.collection("Shopping List");
                     // delete item from database
-                    ShoppingItemFragment.delShoppingItem(items.get(position), ShoppingListCollection);
+                    ShoppingItemFragment.delShoppingItemDB(items.get(position), ShoppingListCollection);
                     // find and remove selection
                     items.remove(Math.min(position, items.size() - 1));
                     notifyDataSetChanged();

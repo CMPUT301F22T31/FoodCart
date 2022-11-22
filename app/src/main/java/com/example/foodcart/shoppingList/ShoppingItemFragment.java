@@ -58,7 +58,7 @@ public class ShoppingItemFragment extends DialogFragment {
         }
     }
 
-    public static void addShoppingItem(ShoppingItem addItem,
+    public static void addShoppingItemDB(ShoppingItem addItem,
                                        CollectionReference shoppingCollect) {
         // Add new ingredient to DataBase
         HashMap<String, String> data = new HashMap<>();
@@ -84,7 +84,7 @@ public class ShoppingItemFragment extends DialogFragment {
                 });
     }
 
-    public static void delShoppingItem(ShoppingItem delItem,
+    public static void delShoppingItemDB(ShoppingItem delItem,
                                        CollectionReference shoppingCollect) {
         shoppingCollect
                 .document(delItem.getDescription())
@@ -105,11 +105,11 @@ public class ShoppingItemFragment extends DialogFragment {
                 });
     }
 
-    public static void editShoppingItem(ShoppingItem oldItem,
+    public static void editShoppingItemDB(ShoppingItem oldItem,
                                         ShoppingItem newItem,
                                         CollectionReference shoppingCollect) {
-        delShoppingItem(oldItem, shoppingCollect);
-        addShoppingItem(newItem, shoppingCollect);
+        delShoppingItemDB(oldItem, shoppingCollect);
+        addShoppingItemDB(newItem, shoppingCollect);
     }
 
     /**
@@ -170,7 +170,7 @@ public class ShoppingItemFragment extends DialogFragment {
                                     ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
                                     listener.onOkPressedEdit(newItem);
                                     // edit item in database
-                                    editShoppingItem(item, newItem, ShoppingListCollection);
+                                    editShoppingItemDB(item, newItem, ShoppingListCollection);
                                 }
                             }
                             else {
@@ -202,7 +202,7 @@ public class ShoppingItemFragment extends DialogFragment {
                                     ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
                                     listener.onOkPressed(newItem);
                                     // add item to database
-                                    addShoppingItem(newItem, ShoppingListCollection);
+                                    addShoppingItemDB(newItem, ShoppingListCollection);
                                 }
                             }
                             else {
