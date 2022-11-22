@@ -108,7 +108,7 @@ public class Recipe implements Serializable {
      * @return the list of ingredients for this recipe
      */
     public ArrayList<Ingredient> getIngredientList() {
-        return ingredientList;
+        return this.ingredientList;
     }
 
     /**
