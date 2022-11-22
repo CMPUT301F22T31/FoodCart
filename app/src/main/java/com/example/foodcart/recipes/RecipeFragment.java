@@ -101,6 +101,18 @@ public class RecipeFragment extends DialogFragment {
 
     public static void deleteRecipeDB(Recipe delRecipe,
                                       CollectionReference delCollect) {
+        ArrayList<Ingredient> delIngredients = delRecipe.getIngredientList();
+        Iterator<Ingredient> iter = delIngredients.iterator();
+
+        // get reference to ingredient collection
+        CollectionReference delIngredientCollect = delCollect.document(delRecipe.getTitle())
+                                                    .collection("Ingredient");
+        int ii = 0;
+        while(iter.hasNext())
+        {
+            IngredientFragment.delIngredientDB(delIngredients.get(ii), delIngredientCollect);
+            ii++;
+        }
         delCollect
                 .document(delRecipe.getTitle())
                 .delete()
