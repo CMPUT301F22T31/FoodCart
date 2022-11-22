@@ -184,12 +184,12 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-    public static void editRecipeDB(Recipe curRecipe, Recipe editRecipe,
+    public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
                                     CollectionReference editCollect) {
         // Delete old recipe before adding new one
-        deleteRecipeDB(curRecipe, editCollect);
+        deleteRecipeDB(oldRecipe, editCollect);
         // Delete old recipe before adding new one
-        addRecipeDB(editRecipe, editCollect);
+        addRecipeDB(newRecipe, editCollect);
     }
 
     @NonNull
