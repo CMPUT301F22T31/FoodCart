@@ -41,13 +41,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-<<<<<<< HEAD
-=======
 /**
  * Fragment for Recipe
  * Gives each recipe in the ListView on the recipe page
  */
->>>>>>> main
 public class RecipeFragment extends DialogFragment {
     private ImageView recipeImage;
     private EditText recipeTitle;
@@ -150,9 +147,9 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
-                            //replace this with ingredient arraylist
+                            // replace this with ingredient arraylist
                             ArrayList<Ingredient> ingredients = new ArrayList<>();
-                            //validate empty strings
+                            // validate empty strings
                             boolean emptyStringsExist = emptyStringCheck(title, prepTime, serves, category);
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
