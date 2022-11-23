@@ -12,10 +12,36 @@ import java.util.ArrayList;
  */
 public class Meal implements Serializable {
     String mealName;
+    String mealType;
     int scale;
 
-    public Meal(String mealName, int scale) {
+    public Meal(String mealName, String mealType, int scale) {
         this.mealName = mealName;
+        this.mealType = mealType;
+        this.scale = scale;
+    }
+
+    public String getMealName() {
+        return mealName;
+    }
+
+    public void setMealName(String mealName) {
+        this.mealName = mealName;
+    }
+
+    public String getMealType() {
+        return mealType;
+    }
+
+    public void setMealType(String mealType) {
+        this.mealType = mealType;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setScale(int scale) {
         this.scale = scale;
     }
 }

@@ -132,11 +132,11 @@
             android:layout_marginStart="117dp"
             android:layout_marginTop="0dp"
             android:layout_toEndOf="@id/ingredientUnitTV"
+            android:hint="Unit of Measure"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:minHeight="48dp"
             android:textColorHint="#757575"
-            android:hint="Unit of Measure"
             tools:ignore="SpeakableTextPresentCheck" />
 
         <TextView

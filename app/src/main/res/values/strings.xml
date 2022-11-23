@@ -12,4 +12,6 @@
     <string name="recipeServings">Number of Servings*</string>
     <string name="recipeComments">Additional Comments</string>
     <string name="recipeCategory">Recipe Category*</string>
+    <string name="mealName">Meal Name*</string>
+    <string name="mealScale">Meal Scale*</string>
 </resources>
