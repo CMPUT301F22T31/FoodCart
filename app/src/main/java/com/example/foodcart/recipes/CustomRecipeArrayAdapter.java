@@ -55,7 +55,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
         View parentView = (View) parent.getParent();
         Spinner sortDropDown = parentView.findViewById(R.id.recipes_sort_select);
 
-        if (sortDropDown.getSelectedItem() != null) {
+        if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             System.out.println(sortValue);
             switch (sortValue){

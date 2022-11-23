@@ -26,6 +26,8 @@ import com.example.foodcart.ingredients.IngredientFragment;
 import com.example.foodcart.recipes.CustomRecipeArrayAdapter;
 import com.example.foodcart.recipes.Recipe;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,27 +41,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class MealPlanFragment extends DialogFragment {
     private FirebaseFirestore db;
+    private MealPlanScaleFragment.OnFragmentInteractionListener listener;
     private ArrayAdapter<Ingredient> ingredientAdapter;
     private ArrayList<Ingredient> ingredientdataList;
     private ArrayAdapter<Recipe> recipeAdapter;
     private ArrayList<Recipe> recipedataList;
-    private MealPlanFragment.OnFragmentInteractionListener listener;
     private ListView ItemList;
-
-    public interface OnFragmentInteractionListener {
-        void onOkPressed(Ingredient newIngredient);
-        void onOkPressedEdit(Ingredient newIngredient);
-    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        if (context instanceof MealPlanFragment.OnFragmentInteractionListener){
-            listener = (MealPlanFragment.OnFragmentInteractionListener) context;
+        if (context instanceof MealPlanScaleFragment.OnFragmentInteractionListener){
+            listener = (MealPlanScaleFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + "must implement OnFragmentInteractionListener ");
@@ -157,18 +156,12 @@ public class MealPlanFragment extends DialogFragment {
                                     if(task.isSuccessful()) {
                                         for(QueryDocumentSnapshot ing : task.getResult()) {
                                             String description = ing.getId();
-                                            String location = (String) ing.getData().get("Location");
-                                            String tempDate = (String) ing.getData().get("Date");
+                                            String location = null;
+                                            Date date = null;
                                             String count = (String) ing.getData().get("Count");
                                             String unit = (String) ing.getData().get("Unit");
                                             String category = (String) ing.getData().get("Category");
                                             // Convert date string into Date class
-                                            Date date = null;
-                                            try {
-                                                date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
-                                            } catch (ParseException e) {
-                                                e.printStackTrace();
-                                            }
                                             int countInt = Integer.parseInt(count);
                                             // add ingredient to list
                                             ingredientList.add(new Ingredient(description, date, location, countInt, unit, category));
@@ -200,6 +193,7 @@ public class MealPlanFragment extends DialogFragment {
                 }
             });
         }
+        final CollectionReference MealPlanCollection = db.collection("MealPlan");
 
         // onClick for selecting items from list. When item is selected, Edit Food pops up
         ItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -207,18 +201,97 @@ public class MealPlanFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(type.equals("Ingredients")){
                     Ingredient selectedIngredient = ingredientdataList.get(position);
-                    Toast.makeText(getContext(), selectedIngredient.getDescription(), Toast.LENGTH_SHORT).show();
-                    /*
-                    ADD TO DATABASE FOR MEAL_INGREDIENTS HERE
-                     */
+                    listener.onOkPressed(new Meal(selectedIngredient.getDescription(), "Ingredient", 0));
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("Location", selectedIngredient.getLocation());
+                    data.put("Date", selectedIngredient.getFormattedBestBeforeDate());
+                    data.put("Count", Integer.toString(selectedIngredient.getCount()));
+                    data.put("Unit", selectedIngredient.getUnit());
+                    data.put("Category", selectedIngredient.getCategory());
+                    data.put("Scale", "0");
+                    data.put("Type", "Ingredient");
+                    MealPlanCollection
+                            .document(selectedIngredient.getDescription())
+                            .set(data)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // These are a method which gets executed when the task is succeeded
+                                    Log.d("Add Ingredient", String.valueOf(data.get("Description")));
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // These are a method which gets executed if there’s any problem
+                                    Log.d("ERROR Add Ingredient", String.valueOf(data.get("Description")));
+                                }
+                            });
                     getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
                 } else {
                     Recipe selectedRecipe = recipedataList.get(position);
-                    Toast.makeText(getContext(), selectedRecipe.getTitle(), Toast.LENGTH_SHORT).show();
-                    /*
-                    IMPLEMENT DATABASE FOR MEAL HERE
-                     */
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
+                    Iterator<Ingredient> iter = selectedRecipe.getIngredientList().iterator();
+                    listener.onOkPressed(new Meal(selectedRecipe.getTitle(), "Recipe", 1));
+                    // Add new recipe to database
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("Prep Time", Integer.toString(selectedRecipe.getPrep_time()));
+                    data.put("Servings", Integer.toString(selectedRecipe.getServings()));
+                    data.put("Category", selectedRecipe.getCategory());
+                    data.put("Comments", selectedRecipe.getComments());
+                    data.put("Picture", selectedRecipe.getPicture());
+                    data.put("Scale", "1");
+                    data.put("Type", "Recipe");
+                    MealPlanCollection
+                            .document(selectedRecipe.getTitle())
+                            .set(data)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // These are a method which gets executed when the task is succeeded
+                                    Log.d("Add Recipe", String.valueOf(data.get("Title")));
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // These are a method which gets executed if there’s any problem
+                                    Log.d("ERROR Add Recipe", String.valueOf(data.get("Title")) + e.toString());
+                                }
+                            });
+
+                    // While ingredients are in ArrayList
+                    while(iter.hasNext())
+                    {
+                        // Erase all previous entries to add Ingredient
+                        data.clear();
+                        Ingredient currentIngredient = iter.next();
+                        // Put all ingredient members into hashmap
+                        data.put("Count", Integer.toString(currentIngredient.getCount()));
+                        data.put("Unit", currentIngredient.getUnit());
+                        data.put("Category", currentIngredient.getCategory());
+                        // get reference to sub-collection ingredients in recipe document
+                        CollectionReference IngredientCollection = db.collection("MealPlan")
+                                .document(selectedRecipe.getTitle()).collection("Ingredients");
+                        // put ingredient into sub-collection
+                        IngredientCollection
+                                .document(currentIngredient.getDescription())
+                                .set(data)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // These are a method which gets executed when the task is succeeded
+                                        Log.d("Add RecipeI", String.valueOf(currentIngredient.getDescription()));
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // These are a method which gets executed if there’s any problem
+                                        Log.d("ERROR Add RecipeI", String.valueOf(currentIngredient.getDescription()));
+                                    }
+                                });
+                        getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
+                    }
                 }
             }
         });
