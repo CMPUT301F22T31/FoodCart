@@ -25,11 +25,14 @@ import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientFragment;
 import com.example.foodcart.recipes.CustomRecipeArrayAdapter;
 import com.example.foodcart.recipes.Recipe;
+import com.example.foodcart.recipes.RecipeFragment;
+import com.example.foodcart.shoppingList.ShoppingItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,6 +56,51 @@ public class MealPlanFragment extends DialogFragment {
     private ArrayAdapter<Recipe> recipeAdapter;
     private ArrayList<Recipe> recipedataList;
     private ListView ItemList;
+
+    public static void addMealRecipeDB(Meal addMeal, Recipe addRecipe,
+                                 CollectionReference mealCollect) {
+        // Add new Recipe to DataBase
+        RecipeFragment.addRecipeDB(addRecipe, mealCollect);
+        // update recipe into a meal
+        DocumentReference mealRef = mealCollect.document(addRecipe.getTitle());
+        mealRef.update("Scale", addMeal.getScale());
+        mealRef.update("Type", addMeal.getMealType());
+    }
+
+    public static void delMealRecipeDB(Recipe delRecipe,
+                                       CollectionReference mealCollect) {
+        RecipeFragment.delRecipeDB(delRecipe, mealCollect);
+    }
+
+    public static void editMealRecipeDB(Recipe oldRecipe,
+                                        Meal newMeal, Recipe newRecipe,
+                                        CollectionReference mealCollect) {
+        delMealRecipeDB(oldRecipe, mealCollect);
+        addMealRecipeDB(newMeal, newRecipe, mealCollect);
+    }
+
+
+    public static void addMealIngredientDB(Meal addMeal, Ingredient addItem,
+                                           CollectionReference mealCollect) {
+        // Add new Ingredient to DataBase
+        IngredientFragment.addIngredientDB(addItem, mealCollect);
+        // update Ingredient into a meal
+        DocumentReference mealRef = mealCollect.document(addItem.getDescription());
+        mealRef.update("Scale", addMeal.getScale());
+        mealRef.update("Type", addMeal.getMealType());
+    }
+
+    public static void delMealIngredientDB(Ingredient delIngredient,
+                                           CollectionReference mealCollect) {
+        IngredientFragment.delIngredientDB(delIngredient, mealCollect);
+    }
+
+    public static void editMealIngredientDB(Ingredient oldIngredient,
+                                            Meal newMeal, Ingredient newIngredient,
+                                            CollectionReference mealCollect) {
+        delMealIngredientDB(oldIngredient, mealCollect);
+        addMealIngredientDB(newMeal, newIngredient, mealCollect);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {

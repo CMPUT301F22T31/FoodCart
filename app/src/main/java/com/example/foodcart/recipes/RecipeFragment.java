@@ -105,7 +105,7 @@ public class RecipeFragment extends DialogFragment {
      * @param delRecipe     The recipe to delete
      * @param delCollect    The collection to delete from
      */
-    public static void deleteRecipeDB(Recipe delRecipe,
+    public static void delRecipeDB(Recipe delRecipe,
                                       CollectionReference delCollect) {
 
         ArrayList<Ingredient> delIngredients = delRecipe.getIngredientList();
@@ -213,7 +213,7 @@ public class RecipeFragment extends DialogFragment {
     public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
                                     CollectionReference editCollect) {
         // Delete old recipe before adding new one
-        deleteRecipeDB(oldRecipe, editCollect);
+        delRecipeDB(oldRecipe, editCollect);
         // Delete old recipe before adding new one
         addRecipeDB(newRecipe, editCollect);
     }
