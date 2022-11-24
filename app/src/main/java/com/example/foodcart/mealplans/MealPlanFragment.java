@@ -219,8 +219,6 @@ public class MealPlanFragment extends DialogFragment {
                                     }
                                 }
                             });
-
-
                             //no need to parse count as in XML datatype is set to number (no decimals will be allowed)
                             int servInt = Integer.parseInt(servings);
                             int prepInt = Integer.parseInt(prep_time);
@@ -249,32 +247,9 @@ public class MealPlanFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(type.equals("Ingredients")){
                     Ingredient selectedIngredient = ingredientdataList.get(position);
-                    listener.onOkPressed(new Meal(selectedIngredient.getDescription(), "Ingredient", 0));
-                    HashMap<String, String> data = new HashMap<>();
-                    data.put("Location", selectedIngredient.getLocation());
-                    data.put("Date", selectedIngredient.getFormattedBestBeforeDate());
-                    data.put("Count", Integer.toString(selectedIngredient.getCount()));
-                    data.put("Unit", selectedIngredient.getUnit());
-                    data.put("Category", selectedIngredient.getCategory());
-                    data.put("Scale", "0");
-                    data.put("Type", "Ingredient");
-                    MealPlanCollection
-                            .document(selectedIngredient.getDescription())
-                            .set(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Add Ingredient", String.valueOf(data.get("Description")));
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("ERROR Add Ingredient", String.valueOf(data.get("Description")));
-                                }
-                            });
+                    Meal selMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 0);
+                    listener.onOkPressed(selMeal);
+                    addMealIngredientDB(selMeal, selectedIngredient, MealPlanCollection);
                     getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
                 } else {
                     Recipe selectedRecipe = recipedataList.get(position);
