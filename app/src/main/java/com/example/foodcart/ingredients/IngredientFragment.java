@@ -158,7 +158,7 @@ public class IngredientFragment extends DialogFragment {
 
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());
-                ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
+                ingredientBestBeforeDate.setText(ingredient.getFormattedBestBeforeDate());
             } else {
                 TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
@@ -168,7 +168,7 @@ public class IngredientFragment extends DialogFragment {
                 BBDTextView.setVisibility(view.INVISIBLE);
             }
 
-            ingredientCount.setText(ingredient.getCount().toString());
+            ingredientCount.setText(String.valueOf(ingredient.getCount()));
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
