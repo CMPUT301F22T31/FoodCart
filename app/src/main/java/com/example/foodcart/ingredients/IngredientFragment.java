@@ -124,12 +124,12 @@ public class IngredientFragment extends DialogFragment {
                 });
     }
 
-    public static void editIngredientDB(Ingredient oldItem, Ingredient newitem,
+    public static void editIngredientDB(Ingredient oldItem, Ingredient newItem,
                                        CollectionReference editCollect) {
         // delete old ingredient
         delIngredientDB(oldItem, editCollect);
         // add new ingredient
-        addIngredientDB(newitem, editCollect);
+        addIngredientDB(newItem, editCollect);
     }
 
 

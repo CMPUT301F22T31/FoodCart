@@ -312,7 +312,7 @@ public class RecipeFragment extends DialogFragment {
                                 listener.onOkPressedEditRecipe(newRecipe);
 
                                 // reflect recipe changes to database
-                                editRecipeDB(newRecipe, currentRecipe, recipeCollection);
+                                editRecipeDB(currentRecipe, newRecipe, recipeCollection);
 
                             }
                             else {
