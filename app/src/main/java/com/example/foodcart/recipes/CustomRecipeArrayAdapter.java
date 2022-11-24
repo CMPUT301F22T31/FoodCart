@@ -87,23 +87,8 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference recipeCollection = db.collection("Recipes");
-                    recipeCollection
-                            .document(recipes.get(position).getTitle())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Delete Recipe", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Delete Recipe", "Data could not be deleted!" + e.toString());
-                                }
-                            });
+                    // Delete recipe from database
+                    RecipeFragment.deleteRecipeDB(recipes.get(position), recipeCollection);
                     // find selection
                     recipes.remove(Math.min(position, recipes.size() - 1));
                     notifyDataSetChanged();

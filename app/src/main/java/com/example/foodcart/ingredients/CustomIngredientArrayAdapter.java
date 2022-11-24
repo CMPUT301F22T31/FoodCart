@@ -108,23 +108,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientCollection
-                            .document(ingredients.get(position).getDescription())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Sample", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
-                                }
-                            });
+                    IngredientFragment.delIngredientDB(ingredients.get(position), IngredientCollection);
                     // find and remove selection
                     ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();

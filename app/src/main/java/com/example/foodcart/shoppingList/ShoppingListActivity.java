@@ -52,7 +52,6 @@ public class ShoppingListActivity extends AppCompatActivity
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_shopping_list);
 
-
             // initialize lists
             shoppingList = findViewById(R.id.shopping_list);
             dataList = new ArrayList<>();

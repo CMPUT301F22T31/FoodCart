@@ -75,6 +75,63 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
+    public static void addIngredientDB(Ingredient addItem,
+                                       CollectionReference addCollect) {
+        // Add new ingredient to DataBase
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Location", addItem.getLocation());
+        data.put("Date", addItem.getFormattedBestBeforeDate());
+        data.put("Count", String.valueOf(addItem.getCount()));
+        data.put("Unit", addItem.getUnit());
+        data.put("Category", addItem.getCategory());
+        addCollect
+                .document(addItem.getDescription())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                });
+    }
+
+    public static void delIngredientDB(Ingredient delItem,
+                                       CollectionReference delCollect) {
+        delCollect
+                .document(delItem.getDescription())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Sample", "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("Sample", "Data could not be deleted!" + e.toString());
+                    }
+                });
+    }
+
+    public static void editIngredientDB(Ingredient oldItem, Ingredient newitem,
+                                       CollectionReference editCollect) {
+        // delete old ingredient
+        delIngredientDB(oldItem, editCollect);
+        // add new ingredient
+        addIngredientDB(newitem, editCollect);
+    }
+
 
     @NonNull
     @Override
@@ -147,30 +204,8 @@ public class IngredientFragment extends DialogFragment {
                                 if (triggerFlag.equals("edit")) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Location", location);
-                                    data.put("Date", date);
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    IngredientCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            });
+                                    // edit ingredient in database
+                                    editIngredientDB(ingredient, newIngredient, IngredientCollection);
                                 } else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
@@ -223,30 +258,8 @@ public class IngredientFragment extends DialogFragment {
                                 if (triggerFlag.equals("add")) {
                                     Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Location", location);
-                                    data.put("Date", date);
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    IngredientCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Add Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Add Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            });
+                                    // add new ingredient to database
+                                    addIngredientDB(newIngredient, IngredientCollection);
                                 } else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
