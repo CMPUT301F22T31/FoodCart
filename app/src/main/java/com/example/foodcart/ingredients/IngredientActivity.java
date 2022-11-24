@@ -43,7 +43,7 @@ public class IngredientActivity extends AppCompatActivity
     private ArrayList<Ingredient> dataList;
     private int selected;
     private FirebaseFirestore db;
-    private String[] sortValues = { "description", "best before date", "location", "category" };
+    private final String[] sortValues = { "description", "best before date", "location", "category" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +66,8 @@ public class IngredientActivity extends AppCompatActivity
         final CollectionReference IngredientCollection = db.collection("Ingredients");
 
         // set spinner adapter for drop down sort list
-        Spinner sortDropDown = (Spinner) findViewById(R.id.ingredients_sort_select);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+        Spinner sortDropDown = findViewById(R.id.ingredients_sort_select);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sortValues);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortDropDown.setAdapter(adapter);
         sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
