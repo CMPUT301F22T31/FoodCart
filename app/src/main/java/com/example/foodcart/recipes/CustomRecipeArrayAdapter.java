@@ -28,7 +28,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private ArrayList<Recipe> recipes;
     private Context context;
     private FirebaseFirestore db;
-    private boolean sort = true;
+    private boolean sort;
 
     public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes, boolean sort) {
         super(context, 0, recipes);
@@ -40,7 +40,6 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // return super.getView(position, convertView, parent);
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.content_recipes_item, parent, false);
@@ -57,7 +56,6 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
-            System.out.println(sortValue);
             switch (sortValue){
                 case "title":
                     recipeSort.setText("");
@@ -77,7 +75,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
         }
         notifyDataSetChanged();
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.recipe_item_deleteButton);
+        ImageButton deleteButton = view.findViewById(R.id.recipe_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
