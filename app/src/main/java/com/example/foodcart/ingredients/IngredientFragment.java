@@ -214,12 +214,17 @@ public class IngredientFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && countInt != -1 && calendarDate != null) {
+                            if (!emptyStringsExist && countInt != -1) {
                                 if (triggerFlag.equals("edit")) {
-                                    Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
-                                    listener.onOkPressedEdit(newIngredient);
-                                    // edit ingredient in database
-                                    editIngredientDB(ingredient, newIngredient, IngredientCollection);
+                                    if (calendarDate != null) {
+                                        Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
+                                        listener.onOkPressedEdit(newIngredient);
+                                        // edit ingredient in database
+                                        editIngredientDB(ingredient, newIngredient, IngredientCollection);
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
@@ -267,18 +272,24 @@ public class IngredientFragment extends DialogFragment {
                             boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && countInt != -1 && calendarDate != null) {
+                            if (!emptyStringsExist && countInt != -1) {
                                 if (triggerFlag.equals("add")) {
-                                    Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
-                                    listener.onOkPressed(newIngredient);
-                                    // add new ingredient to database
-                                    addIngredientDB(newIngredient, IngredientCollection);
-                                } else {
+                                    if (calendarDate != null) {
+                                        Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
+                                        listener.onOkPressed(newIngredient);
+                                        // add new ingredient to database
+                                        addIngredientDB(newIngredient, IngredientCollection);
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Please enter all mandatory fields correctly!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter all mandatory fields", Toast.LENGTH_SHORT).show();
                             }
 
                         }
