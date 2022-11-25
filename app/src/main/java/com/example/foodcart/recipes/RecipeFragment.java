@@ -343,7 +343,6 @@ public class RecipeFragment extends DialogFragment {
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
                             if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
-                                Iterator<Ingredient> iter = ingredients.iterator();
                                 String picture  = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);

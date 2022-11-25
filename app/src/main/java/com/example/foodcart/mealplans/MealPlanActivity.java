@@ -184,6 +184,7 @@ public class MealPlanActivity extends AppCompatActivity
 
                     Meal meal = null;
                     try {
+                        assert scale != null;
                         meal = new Meal(name,type,Integer.parseInt(scale));
                     } catch (Exception e) {
                         e.printStackTrace();
