@@ -111,7 +111,7 @@ public class MealPlanFragment extends DialogFragment {
             data.put("Category", ingredient.getCategory());
 
             // get reference to sub-collection
-            CollectionReference IngredientCollection = addCollect.document(addRecipe.getTitle()).collection("Ingredients");
+            CollectionReference IngredientCollection = addCollect.document(addMeal.getMealName() + addMeal.getFormattedDate()).collection("Ingredients");
             // put ingredient into sub-collection
             IngredientCollection
                     .document(ingredient.getDescription())
