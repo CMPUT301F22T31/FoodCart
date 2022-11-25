@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
-import com.example.foodcart.recipes.RecipeIngredientsActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -33,7 +31,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -41,7 +38,6 @@ public class IngredientFragment extends DialogFragment {
     private EditText ingredientDescription;
     private EditText ingredientLocation;
     private TextView ingredientBestBeforeDate;
-    private CalendarView calendarView;
     private EditText ingredientCount;
     private EditText ingredientUnit;
     private EditText ingredientCategory;
@@ -300,11 +296,7 @@ public class IngredientFragment extends DialogFragment {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             String date = result.getData().getStringExtra("Date");
-                            try {
-                                calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            setDate(date);
                             ingredientBestBeforeDate.setText(date);
                         }
                     }
@@ -327,7 +319,17 @@ public class IngredientFragment extends DialogFragment {
         return result;
     }
 
-    //code is not reused as it also toasts specific errors
+    /**
+     * Checks if none of the input values are empty
+     * @param description
+     * @param location
+     * @param count
+     * @param unit
+     * @param category
+     * @return
+     * true: if any value is empty
+     * false: all values are filled
+     */
     public boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
@@ -353,9 +355,16 @@ public class IngredientFragment extends DialogFragment {
         return emptyStringExist;
     }
 
-    private String dateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter.format(date);
+    /**
+     * sets the current calendar date
+     * @param date
+     */
+    private void setDate(String date) {
+        try {
+            calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }
