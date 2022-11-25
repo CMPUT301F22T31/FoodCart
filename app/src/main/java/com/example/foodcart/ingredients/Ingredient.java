@@ -54,7 +54,7 @@ public class Ingredient implements Serializable {
      * @return the best before date of the ingredient as a formatted string
      */
     public String getFormattedBestBeforeDate() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(bestBeforeDate);
     }
 

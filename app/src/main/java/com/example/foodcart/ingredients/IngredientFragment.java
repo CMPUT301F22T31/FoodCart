@@ -1,22 +1,31 @@
 package com.example.foodcart.ingredients;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.foodcart.R;
+import com.example.foodcart.recipes.RecipeIngredientsActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,17 +33,20 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
 public class IngredientFragment extends DialogFragment {
     private EditText ingredientDescription;
     private EditText ingredientLocation;
-    private EditText ingredientBestBeforeDate;
+    private TextView ingredientBestBeforeDate;
+    private CalendarView calendarView;
     private EditText ingredientCount;
     private EditText ingredientUnit;
     private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
+    private Date calendarDate = null; //done as date is being passed around between activities
     private static String triggerFlag; //differentiates the fragment called from ingredient class and recipe class
     private FirebaseFirestore db;
 
@@ -140,10 +152,19 @@ public class IngredientFragment extends DialogFragment {
 
         ingredientDescription = view.findViewById(R.id.ingredientDescriptionET);
         ingredientLocation = view.findViewById(R.id.ingredientLocationET);
-        ingredientBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateET);
+        ingredientBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateTV2);
         ingredientCount = view.findViewById(R.id.ingredientCountET);
         ingredientUnit = view.findViewById(R.id.ingredientUnitET);
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
+
+        final ImageButton calendarButton = view.findViewById(R.id.calendarButton);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent calendarIntent = new Intent(getActivity(), CalendarActivity.class);
+                calendarActivity.launch(calendarIntent);
+            }
+        });
 
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
@@ -159,13 +180,15 @@ public class IngredientFragment extends DialogFragment {
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());
                 ingredientBestBeforeDate.setText(ingredient.getFormattedBestBeforeDate());
-            } else {
-                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+            }
+            else {
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
-                ingredientLocation.setVisibility(view.INVISIBLE);
-                locationTextView.setVisibility(view.INVISIBLE);
-                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
-                BBDTextView.setVisibility(view.INVISIBLE);
+                ingredientLocation.setVisibility(View.INVISIBLE);
+                locationTextView.setVisibility(View.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(View.INVISIBLE);
+                BBDTextView.setVisibility(View.INVISIBLE);
+                calendarButton.setVisibility(View.INVISIBLE);
             }
 
             ingredientCount.setText(String.valueOf(ingredient.getCount()));
@@ -182,27 +205,22 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = "";
-                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             if (triggerFlag.equals("edit")) {
                                 location = ingredientLocation.getText().toString();
-                                date = ingredientBestBeforeDate.getText().toString();
                             } else {
                                 //just to make them pass empty string tests
                                 location = "defaultLocation";
-                                date = "1970-01-01"; //EPOCH date
                             }
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            //try to parse the date
-                            Date BBD = parseDate(date);
+                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                            if (!emptyStringsExist && countInt != -1 && calendarDate != null) {
                                 if (triggerFlag.equals("edit")) {
-                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
+                                    Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
                                     // edit ingredient in database
                                     editIngredientDB(ingredient, newIngredient, IngredientCollection);
@@ -211,7 +229,7 @@ public class IngredientFragment extends DialogFragment {
                                     listener.onOkPressedEdit(newIngredient);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter all mandatory fields correctly!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).create();
@@ -219,12 +237,16 @@ public class IngredientFragment extends DialogFragment {
         //add ingredient functionality
         else {
             if (triggerFlag.equals("addFromRecipe")) {
-                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
-                ingredientLocation.setVisibility(view.INVISIBLE);
-                locationTextView.setVisibility(view.INVISIBLE);
-                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
-                BBDTextView.setVisibility(view.INVISIBLE);
+                ingredientLocation.setVisibility(View.INVISIBLE);
+                locationTextView.setVisibility(View.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(View.INVISIBLE);
+                BBDTextView.setVisibility(View.INVISIBLE);
+                calendarButton.setVisibility(View.INVISIBLE);
+            }
+            else {
+               //do nothing
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
@@ -236,27 +258,22 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = "";
-                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             if (triggerFlag.equals("add")) {
                                 location = ingredientLocation.getText().toString();
-                                date = ingredientBestBeforeDate.getText().toString();
                             } else {
                                 //just to make them pass empty string tests
                                 location = "defaultLocation";
-                                date = "1970-01-01"; //EPOCH date
                             }
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            //try to parse the date
-                            Date BBD = parseDate(date);
+                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                            if (!emptyStringsExist && countInt != -1 && calendarDate != null) {
                                 if (triggerFlag.equals("add")) {
-                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
+                                    Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                     // add new ingredient to database
                                     addIngredientDB(newIngredient, IngredientCollection);
@@ -265,7 +282,7 @@ public class IngredientFragment extends DialogFragment {
                                     listener.onOkPressed(newIngredient);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter all mandatory fields correctly!", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -273,18 +290,26 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
-    private Date parseDate(String bestBeforeDate) {
-        Date date = null;
-        try {
-            if (!bestBeforeDate.equals("0000-00-00")) {
-                date = new SimpleDateFormat("yyyy-mm-dd").parse(bestBeforeDate);
-            }
-        }
-        catch (ParseException e) {
-            Toast.makeText(getContext(), "Invalid Date", Toast.LENGTH_SHORT).show();
-        }
-        return date;
-    }
+    /**
+     * Opens the calendar activity to get date
+     */
+    ActivityResultLauncher<Intent> calendarActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            String date = result.getData().getStringExtra("Date");
+                            try {
+                                calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            ingredientBestBeforeDate.setText(date);
+                        }
+                    }
+                }
+            });
 
     /**
      * Tests the count if it is an integer otherwise print out an exception
@@ -303,15 +328,11 @@ public class IngredientFragment extends DialogFragment {
     }
 
     //code is not reused as it also toasts specific errors
-    public boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
+    public boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
             emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Ingredient Description", Toast.LENGTH_SHORT).show();
-        }
-        else if(date.isEmpty()) {
-            emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Ingredient Best Before Date", Toast.LENGTH_SHORT).show();
         }
         else if(location.isEmpty()) {
             emptyStringExist = true;
@@ -330,6 +351,11 @@ public class IngredientFragment extends DialogFragment {
             Toast.makeText(getContext(), "Please Enter Ingredient Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
+    }
+
+    private String dateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
     }
 
 }
