@@ -184,6 +184,7 @@ public class MealPlanActivity extends AppCompatActivity
 
                     Meal meal = null;
                     try {
+                        Log.d("Update MealPlan", type);
                         assert scale != null;
                         meal = new Meal(name,type,Integer.parseInt(scale));
                     } catch (Exception e) {

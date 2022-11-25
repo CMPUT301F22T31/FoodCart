@@ -15,10 +15,15 @@ import androidx.annotation.Nullable;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
+import com.example.foodcart.ingredients.IngredientFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -78,6 +83,48 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference MealPlanCollection = db.collection("MealPlan");
+                    String meal_type = meals.get(position).getMealType();
+                    if(meal_type.equals("Ingredient")) {
+                        MealPlanFragment.delMealIngredientDB(meals.get(position).getMealName(), MealPlanCollection);
+                    } else {
+                        // delete ingredient list
+                        MealPlanCollection.document(meals.get(position).getMealName())
+                                .collection("Ingredients")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Log.d("Delete MealIngredient", document.getId());
+                                                IngredientFragment.delIngredientDB(document.getId(),
+                                                        MealPlanCollection.document(meals.get(position).getMealName())
+                                                        .collection("Ingredients"));
+                                            }
+                                        } else {
+                                            Log.d("Delete Meal Ingredient", "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+                        // delete recipe
+                        MealPlanCollection
+                                .document(meals.get(position).getMealName())
+                                .delete()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // These are a method which gets executed when the task is succeeded
+                                        Log.d("Delete Meal Recipe", "Data has been deleted successfully!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // These are a method which gets executed if there’s any problem
+                                        Log.d("Delete Meal Recipe", "Data could not be deleted!" + e.toString());
+                                    }
+                                });
+                    }
                     MealPlanCollection
                             .document(meals.get(position).getMealName())
                             .delete()

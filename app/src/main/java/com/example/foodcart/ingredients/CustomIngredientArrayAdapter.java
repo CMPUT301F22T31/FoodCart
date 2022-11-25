@@ -103,7 +103,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientFragment.delIngredientDB(ingredients.get(position), IngredientCollection);
+                    IngredientFragment.delIngredientDB(ingredients.get(position).getDescription(), IngredientCollection);
                     // find and remove selection
                     ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();

@@ -58,13 +58,67 @@ public class MealPlanFragment extends DialogFragment {
     private ListView ItemList;
 
     public static void addMealRecipeDB(Meal addMeal, Recipe addRecipe,
-                                 CollectionReference mealCollect) {
-        // Add new Recipe to DataBase
-        RecipeFragment.addRecipeDB(addRecipe, mealCollect);
-        // update recipe into a meal
-        DocumentReference mealRef = mealCollect.document(addRecipe.getTitle());
-        mealRef.update("Scale", String.valueOf(addMeal.getScale()));
-        mealRef.update("Type", addMeal.getMealType());
+                                 CollectionReference addCollect) {
+        // Add new edited recipe to database
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Prep Time", String.valueOf(addRecipe.getPrep_time()));
+        data.put("Servings", String.valueOf(addRecipe.getServings()));
+        data.put("Category", addRecipe.getCategory());
+        data.put("Comments", addRecipe.getComments());
+        data.put("Picture", addRecipe.getPicture());
+        data.put("Scale", String.valueOf(addMeal.getScale()));
+        data.put("Type", addMeal.getMealType());
+        data.put("MealName", addMeal.getMealName());
+        addCollect
+                .document(addRecipe.getTitle())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Recipe", String.valueOf(data.get("Title")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Recipe",
+                                String.valueOf(data.get("Title")) + e.toString());
+                    }
+                });
+
+        // While ingredients are in ArrayList
+        for (Ingredient ingredient : addRecipe.getIngredientList()) {
+            // Erase all previous entries to add Ingredient
+            data.clear();
+            // Put all ingredient members into hashmap
+            data.put("Count", Integer.toString(ingredient.getCount()));
+            data.put("Unit", ingredient.getUnit());
+            data.put("Category", ingredient.getCategory());
+
+            // get reference to sub-collection
+            CollectionReference IngredientCollection = addCollect.document(addRecipe.getTitle()).collection("Ingredients");
+            // put ingredient into sub-collection
+            IngredientCollection
+                    .document(ingredient.getDescription())
+                    .set(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // These are a method which gets executed when the task is succeeded
+                            Log.d("Edit RecipeI", String.valueOf(ingredient.getDescription()));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // These are a method which gets executed if there’s any problem
+                            Log.d("ERROR Edit RecipeI",
+                                    String.valueOf(ingredient.getDescription()) + e.toString());
+                        }
+                    });
+        }
     }
 
     public static void delMealRecipeDB(Recipe delRecipe,
@@ -81,21 +135,42 @@ public class MealPlanFragment extends DialogFragment {
 
 
     public static void addMealIngredientDB(Meal addMeal, Ingredient addItem,
-                                           CollectionReference mealCollect) {
-        // Add new Ingredient to DataBase
-        IngredientFragment.addIngredientDB(addItem, mealCollect);
-        // update Ingredient into a meal
-        DocumentReference mealRef = mealCollect.document(addItem.getDescription());
-        mealRef.update("Scale", String.valueOf(addMeal.getScale()));
-        mealRef.update("Type", addMeal.getMealType());
+                                           CollectionReference addCollect) {
+        // Add new ingredient with meal values to DataBase
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Location", addItem.getLocation());
+        data.put("Date", addItem.getFormattedBestBeforeDate());
+        data.put("Count", String.valueOf(addItem.getCount()));
+        data.put("Unit", addItem.getUnit());
+        data.put("Category", addItem.getCategory());
+        data.put("Scale", String.valueOf(addMeal.getScale()));
+        data.put("Type", addMeal.getMealType());
+        data.put("MealName", addMeal.getMealName());
+        addCollect
+                .document(addItem.getDescription())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                });
     }
 
-    public static void delMealIngredientDB(Ingredient delIngredient,
+    public static void delMealIngredientDB(String delIngredient,
                                            CollectionReference mealCollect) {
         IngredientFragment.delIngredientDB(delIngredient, mealCollect);
     }
 
-    public static void editMealIngredientDB(Ingredient oldIngredient,
+    public static void editMealIngredientDB(String oldIngredient,
                                             Meal newMeal, Ingredient newIngredient,
                                             CollectionReference mealCollect) {
         delMealIngredientDB(oldIngredient, mealCollect);
@@ -246,7 +321,7 @@ public class MealPlanFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(type.equals("Ingredients")){
                     Ingredient selectedIngredient = ingredientdataList.get(position);
-                    Meal newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 0);
+                    Meal newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1);
                     listener.onOkPressed(newMeal);
                     // Add meal ingredient
                     addMealIngredientDB(newMeal, selectedIngredient, MealPlanCollection);
