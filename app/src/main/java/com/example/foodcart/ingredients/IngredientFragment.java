@@ -83,8 +83,7 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
-    public static void addIngredientDB(Ingredient addItem,
-                                       CollectionReference addCollect) {
+    public static void addIngredientDB(Ingredient addItem, CollectionReference addCollect) {
         // Add new ingredient to DataBase
         HashMap<String, String> data = new HashMap<>();
         data.put("Location", addItem.getLocation());
@@ -111,10 +110,10 @@ public class IngredientFragment extends DialogFragment {
                 });
     }
 
-    public static void delIngredientDB(Ingredient delItem,
+    public static void delIngredientDB(String delItem,
                                        CollectionReference delCollect) {
         delCollect
-                .document(delItem.getDescription())
+                .document(delItem)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -132,7 +131,7 @@ public class IngredientFragment extends DialogFragment {
                 });
     }
 
-    public static void editIngredientDB(Ingredient oldItem, Ingredient newItem,
+    public static void editIngredientDB(String oldItem, Ingredient newItem,
                                        CollectionReference editCollect) {
         // delete old ingredient
         delIngredientDB(oldItem, editCollect);
@@ -220,7 +219,7 @@ public class IngredientFragment extends DialogFragment {
                                         Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
                                         listener.onOkPressedEdit(newIngredient);
                                         // edit ingredient in database
-                                        editIngredientDB(ingredient, newIngredient, IngredientCollection);
+                                        editIngredientDB(ingredient.getDescription(), newIngredient, IngredientCollection);
                                     }
                                     else {
                                         Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();

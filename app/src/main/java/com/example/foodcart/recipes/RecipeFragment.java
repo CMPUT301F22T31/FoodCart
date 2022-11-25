@@ -105,8 +105,8 @@ public class RecipeFragment extends DialogFragment {
      * @param delRecipe     The recipe to delete
      * @param delCollect    The collection to delete from
      */
-    public static void deleteRecipeDB(Recipe delRecipe,
-                                      CollectionReference delCollect) {
+    public static void delRecipeDB(Recipe delRecipe,
+                                   CollectionReference delCollect) {
 
         ArrayList<Ingredient> delIngredients = delRecipe.getIngredientList();
         Iterator<Ingredient> iter = delIngredients.iterator();
@@ -117,7 +117,7 @@ public class RecipeFragment extends DialogFragment {
         while(iter.hasNext())
         {
             Ingredient currentIngredient = iter.next();
-            IngredientFragment.delIngredientDB(currentIngredient, delIngredientCollect);
+            IngredientFragment.delIngredientDB(currentIngredient.getDescription(), delIngredientCollect);
         }
         delCollect
                 .document(delRecipe.getTitle())
@@ -213,7 +213,7 @@ public class RecipeFragment extends DialogFragment {
     public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
                                     CollectionReference editCollect) {
         // Delete old recipe before adding new one
-        deleteRecipeDB(oldRecipe, editCollect);
+        delRecipeDB(oldRecipe, editCollect);
         // Delete old recipe before adding new one
         addRecipeDB(newRecipe, editCollect);
     }
@@ -343,7 +343,6 @@ public class RecipeFragment extends DialogFragment {
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
                             if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
-                                Iterator<Ingredient> iter = ingredients.iterator();
                                 String picture  = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);

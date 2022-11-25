@@ -86,7 +86,7 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
                     // Get a top level reference to the collection
                     final CollectionReference recipeCollection = db.collection("Recipes");
                     // Delete recipe from database
-                    RecipeFragment.deleteRecipeDB(recipes.get(position), recipeCollection);
+                    RecipeFragment.delRecipeDB(recipes.get(position), recipeCollection);
                     // find selection
                     recipes.remove(Math.min(position, recipes.size() - 1));
                     notifyDataSetChanged();

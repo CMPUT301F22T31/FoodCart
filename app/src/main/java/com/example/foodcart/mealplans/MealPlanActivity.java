@@ -181,10 +181,20 @@ public class MealPlanActivity extends AppCompatActivity
                     String name = doc.getId();
                     String type = (String) doc.getData().get("Type");
                     String scale = (String) doc.getData().get("Scale");
+                    String tempDate = (String) doc.getData().get("Day");
+
+                    // Convert date string into Date class
+                    Date date = null;
+                    try {
+                        date = new SimpleDateFormat("yyyy-MM-dd").parse(tempDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
 
                     Meal meal = null;
                     try {
-                        meal = new Meal(name,type,Integer.parseInt(scale));
+                        assert scale != null;
+                        meal = new Meal(name,type,Integer.parseInt(scale),date);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

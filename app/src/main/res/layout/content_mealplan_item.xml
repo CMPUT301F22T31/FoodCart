@@ -28,6 +28,13 @@
             android:layout_weight="1"
             android:text="sample_text"
             android:textSize="15sp" />
+        <TextView
+            android:id="@+id/mealplan_date"
+            android:layout_width="105dp"
+            android:layout_height="47dp"
+            android:layout_weight="1"
+            android:text="sample_text"
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/mealplan_item_deleteButton"
