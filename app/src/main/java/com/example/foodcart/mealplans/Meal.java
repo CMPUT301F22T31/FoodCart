@@ -57,7 +57,7 @@ public class Meal implements Serializable {
      * Gets the best before date of an ingredient as a formatted string
      * @return the best before date of the ingredient as a formatted string
      */
-    public String getFormattedBestBeforeDate() {
+    public String getFormattedDate() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(date);
     }

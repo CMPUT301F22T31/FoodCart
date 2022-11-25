@@ -81,7 +81,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Scale", String.valueOf(addMeal.getScale()));
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
-        data.put("Day", addMeal.getFormattedBestBeforeDate());
+        data.put("Day", addMeal.getFormattedDate());
         addCollect
                 .document(addRecipe.getTitle())
                 .set(data)
@@ -159,7 +159,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Scale", String.valueOf(addMeal.getScale()));
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
-        data.put("Day", addMeal.getFormattedBestBeforeDate());
+        data.put("Day", addMeal.getFormattedDate());
         addCollect
                 .document(addItem.getDescription())
                 .set(data)
