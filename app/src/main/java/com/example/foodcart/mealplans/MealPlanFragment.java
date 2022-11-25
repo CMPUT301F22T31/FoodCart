@@ -65,6 +65,10 @@ public class MealPlanFragment extends DialogFragment {
     private Date calendarDate = null; //done as date is being passed around between activities
     private ListView ItemList;
 
+    private Ingredient selectedIngredient;
+    private Recipe selectedRecipe;
+    private String type;
+
     public static void addMealRecipeDB(Meal addMeal, Recipe addRecipe,
                                  CollectionReference addCollect) {
         // Add new edited recipe to database
@@ -221,7 +225,7 @@ public class MealPlanFragment extends DialogFragment {
         recipedataList = new ArrayList<>();
 
         Bundle args = getArguments();
-        String type = args.getString("type");
+        type = args.getString("type");
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference Collection = db.collection(type);
@@ -310,8 +314,8 @@ public class MealPlanFragment extends DialogFragment {
                             // add recipe to list
                             Recipe recipe = null;
                             try {
-                                recipe = new Recipe(title, prepInt, servInt, picture,
-                                        comments, category, ingredientList);
+                                recipe = new Recipe(title, prepInt, servInt, comments,
+                                        picture, category, ingredientList);
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -329,22 +333,13 @@ public class MealPlanFragment extends DialogFragment {
         ItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(type.equals("Ingredients")){
+                    selectedIngredient = ingredientdataList.get(position);
+                } else {
+                    selectedRecipe = recipedataList.get(position);
+                }
                 Intent calendarIntent = new Intent(getActivity(), CalendarActivity.class);
                 calendarActivity.launch(calendarIntent);
-                if(type.equals("Ingredients")){
-                    Ingredient selectedIngredient = ingredientdataList.get(position);
-                    Meal newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1, calendarDate);
-                    listener.onOkPressed(newMeal);
-                    // Add meal ingredient
-                    addMealIngredientDB(newMeal, selectedIngredient, MealPlanCollection);
-                } else {
-                    Recipe selectedRecipe = recipedataList.get(position);
-                    Meal newMeal = new Meal(selectedRecipe.getTitle(), "Recipe", 1, calendarDate);
-                    listener.onOkPressed(newMeal);
-                    // add recipe to mealplan collection
-                    addMealRecipeDB(newMeal, selectedRecipe, MealPlanCollection);
-                }
-                getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
             }
         });
         return view;
@@ -360,6 +355,22 @@ public class MealPlanFragment extends DialogFragment {
                         if (result.getData() != null) {
                             String date = result.getData().getStringExtra("Date");
                             setDate(date);
+
+                            CollectionReference MealPlanCollection = db.collection("MealPlan");
+                            Meal newMeal;
+
+                            if(type.equals("Ingredients")) {
+                                newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1, calendarDate);
+                                // Add meal ingredient
+                                Log.d("Database MIng", selectedIngredient.getDescription());
+                                addMealIngredientDB(newMeal, selectedIngredient, MealPlanCollection);
+                            } else {
+                                // add recipe to mealplan collection
+                                Log.d("Database MRec", selectedRecipe.getTitle());
+                                newMeal = new Meal(selectedRecipe.getTitle(), "Recipe", 1, calendarDate);
+                                addMealRecipeDB(newMeal, selectedRecipe, MealPlanCollection);
+                            }
+                            listener.onOkPressed(newMeal);
                         }
                     }
                 }

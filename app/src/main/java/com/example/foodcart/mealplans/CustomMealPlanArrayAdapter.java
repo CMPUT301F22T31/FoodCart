@@ -67,7 +67,7 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
 
         mealname.setText(meal.getMealName());
         mealtype.setText(meal.getMealType());
-        mealtype.setText(meal.getDate().toString());
+        mealdate.setText(meal.getFormattedBestBeforeDate());
 
         // set up delete button on each list item and onClick
         ImageButton deleteButton = (ImageButton) view.findViewById(R.id.mealplan_item_deleteButton);
