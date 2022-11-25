@@ -1,7 +1,9 @@
 package com.example.foodcart.mealplans;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,12 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.foodcart.R;
+import com.example.foodcart.ingredients.CalendarActivity;
 import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientFragment;
@@ -55,6 +62,7 @@ public class MealPlanFragment extends DialogFragment {
     private ArrayList<Ingredient> ingredientdataList;
     private ArrayAdapter<Recipe> recipeAdapter;
     private ArrayList<Recipe> recipedataList;
+    private Date calendarDate = null; //done as date is being passed around between activities
     private ListView ItemList;
 
     public static void addMealRecipeDB(Meal addMeal, Recipe addRecipe,
@@ -69,6 +77,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Scale", String.valueOf(addMeal.getScale()));
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
+        data.put("Day", addMeal.getFormattedBestBeforeDate());
         addCollect
                 .document(addRecipe.getTitle())
                 .set(data)
@@ -146,6 +155,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Scale", String.valueOf(addMeal.getScale()));
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
+        data.put("Day", addMeal.getFormattedBestBeforeDate());
         addCollect
                 .document(addItem.getDescription())
                 .set(data)
@@ -319,22 +329,47 @@ public class MealPlanFragment extends DialogFragment {
         ItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent calendarIntent = new Intent(getActivity(), CalendarActivity.class);
+                calendarActivity.launch(calendarIntent);
                 if(type.equals("Ingredients")){
                     Ingredient selectedIngredient = ingredientdataList.get(position);
-                    Meal newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1);
+                    Meal newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1, calendarDate);
                     listener.onOkPressed(newMeal);
                     // Add meal ingredient
                     addMealIngredientDB(newMeal, selectedIngredient, MealPlanCollection);
-                    getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
                 } else {
                     Recipe selectedRecipe = recipedataList.get(position);
-                    Meal newMeal = new Meal(selectedRecipe.getTitle(), "Recipe", 1);
+                    Meal newMeal = new Meal(selectedRecipe.getTitle(), "Recipe", 1, calendarDate);
                     listener.onOkPressed(newMeal);
                     // add recipe to mealplan collection
                     addMealRecipeDB(newMeal, selectedRecipe, MealPlanCollection);
                 }
+                getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
             }
         });
         return view;
+    }
+    /**
+     * Opens the calendar activity to get date
+     */
+    ActivityResultLauncher<Intent> calendarActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            String date = result.getData().getStringExtra("Date");
+                            setDate(date);
+                        }
+                    }
+                }
+            });
+
+    private void setDate(String date) {
+        try {
+            calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
