@@ -83,12 +83,13 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference MealPlanCollection = db.collection("MealPlan");
-                    String meal_type = meals.get(position).getMealType();
-                    if(meal_type.equals("Ingredient")) {
-                        MealPlanFragment.delMealIngredientDB(meals.get(position).getMealName(), MealPlanCollection);
+                    Meal meal = meals.get(position);
+                    if(meal.getMealName().equals("Ingredient")) {
+                        MealPlanFragment.delMealIngredientDB(meal.getMealName(), MealPlanCollection);
                     } else {
                         // delete ingredient list
-                        MealPlanCollection.document(meals.get(position).getMealName())
+                        MealPlanCollection
+                                .document(meal.getMealName())
                                 .collection("Ingredients")
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -96,9 +97,9 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
                                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Log.d("Delete MealIngredient", document.getId());
+                                                Log.d("Delete MealIngredient", document.getId() + meal.getMealName());
                                                 IngredientFragment.delIngredientDB(document.getId(),
-                                                        MealPlanCollection.document(meals.get(position).getMealName())
+                                                        MealPlanCollection.document(meal.getMealName())
                                                         .collection("Ingredients"));
                                             }
                                         } else {
@@ -125,23 +126,6 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                                     }
                                 });
                     }
-                    MealPlanCollection
-                            .document(meals.get(position).getMealName())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Delete MealPlan", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Delete MealPlan", "Data could not be deleted!" + e.toString());
-                                }
-                            });
                     // find and remove selection
                     meals.remove(Math.min(position, meals.size() - 1));
                     notifyDataSetChanged();
