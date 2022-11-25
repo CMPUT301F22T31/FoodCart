@@ -2,7 +2,7 @@
     <string name="app_name">FoodCart</string>
     <string name="ingredients">Ingredients</string>
     <string name="ingredientDescription">Description*</string>
-    <string name="ingredientBestBeforeDate">Best Before Date*</string>
+    <string name="ingredientBestBeforeDate">Expiry Date*</string>
     <string name="ingredientLocation">Storage Location*</string>
     <string name="ingredientCount">Amount*</string>
     <string name="ingredientUnit">Unit*</string>

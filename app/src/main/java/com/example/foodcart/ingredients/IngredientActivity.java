@@ -171,7 +171,7 @@ public class IngredientActivity extends AppCompatActivity
                     // Convert date string into Date class
                     Date date = null;
                     try {
-                        date = new SimpleDateFormat("yyyy-mm-dd").parse(tempDate);
+                        date = new SimpleDateFormat("yyyy-MM-dd").parse(tempDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
