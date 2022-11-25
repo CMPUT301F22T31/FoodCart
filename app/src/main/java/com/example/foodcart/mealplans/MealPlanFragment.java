@@ -371,6 +371,7 @@ public class MealPlanFragment extends DialogFragment {
                                 addMealRecipeDB(newMeal, selectedRecipe, MealPlanCollection);
                             }
                             listener.onOkPressed(newMeal);
+                            getActivity().getSupportFragmentManager().beginTransaction().remove(MealPlanFragment.this).commit();
                         }
                     }
                 }
