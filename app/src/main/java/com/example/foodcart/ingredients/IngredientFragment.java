@@ -175,6 +175,7 @@ public class IngredientFragment extends DialogFragment {
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());
                 ingredientBestBeforeDate.setText(ingredient.getFormattedBestBeforeDate());
+                calendarDate = ingredient.getBestBeforeDate();
             }
             else {
                 TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
