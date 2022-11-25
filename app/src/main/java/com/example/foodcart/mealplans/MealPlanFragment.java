@@ -83,7 +83,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("MealName", addMeal.getMealName());
         data.put("Day", addMeal.getFormattedDate());
         addCollect
-                .document(addRecipe.getTitle())
+                .document(addRecipe.getTitle() + addMeal.getFormattedDate())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -160,8 +160,9 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
         data.put("Day", addMeal.getFormattedDate());
+        // Document ID is description + date "recipe2022-10-30"
         addCollect
-                .document(addItem.getDescription())
+                .document(addItem.getDescription() + addMeal.getFormattedDate())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -179,15 +180,15 @@ public class MealPlanFragment extends DialogFragment {
                 });
     }
 
-    public static void delMealIngredientDB(String delIngredient,
+    public static void delMealIngredientDB(String delName, String delDate,
                                            CollectionReference mealCollect) {
-        IngredientFragment.delIngredientDB(delIngredient, mealCollect);
+        IngredientFragment.delIngredientDB(delName + delDate, mealCollect);
     }
 
-    public static void editMealIngredientDB(String oldIngredient,
+    public static void editMealIngredientDB(String oldName, String oldDate,
                                             Meal newMeal, Ingredient newIngredient,
                                             CollectionReference mealCollect) {
-        delMealIngredientDB(oldIngredient, mealCollect);
+        delMealIngredientDB(oldName, oldDate , mealCollect);
         addMealIngredientDB(newMeal, newIngredient, mealCollect);
     }
 

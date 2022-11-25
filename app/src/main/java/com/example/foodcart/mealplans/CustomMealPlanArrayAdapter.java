@@ -86,12 +86,18 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                     // Get a top level reference to the collection
                     final CollectionReference MealPlanCollection = db.collection("MealPlan");
                     Meal meal = meals.get(position);
+                    // Delete Ingredient
                     if(meal.getMealName().equals("Ingredient")) {
-                        MealPlanFragment.delMealIngredientDB(meal.getMealName(), MealPlanCollection);
+                        MealPlanFragment.delMealIngredientDB(meal.getMealName(), meal.getFormattedDate(), MealPlanCollection);
+
+                    // Delete Recipe
                     } else {
+                        CollectionReference IngredientCollection = MealPlanCollection
+                                .document(meal.getMealName() + meal.getFormattedDate())
+                                .collection("Ingredients");
                         // delete ingredient list
                         MealPlanCollection
-                                .document(meal.getMealName())
+                                .document(meal.getMealName() + meal.getFormattedDate())
                                 .collection("Ingredients")
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -99,10 +105,8 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
                                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Log.d("Delete MealIngredient", document.getId() + meal.getMealName());
-                                                IngredientFragment.delIngredientDB(document.getId(),
-                                                        MealPlanCollection.document(meal.getMealName())
-                                                        .collection("Ingredients"));
+                                                Log.d("Delete MealIngredient", document.getId());
+                                                IngredientFragment.delIngredientDB(document.getId(), IngredientCollection);
                                             }
                                         } else {
                                             Log.d("Delete Meal Ingredient", "Error getting documents: ", task.getException());
@@ -111,7 +115,7 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
                                 });
                         // delete recipe
                         MealPlanCollection
-                                .document(meals.get(position).getMealName())
+                                .document(meal.getMealName() + meal.getFormattedDate())
                                 .delete()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
