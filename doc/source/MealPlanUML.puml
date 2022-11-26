@@ -1,0 +1,89 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ArrayAdapter
+{
+    +View getView(Context, ArrayList)
+}
+
+class MealPlanFragment.ActivityResultLancher
+{
+    +void onActivityResult(ActivityResult)
+}
+
+class MealPlanActivity.CustomMealPlanArrayAdapter extends ArrayAdapter
+{
+    -ArrayList<Meal> meals;
+    -Context context;
+    -FirebaseFirestore db;
+    +View getView(int, @Nullable View, @NonNull ViewGroup);
+}
+
+class Meal implements Serializable
+{
+    -String mealName;
+    -String mealType;
+    -Date date;
+    -int scale;
+    +String getFormattedDate();
+}
+
+class MealPlanActivity.MealPlanActivity extends AppCompatActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
+{
+    -ListView mealPlanListView;
+    -ArrayAdapter<Meal> mealplanAdapter;
+    -ArrayList<Meal> mealplanList;
+    -FirebaseFirestore db;
+    -int selected;
+    -FloatingActionButton addMealPlan, addmIngredientButton, addmRecipeButton;
+    -TextView addmIngredientText, addmRecipeText;
+    -boolean isAllFabsVisible;
+
+    *void onCreate(Bundle savedInstanceState);
+    +void onOkPressed(Meal newMeal);
+    +void onOkEditPressed(Meal newMeal);
+}
+
+class MealPlanFragment.MealPlanFragment extends DialogFragment
+{
+    -FirebaseFirestore db;
+    -MealPlanScaleFragment.OnFragmentInteractionListener listener;
+    -ArrayAdapter<Ingredient> ingredientAdapter;
+    -ArrayList<Ingredient> ingredientdataList;
+    -ArrayAdapter<Recipe> recipeAdapter;
+    -ArrayList<Recipe> recipedataList;
+    -Date calendarDate;
+    -ListView ItemList;
+    -Ingredient selectedIngredient;
+    -Recipe selectedRecipe;
+    -String type;
+    -ActivityResultLauncher<Intent> calendarActivity;
+
+    +void {static} addMealRecipeDB(Meal, Recipe, CollectionReference);
+    +void {static} delMealRecipeDB(Recipe, CollectionReference);
+    +void {static} editMealRecipeDB(Recipe, Meal, Recipe, CollectionReference);
+    +void {static} addMealIngredientDB(Meal, Ingredient, CollectionReference);
+    +void {static} delMealIngredientDB(String, String, CollectionReference);
+    +void {static} editMealIngredientDB(String, String, Meal, Ingredient, CollectionReference);
+    +void onAttach(@NonNull Context);
+    +void {static} MealPlanFragment newInstance(String);
+    +View onCreateView(@NonNull LayoutInflater, @Nullable ViewGroup, @Nullable Bundle);
+    -void setDate(String);
+}
+
+class MealPlanScaleFragment.MealPlanScaleFragment extends DialogFragment
+{
+    private MealPlanScaleFragment.OnFragmentInteractionListener listener;
+    private FirebaseFirestore db;
+    private EditText mealScale_ET;
+    +void onAttach(@NonNull Context context)
+    +void {static} MealPlanScaleFragment newInstance(Meal meal)
+    +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+}
+
+interface MealPlanScaleFragment.OnFragmentInteractionListener
+    {
+        void onOkPressed(Meal newMeal);
+        void onOkEditPressed(Meal newMeal);
+    }
+@enduml
