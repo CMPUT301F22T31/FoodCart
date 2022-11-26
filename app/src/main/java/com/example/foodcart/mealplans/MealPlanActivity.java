@@ -178,7 +178,7 @@ public class MealPlanActivity extends AppCompatActivity
                 assert queryDocumentSnapshots != null;
                 for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
                     Log.d("Update MealPlan", doc.getId());
-                    String name = doc.getId();
+                    String name = (String) doc.getData().get("MealName");
                     String type = (String) doc.getData().get("Type");
                     String scale = (String) doc.getData().get("Scale");
                     String tempDate = (String) doc.getData().get("Day");
