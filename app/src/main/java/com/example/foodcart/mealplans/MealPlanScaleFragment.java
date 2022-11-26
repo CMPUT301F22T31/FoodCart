@@ -105,13 +105,13 @@ public class MealPlanScaleFragment extends DialogFragment {
                             }
 
                             if (scaleInt > 0) {
-                                Meal newMeal= new Meal(meal.getMealName(),meal.getMealType(),scaleInt,null);
+                                Meal newMeal= new Meal(meal.getMealName(),meal.getMealType(),scaleInt,meal.getDate());
                                 listener.onOkEditPressed(newMeal);
                                 // Add new ingredient to DataBase
                                 HashMap<String, String> data = new HashMap<>();
                                 data.put("Scale", scale);
                                 MealPlanCollection
-                                        .document(meal.getMealName())
+                                        .document(meal.getMealName() + meal.getFormattedDate())
                                         .update("Scale",scale)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
