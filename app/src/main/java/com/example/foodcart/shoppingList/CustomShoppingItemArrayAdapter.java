@@ -97,7 +97,7 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
                 if (items.size() > 0) {
                     // Access a Cloud Firestore instance from your Activity
                     db = FirebaseFirestore.getInstance();
-                    Ingredient ingredient = items.get(position).convertToIngredient(new Date(), "location");
+                    Ingredient ingredient = items.get(position);
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
                     IngredientCollection

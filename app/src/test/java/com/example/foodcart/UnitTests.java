@@ -19,6 +19,8 @@ import java.util.Date;
 
 public class UnitTests {
 
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
     //As we don't have access to Context in our JUnit test classes, we need to mock it
     @Mock
     Context mMockContext;
@@ -33,7 +35,6 @@ public class UnitTests {
 
         assertEquals(testIngredient.getDescription(), "Banana");
         assertEquals(testIngredient.getBestBeforeDate(), new Date(2023, 5, 26));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         assertEquals(testIngredient.getFormattedBestBeforeDate(), formatter.format(formatter.parse("2023-05-26")));
         assertEquals(testIngredient.getLocation(), "fridge");
         assertEquals(testIngredient.getUnit(), "");
@@ -79,9 +80,14 @@ public class UnitTests {
     }
 
     @Test
-    public void MealUnitTest() {
+    public void MealUnitTest() throws ParseException {
 
-        Meal testMeal = new Meal("supper", 2);
+        Meal testMeal = new Meal("Spaghetti with Meatballs", "supper", 2, new Date(2022, 12, 24));
+
+        assertEquals(testMeal.getMealName(), "Spaghetti with Meatballs");
+        assertEquals(testMeal.getMealType(), "supper");
+        assertEquals(testMeal.getScale(), 2);
+        assertEquals(testMeal.getDate(), formatter.format(formatter.parse("2022-12-24")));
 
     }
 }
