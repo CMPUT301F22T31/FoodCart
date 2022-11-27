@@ -44,20 +44,19 @@
             android:text="sample_text"
             android:textSize="15sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/shopping_item_quantity"
-            app:layout_constraintEnd_toStartOf="@+id/shopping_item_deleteButton"
+            app:layout_constraintEnd_toStartOf="@+id/shopping_item_checkButton"
             app:layout_constraintStart_toEndOf="@+id/shopping_item_quantity" />
 
-        <ImageButton
-            android:id="@+id/shopping_item_deleteButton"
+        <CheckBox
+            android:id="@+id/shopping_item_checkButton"
             android:layout_width="33dp"
             android:layout_height="72dp"
             android:background="@null"
-            android:contentDescription="Delete Button"
+            android:contentDescription="Check Button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/shopping_item_sort"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_delete" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

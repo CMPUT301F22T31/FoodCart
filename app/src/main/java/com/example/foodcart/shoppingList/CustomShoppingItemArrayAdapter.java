@@ -66,7 +66,7 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
 
         itemDescription.setText(item.getDescription());
         itemQuantity.setText(item.getCount().toString());
-
+        /*
         if (sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             System.out.println(sortValue);
@@ -81,32 +81,7 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
         } else {
             String sortValue = "description";
             itemSort.setText("");
-        }
-
-
-        // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.shopping_item_deleteButton);
-        deleteButton.setFocusable(false);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            /**
-             * OnClick for delete button on each item in ingredients list
-             * Deletes an ingredient from the Ingredients database
-             */
-            public void onClick(View view) {
-                if (items.size() > 0) {
-                    // Access a Cloud Firestore instance from your Activity
-                    db = FirebaseFirestore.getInstance();
-                    // Get a top level reference to the collection
-                    final CollectionReference ShoppingListCollection = db.collection("Shopping List");
-                    // delete item from database
-                    ShoppingItemFragment.delShoppingItemDB(items.get(position), ShoppingListCollection);
-                    // find and remove selection
-                    items.remove(Math.min(position, items.size() - 1));
-                    notifyDataSetChanged();
-                }
-            }
-        });
+        }*/
 
         return view;
     }
