@@ -13,10 +13,10 @@ import android.widget.TextView;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.robotium.solo.Solo;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -47,6 +47,7 @@ public class RecipeTest {
     @Test
     public void start() throws Exception{
         Activity activity = rule.getActivity();
+        solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
     }
 
     /**
@@ -55,10 +56,7 @@ public class RecipeTest {
     @Test
     public void AddRecipe(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -77,6 +75,7 @@ public class RecipeTest {
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
         solo.clickOnButton("Add"); //Select CONFIRM Button
         assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
+        removeAllElements();
     }
 
     /**
@@ -85,10 +84,7 @@ public class RecipeTest {
     @Test
     public void AddRecipeNoPicture(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Butter Chicken");
         solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
@@ -112,10 +108,7 @@ public class RecipeTest {
     @Test
     public void AddRecipeEmptyTitle(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -141,10 +134,7 @@ public class RecipeTest {
     @Test
     public void AddRecipeBadPrepTime(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -171,10 +161,7 @@ public class RecipeTest {
     @Test
     public void AddRecipeBadServes(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -201,10 +188,7 @@ public class RecipeTest {
     @Test
     public void AddRecipeEmptyCategory(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -228,10 +212,7 @@ public class RecipeTest {
     @Test
     public void NoIngredient() {
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -262,6 +243,7 @@ public class RecipeTest {
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
         solo.clickOnButton("Edit"); //Select CONFIRM Button
         assertTrue(solo.waitForText("Chicken Tikka Masala", 1, 2000));
+        removeAllElements();
     }
 
     /**
@@ -279,5 +261,15 @@ public class RecipeTest {
             }
         }
         assertFalse(solo.searchText("Butter Chicken"));
+    }
+
+    /**
+     * removes all elements from the listview
+     */
+    private void removeAllElements() {
+        ListView mylist = (ListView)solo.getView(R.id.recipes_list);
+        for(int i =0;i<mylist.getCount();i++){
+            solo.clickOnImageButton(i);
+        }
     }
 }
