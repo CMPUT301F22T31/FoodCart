@@ -73,40 +73,40 @@
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:layout_marginEnd="20dp"
-        android:src="@android:drawable/ic_menu_today"
+        android:src="@drawable/ic_ingredient"
         app:layout_constraintBottom_toBottomOf="parent"
         android:contentDescription="Go To Ingredients"
         app:layout_constraintEnd_toStartOf="@+id/recipes_tab" />
 
     <ImageButton
         android:id="@+id/recipes_tab"
-        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:layout_marginEnd="20dp"
-        android:src="@android:drawable/ic_menu_today"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/grey"
         android:contentDescription="Go To Recipes"
+        android:src="@drawable/ic_recipe"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mealplans_tab" />
 
     <ImageButton
         android:id="@+id/mealplans_tab"
-        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
         android:layout_marginEnd="20dp"
-        android:src="@android:drawable/ic_menu_today"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/grey"
         android:contentDescription="Go To Meal Plans"
+        android:src="@drawable/ic_meal_plan"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/shoppinglist_tab" />
 
     <ImageButton
         android:id="@+id/shoppinglist_tab"
-        android:background="@color/grey"
         android:layout_width="88dp"
         android:layout_height="67dp"
+        android:background="@color/grey"
         android:contentDescription="Go To Shopping List"
-        android:src="@android:drawable/ic_menu_today"
+        android:src="@drawable/ic_shopping_list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
