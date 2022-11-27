@@ -207,7 +207,7 @@ public class MealPlanActivity extends AppCompatActivity
 
     @Override
     public void onOkPressed(Meal newMeal) {
-        mealplanAdapter.add(newMeal);
+        //mealplanAdapter.add(newMeal);
     }
 
     @Override
