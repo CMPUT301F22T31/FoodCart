@@ -19,9 +19,13 @@ import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.ingredients.IngredientFragment;
+import com.example.foodcart.recipes.CustomRecipeArrayAdapter;
+import com.example.foodcart.recipes.Recipe;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.example.foodcart.recipes.RecipeFragment;
 import com.example.foodcart.shoppingList.ShoppingListActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -29,6 +33,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +44,13 @@ import java.util.Comparator;
 import java.util.Date;
 
 public class MealPlanActivity extends AppCompatActivity
-        implements MealPlanFragment.OnFragmentInteractionListener {
+        implements MealPlanScaleFragment.OnFragmentInteractionListener {
+
+    ListView mealPlanListView;
+    ArrayAdapter<Meal> mealplanAdapter;
+    ArrayList<Meal> mealplanList;
+    FirebaseFirestore db;
+    int selected;
 
     FloatingActionButton addMealPlan, addmIngredientButton, addmRecipeButton;
 
@@ -50,6 +62,17 @@ public class MealPlanActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mealplan);
+
+        mealPlanListView = findViewById(R.id.mealplan_list);
+        mealplanList = new ArrayList<>();
+
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance();
+        // Get a top level reference to the collection
+        final CollectionReference mealPlanCollection = db.collection("MealPlan");
+
+        mealplanAdapter = new CustomMealPlanArrayAdapter(this, mealplanList);
+        mealPlanListView.setAdapter(mealplanAdapter);
 
         addMealPlan = findViewById(R.id.add_mealplan_button);
         addmIngredientButton = findViewById(R.id.add_mealplan_ingredient_button);
@@ -86,6 +109,18 @@ public class MealPlanActivity extends AppCompatActivity
                         }
                     }
                 });
+
+        // onClick for selecting items from list. When item is selected, Scale Recipe is selected
+        mealPlanListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Meal selectedmeal = mealplanList.get(position);
+                if (selectedmeal.getMealType().equals("Recipe")){
+                    selected = position;
+                    new MealPlanScaleFragment().newInstance(selectedmeal).show(getSupportFragmentManager(), "EDIT_SCALE");
+                }
+            }
+        });
 
         addmIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,12 +169,50 @@ public class MealPlanActivity extends AppCompatActivity
                 finish();
             }
         });
-    }
-    @Override
-    public void onOkPressed(Ingredient newIngredient) {
+
+        mealPlanCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
+                    FirebaseFirestoreException error) {
+                mealplanList.clear();
+                assert queryDocumentSnapshots != null;
+                for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
+                    Log.d("Update MealPlan", doc.getId());
+                    String name = (String) doc.getData().get("MealName");
+                    String type = (String) doc.getData().get("Type");
+                    String scale = (String) doc.getData().get("Scale");
+                    String tempDate = (String) doc.getData().get("Day");
+
+                    // Convert date string into Date class
+                    Date date = null;
+                    try {
+                        date = new SimpleDateFormat("yyyy-MM-dd").parse(tempDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    Meal meal = null;
+                    try {
+                        assert scale != null;
+                        meal = new Meal(name,type,Integer.parseInt(scale),date);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mealplanList.add(meal);
+                }
+                mealplanAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
+            }
+        });
     }
 
     @Override
-    public void onOkPressedEdit(Ingredient ingredient) {
+    public void onOkPressed(Meal newMeal) {
+        //mealplanAdapter.add(newMeal);
+    }
+
+    @Override
+    public void onOkEditPressed(Meal newMeal) {
+        mealplanList.set(selected, newMeal);
+        mealplanAdapter.notifyDataSetChanged();
     }
 }

@@ -1,6 +1,5 @@
 package com.example.foodcart.recipes;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,9 +7,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+
 import com.example.foodcart.ingredients.*;
 import android.os.Bundle;
 import android.util.Base64;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,12 +43,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+
 import org.checkerframework.checker.units.qual.A;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,7 +74,6 @@ public class RecipeFragment extends DialogFragment {
     private Bitmap imageBitmap;
     private ArrayList<Ingredient> ingredients;
     private OnFragmentInteractionListener listener;
-    private FirebaseFirestore db;
 
 
     public interface OnFragmentInteractionListener {
@@ -90,13 +100,131 @@ public class RecipeFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Recursively delete a recipe from a given database collection reference
+     * @param delRecipe     The recipe to delete
+     * @param delCollect    The collection to delete from
+     */
+    public static void delRecipeDB(Recipe delRecipe,
+                                   CollectionReference delCollect) {
+
+        ArrayList<Ingredient> delIngredients = delRecipe.getIngredientList();
+        Iterator<Ingredient> iter = delIngredients.iterator();
+
+        // get reference to ingredient collection
+        CollectionReference delIngredientCollect = delCollect.document(delRecipe.getTitle())
+                                                    .collection("Ingredients");
+        while(iter.hasNext())
+        {
+            Ingredient currentIngredient = iter.next();
+            IngredientFragment.delIngredientDB(currentIngredient.getDescription(), delIngredientCollect);
+        }
+        delCollect
+                .document(delRecipe.getTitle())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Delete Recipe", "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("Delete Recipe", "Data could not be deleted!" + e.toString());
+                    }
+                });
+    }
+
+    /**
+     * Add a recipe to a given database collection reference
+     * @param addRecipe     The recipe to add
+     * @param addCollect    The collection to add it too
+     */
+    public static void addRecipeDB(Recipe addRecipe,
+                                   CollectionReference addCollect) {
+        // Add new edited recipe to database
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Prep Time", String.valueOf(addRecipe.getPrep_time()));
+        data.put("Servings", String.valueOf(addRecipe.getServings()));
+        data.put("Category", addRecipe.getCategory());
+        data.put("Comments", addRecipe.getComments());
+        data.put("Picture", addRecipe.getPicture());
+        addCollect
+                .document(addRecipe.getTitle())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Recipe", String.valueOf(data.get("Title")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Recipe",
+                                String.valueOf(data.get("Title")) + e.toString());
+                    }
+                });
+
+        // While ingredients are in ArrayList
+        for (Ingredient ingredient : addRecipe.getIngredientList()) {
+            // Erase all previous entries to add Ingredient
+            data.clear();
+            // Put all ingredient members into hashmap
+            data.put("Count", Integer.toString(ingredient.getCount()));
+            data.put("Unit", ingredient.getUnit());
+            data.put("Category", ingredient.getCategory());
+
+            // get reference to sub-collection
+            CollectionReference IngredientCollection = addCollect.document(addRecipe.getTitle()).collection("Ingredients");
+            // put ingredient into sub-collection
+            IngredientCollection
+                    .document(ingredient.getDescription())
+                    .set(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // These are a method which gets executed when the task is succeeded
+                            Log.d("Edit RecipeI", String.valueOf(ingredient.getDescription()));
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // These are a method which gets executed if there’s any problem
+                            Log.d("ERROR Edit RecipeI",
+                                    String.valueOf(ingredient.getDescription()) + e.toString());
+                        }
+                    });
+        }
+    }
+
+    /**
+     * edit a recipe from a given database collection reference
+     * @param oldRecipe     The old recipe to replace
+     * @param newRecipe     The new recipe to replace old recipe with
+     * @param editCollect   The collection containing oldRecipe
+     */
+    public static void editRecipeDB(Recipe oldRecipe, Recipe newRecipe,
+                                    CollectionReference editCollect) {
+        // Delete old recipe before adding new one
+        delRecipeDB(oldRecipe, editCollect);
+        // Delete old recipe before adding new one
+        addRecipeDB(newRecipe, editCollect);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_recipe, null);
         recipeImage = view.findViewById(R.id.recipeImgView);
         // Access a Cloud Firestore instance from your Activity
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
 
@@ -171,75 +299,20 @@ public class RecipeFragment extends DialogFragment {
                             String serves = recipeServings.getText().toString();
                             String category = recipeCategory.getText().toString();
                             String comments = recipeComments.getText().toString();
+
                             //validate empty strings
                             boolean emptyStringsExist = emptyStringCheckRecipe(title, prepTime, serves, category);
+
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
                             if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
-                                Iterator<Ingredient> iter = ingredients.iterator();
+
                                 String picture = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedEditRecipe(newRecipe);
-                                // Add new edited recipe to database
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("Prep Time", prepTime);
-                                data.put("Servings", serves);
-                                data.put("Category", category);
-                                data.put("Comments", comments);
-                                data.put("Picture", picture);
-                                recipeCollection
-                                        .document(title)
-                                        .set(data)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                // These are a method which gets executed when the task is succeeded
-                                                Log.d("Edit Recipe", String.valueOf(data.get("Title")));
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // These are a method which gets executed if there’s any problem
-                                                Log.d("ERROR Edit Recipe",
-                                                        String.valueOf(data.get("Title")) + e.toString());
-                                            }
-                                        });
 
-                                // While ingredients are in ArrayList
-                                while(iter.hasNext())
-                                {
-                                    // Erase all previous entries to add Ingredient
-                                    data.clear();
-                                    Ingredient currentIngredient = iter.next();
-                                    // Put all ingredient members into hashmap
-                                    data.put("Count", Integer.toString(currentIngredient.getCount()));
-                                    data.put("Unit", currentIngredient.getUnit());
-                                    data.put("Category", currentIngredient.getCategory());
-
-                                    // get reference to sub-collection
-                                    CollectionReference IngredientCollection = db.collection("Recipes")
-                                                                                .document(title).collection("Ingredients");
-                                    // put ingredient into sub-collection
-                                    IngredientCollection
-                                            .document(currentIngredient.getDescription())
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit RecipeI", String.valueOf(currentIngredient.getDescription()));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Edit RecipeI",
-                                                            String.valueOf(currentIngredient.getDescription()) + e.toString());
-                                                }
-                                            });
-                                }
+                                // reflect recipe changes to database
+                                editRecipeDB(currentRecipe, newRecipe, recipeCollection);
 
                             }
                             else {
@@ -270,68 +343,12 @@ public class RecipeFragment extends DialogFragment {
                             int prepTimeInt = parsePrepTime(prepTime);
                             int servesInt = parseServing(serves);
                             if (!emptyStringsExist && imageBitmap != null && prepTimeInt != -1 && servesInt != -1 && !ingredients.isEmpty()) {
-                                Iterator<Ingredient> iter = ingredients.iterator();
                                 String picture  = bitmapToString(imageBitmap);
                                 Recipe newRecipe = new Recipe(title, prepTimeInt, servesInt, comments, picture, category, ingredients);
                                 listener.onOkPressedRecipe(newRecipe);
 
-                                // Add new recipe to database
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("Prep Time", prepTime);
-                                data.put("Servings", serves);
-                                data.put("Category", category);
-                                data.put("Comments", comments);
-                                data.put("Picture", picture);
-                                recipeCollection
-                                        .document(title)
-                                        .set(data)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                // These are a method which gets executed when the task is succeeded
-                                                Log.d("Add Recipe", String.valueOf(data.get("Title")));
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                // These are a method which gets executed if there’s any problem
-                                                Log.d("ERROR Add Recipe", String.valueOf(data.get("Title")) + e.toString());
-                                            }
-                                        });
-
-                                // While ingredients are in ArrayList
-                                while(iter.hasNext())
-                                {
-                                    // Erase all previous entries to add Ingredient
-                                    data.clear();
-                                    Ingredient currentIngredient = iter.next();
-                                    // Put all ingredient members into hashmap
-                                    data.put("Count", Integer.toString(currentIngredient.getCount()));
-                                    data.put("Unit", currentIngredient.getUnit());
-                                    data.put("Category", currentIngredient.getCategory());
-                                    // get reference to sub-collection ingredients in recipe document
-                                    CollectionReference IngredientCollection = db.collection("Recipes")
-                                            .document(title).collection("Ingredients");
-                                    // put ingredient into sub-collection
-                                    IngredientCollection
-                                            .document(currentIngredient.getDescription())
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Add RecipeI", String.valueOf(currentIngredient.getDescription()));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Add RecipeI", String.valueOf(currentIngredient.getDescription()));
-                                                }
-                                            });
-                                }
+                                // Add recipe to database
+                                addRecipeDB(newRecipe, recipeCollection);
                             }
                             else {
                                 Toast.makeText(getContext(), "Make sure all mandatory fields are filled", Toast.LENGTH_SHORT).show();

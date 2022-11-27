@@ -30,7 +30,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;
     private Context context;
     private FirebaseFirestore db;
-    private boolean sort = true;
+    private boolean sort;
 
     /**
      * Constructor for custom array of ingredients adapter
@@ -51,7 +51,6 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
      * and sort functionality for the ingredients in the list
      */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // return super.getView(position, convertView, parent);
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.content_ingredients_item, parent, false);
@@ -61,17 +60,14 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
 
         // Get the views of the TextViews
         TextView ingredientDescription = view.findViewById(R.id.ingredient_item_name);
-        TextView ingredientQuantity = view.findViewById(R.id.ingredient_item_quantity);
         TextView ingredientSort = view.findViewById(R.id.ingredient_item_sort);
         View parentView = (View) parent.getParent();
         Spinner sortDropDown = parentView.findViewById(R.id.ingredients_sort_select);
 
         ingredientDescription.setText(ingredient.getDescription());
-        ingredientQuantity.setText(ingredient.getCount().toString());
 
         if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
-            System.out.println(sortValue);
             switch (sortValue){
                 case "description":
                     ingredientSort.setText("");
@@ -87,13 +83,12 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                     break;
             }
         } else {
-            String sortValue = "description";
             ingredientSort.setText("");
         }
 
 
         // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.ingredient_item_deleteButton);
+        ImageButton deleteButton = view.findViewById(R.id.ingredient_item_deleteButton);
         deleteButton.setFocusable(false);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,23 +103,7 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
                     db = FirebaseFirestore.getInstance();
                     // Get a top level reference to the collection
                     final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientCollection
-                            .document(ingredients.get(position).getDescription())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Sample", "Data has been deleted successfully!");
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be deleted!" + e.toString());
-                                }
-                            });
+                    IngredientFragment.delIngredientDB(ingredients.get(position).getDescription(), IngredientCollection);
                     // find and remove selection
                     ingredients.remove(Math.min(position, ingredients.size() - 1));
                     notifyDataSetChanged();

@@ -26,6 +26,9 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ingredients.CalendarActivity"
+            android:exported="false"/>
+        <activity
             android:name=".recipes.RecipeActivity"
             android:exported="false" />
         <activity

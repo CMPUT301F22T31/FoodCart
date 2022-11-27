@@ -1,17 +1,24 @@
 package com.example.foodcart.ingredients;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -30,11 +37,12 @@ import java.util.HashMap;
 public class IngredientFragment extends DialogFragment {
     private EditText ingredientDescription;
     private EditText ingredientLocation;
-    private EditText ingredientBestBeforeDate;
+    private TextView ingredientBestBeforeDate;
     private EditText ingredientCount;
     private EditText ingredientUnit;
     private EditText ingredientCategory;
     private OnFragmentInteractionListener listener;
+    private Date calendarDate = null; //done as date is being passed around between activities
     private static String triggerFlag; //differentiates the fragment called from ingredient class and recipe class
     private FirebaseFirestore db;
 
@@ -75,6 +83,62 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
+    public static void addIngredientDB(Ingredient addItem, CollectionReference addCollect) {
+        // Add new ingredient to DataBase
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Location", addItem.getLocation());
+        data.put("Date", addItem.getFormattedBestBeforeDate());
+        data.put("Count", String.valueOf(addItem.getCount()));
+        data.put("Unit", addItem.getUnit());
+        data.put("Category", addItem.getCategory());
+        addCollect
+                .document(addItem.getDescription())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
+                    }
+                });
+    }
+
+    public static void delIngredientDB(String delItem,
+                                       CollectionReference delCollect) {
+        delCollect
+                .document(delItem)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // These are a method which gets executed when the task is succeeded
+                        Log.d("Sample", "Data has been deleted successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // These are a method which gets executed if there’s any problem
+                        Log.d("Sample", "Data could not be deleted!" + e.toString());
+                    }
+                });
+    }
+
+    public static void editIngredientDB(String oldItem, Ingredient newItem,
+                                       CollectionReference editCollect) {
+        // delete old ingredient
+        delIngredientDB(oldItem, editCollect);
+        // add new ingredient
+        addIngredientDB(newItem, editCollect);
+    }
+
 
     @NonNull
     @Override
@@ -83,10 +147,19 @@ public class IngredientFragment extends DialogFragment {
 
         ingredientDescription = view.findViewById(R.id.ingredientDescriptionET);
         ingredientLocation = view.findViewById(R.id.ingredientLocationET);
-        ingredientBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateET);
+        ingredientBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateTV2);
         ingredientCount = view.findViewById(R.id.ingredientCountET);
         ingredientUnit = view.findViewById(R.id.ingredientUnitET);
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
+
+        final ImageButton calendarButton = view.findViewById(R.id.calendarButton);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent calendarIntent = new Intent(getActivity(), CalendarActivity.class);
+                calendarActivity.launch(calendarIntent);
+            }
+        });
 
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
@@ -101,17 +174,20 @@ public class IngredientFragment extends DialogFragment {
 
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());
-                ingredientBestBeforeDate.setText(new SimpleDateFormat("yyyy-mm-dd").format(ingredient.getBestBeforeDate()));
-            } else {
-                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+                ingredientBestBeforeDate.setText(ingredient.getFormattedBestBeforeDate());
+                calendarDate = ingredient.getBestBeforeDate();
+            }
+            else {
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
-                ingredientLocation.setVisibility(view.INVISIBLE);
-                locationTextView.setVisibility(view.INVISIBLE);
-                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
-                BBDTextView.setVisibility(view.INVISIBLE);
+                ingredientLocation.setVisibility(View.INVISIBLE);
+                locationTextView.setVisibility(View.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(View.INVISIBLE);
+                BBDTextView.setVisibility(View.INVISIBLE);
+                calendarButton.setVisibility(View.INVISIBLE);
             }
 
-            ingredientCount.setText(ingredient.getCount().toString());
+            ingredientCount.setText(String.valueOf(ingredient.getCount()));
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -125,58 +201,36 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = "";
-                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             if (triggerFlag.equals("edit")) {
                                 location = ingredientLocation.getText().toString();
-                                date = ingredientBestBeforeDate.getText().toString();
                             } else {
                                 //just to make them pass empty string tests
                                 location = "defaultLocation";
-                                date = "1970-01-01"; //EPOCH date
                             }
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            //try to parse the date
-                            Date BBD = parseDate(date);
+                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                            if (!emptyStringsExist && countInt != -1) {
                                 if (triggerFlag.equals("edit")) {
-                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
-                                    listener.onOkPressedEdit(newIngredient);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Location", location);
-                                    data.put("Date", date);
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    IngredientCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Edit Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Edit Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            });
+                                    if (calendarDate != null) {
+                                        Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
+                                        listener.onOkPressedEdit(newIngredient);
+                                        // edit ingredient in database
+                                        editIngredientDB(ingredient.getDescription(), newIngredient, IngredientCollection);
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressedEdit(newIngredient);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter all mandatory fields correctly!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).create();
@@ -184,12 +238,16 @@ public class IngredientFragment extends DialogFragment {
         //add ingredient functionality
         else {
             if (triggerFlag.equals("addFromRecipe")) {
-                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV);
+                TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
-                ingredientLocation.setVisibility(view.INVISIBLE);
-                locationTextView.setVisibility(view.INVISIBLE);
-                ingredientBestBeforeDate.setVisibility(view.INVISIBLE);
-                BBDTextView.setVisibility(view.INVISIBLE);
+                ingredientLocation.setVisibility(View.INVISIBLE);
+                locationTextView.setVisibility(View.INVISIBLE);
+                ingredientBestBeforeDate.setVisibility(View.INVISIBLE);
+                BBDTextView.setVisibility(View.INVISIBLE);
+                calendarButton.setVisibility(View.INVISIBLE);
+            }
+            else {
+               //do nothing
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
@@ -201,59 +259,37 @@ public class IngredientFragment extends DialogFragment {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             String description = ingredientDescription.getText().toString();
                             String location = "";
-                            String date = "";
                             String count = ingredientCount.getText().toString();
                             String unit = ingredientUnit.getText().toString();
                             String category = ingredientCategory.getText().toString();
                             if (triggerFlag.equals("add")) {
                                 location = ingredientLocation.getText().toString();
-                                date = ingredientBestBeforeDate.getText().toString();
                             } else {
                                 //just to make them pass empty string tests
                                 location = "defaultLocation";
-                                date = "1970-01-01"; //EPOCH date
                             }
                             //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, date, location, count, unit, category);
-                            //try to parse the date
-                            Date BBD = parseDate(date);
+                            boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                             //try to parse the count
                             int countInt = parseCount(count);
-                            if (!emptyStringsExist && BBD != null && countInt != -1) {
+                            if (!emptyStringsExist && countInt != -1) {
                                 if (triggerFlag.equals("add")) {
-                                    Ingredient newIngredient = new Ingredient(description, BBD, location, countInt, unit, category);
-                                    listener.onOkPressed(newIngredient);
-                                    // Add new ingredient to DataBase
-                                    HashMap<String, String> data = new HashMap<>();
-                                    data.put("Description", description);
-                                    data.put("Location", location);
-                                    data.put("Date", date);
-                                    data.put("Count", count);
-                                    data.put("Unit", unit);
-                                    data.put("Category", category);
-                                    IngredientCollection
-                                            .document(description)
-                                            .set(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // These are a method which gets executed when the task is succeeded
-                                                    Log.d("Add Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // These are a method which gets executed if there’s any problem
-                                                    Log.d("ERROR Add Ingredient", String.valueOf(data.get("Description")));
-                                                }
-                                            });
-                                } else {
+                                    if (calendarDate != null) {
+                                        Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
+                                        listener.onOkPressed(newIngredient);
+                                        // add new ingredient to database
+                                        addIngredientDB(newIngredient, IngredientCollection);
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
                                     Ingredient newIngredient = new Ingredient(description, countInt, unit, category);
                                     listener.onOkPressed(newIngredient);
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter all mandatory fields", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -261,18 +297,22 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
-    private Date parseDate(String bestBeforeDate) {
-        Date date = null;
-        try {
-            if (!bestBeforeDate.equals("0000-00-00")) {
-                date = new SimpleDateFormat("yyyy-mm-dd").parse(bestBeforeDate);
-            }
-        }
-        catch (ParseException e) {
-            Toast.makeText(getContext(), "Invalid Date", Toast.LENGTH_SHORT).show();
-        }
-        return date;
-    }
+    /**
+     * Opens the calendar activity to get date
+     */
+    ActivityResultLauncher<Intent> calendarActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            String date = result.getData().getStringExtra("Date");
+                            setDate(date);
+                            ingredientBestBeforeDate.setText(date);
+                        }
+                    }
+                }
+            });
 
     /**
      * Tests the count if it is an integer otherwise print out an exception
@@ -290,16 +330,22 @@ public class IngredientFragment extends DialogFragment {
         return result;
     }
 
-    //code is not reused as it also toasts specific errors
-    public boolean emptyStringCheck(String description, String date, String location, String count, String unit, String category) {
+    /**
+     * Checks if none of the input values are empty
+     * @param description
+     * @param location
+     * @param count
+     * @param unit
+     * @param category
+     * @return
+     * true: if any value is empty
+     * false: all values are filled
+     */
+    public boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
             emptyStringExist = true;
             Toast.makeText(getContext(), "Please Enter Ingredient Description", Toast.LENGTH_SHORT).show();
-        }
-        else if(date.isEmpty()) {
-            emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Ingredient Best Before Date", Toast.LENGTH_SHORT).show();
         }
         else if(location.isEmpty()) {
             emptyStringExist = true;
@@ -318,6 +364,18 @@ public class IngredientFragment extends DialogFragment {
             Toast.makeText(getContext(), "Please Enter Ingredient Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
+    }
+
+    /**
+     * sets the current calendar date
+     * @param date
+     */
+    private void setDate(String date) {
+        try {
+            calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }
