@@ -128,13 +128,12 @@ public class ShoppingItemFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_ingredient, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_shopping_item, null);
 
-        itemDescription = view.findViewById(R.id.ingredientDescriptionET);
-        itemCount = view.findViewById(R.id.ingredientCountET);
-        itemUnit = view.findViewById(R.id.ingredientUnitET);
-        itemCategory = view.findViewById(R.id.ingredientCategoryET);
-
+        itemDescription = view.findViewById(R.id.itemDescriptionET);
+        itemCount = view.findViewById(R.id.itemCountET);
+        itemUnit = view.findViewById(R.id.itemUnitET);
+        itemCategory = view.findViewById(R.id.itemCategoryET);
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
@@ -145,7 +144,7 @@ public class ShoppingItemFragment extends DialogFragment {
         if(args != null) {
             ShoppingItem item = (ShoppingItem) args.getSerializable("shopping item");
             itemDescription.setText(item.getDescription());
-            itemCount.setText(item.getCount().toString());
+            itemCount.setText((String) item.getCount().toString());
             itemUnit.setText(item.getUnit());
             itemCategory.setText(item.getCategory());
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

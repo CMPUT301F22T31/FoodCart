@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Recipe object with the title, prep time, number of servings,
+ * TODO Recipe object with the title, prep time, number of servings,
  * comments, picture, and category of recipe
  */
 public class Meal implements Serializable {
