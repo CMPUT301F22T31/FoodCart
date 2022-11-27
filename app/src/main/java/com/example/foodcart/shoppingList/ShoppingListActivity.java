@@ -178,8 +178,8 @@ public class ShoppingListActivity extends AppCompatActivity
         public void onOkPressedEdit(ShoppingItem item) {
             for(ShoppingItem i:dataList){
                 if(i.getDescription().equals(item.getDescription())){
-                    i.setCount(i.getCount()-item.getCount());
-                    if(i.getCount() <=0){
+                    i.setOldcount(item.getCount());
+                    if((i.getCount()-i.getOldcount()) <=0){
                         dataList.remove(i);
                     }
                     break;
