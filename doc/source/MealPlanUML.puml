@@ -6,7 +6,7 @@ class FireBaseFirestore
     +CollectionReference collection(String)
 }
 
-class MealPlanFragment.ActivityResultLancher
+class MealPlanFragment.ActivityResultLauncher
 {
     +void onActivityResult(ActivityResult)
 }
@@ -19,7 +19,7 @@ class MealPlanActivity.CustomMealPlanArrayAdapter
     +View getView(int, @Nullable View, @NonNull ViewGroup);
 }
 
-class Meal implements Serializable
+class Meal
 {
     -String mealName;
     -String mealType;
@@ -94,8 +94,19 @@ class MealPlanFragment.CalendarActivity
     - void done()
 }
 
+Serializable ()- Meal : Implements
 
+MealPlanFragment.MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
+MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
+MealPlanFragment.MealPlanFragment <-- MealPlanFragment.CalendarActivity
 
+MealPlanActivity.MealPlanActivity -> MealPlanFragment.MealPlanFragment
+MealPlanActivity.MealPlanActivity - MealPlanActivity.CustomMealPlanArrayAdapter
+MealPlanScaleFragment.MealPlanScaleFragment <-> MealPlanActivity.MealPlanActivity
+MealPlanScaleFragment.MealPlanScaleFragment -* MealPlanScaleFragment.OnFragmentInteractionListener
 
+FireBaseFirestore -> MealPlanFragment.MealPlanFragment
+FireBaseFirestore -> MealPlanActivity.MealPlanActivity
+FireBaseFirestore ---> MealPlanScaleFragment.MealPlanScaleFragment
 
 @enduml
