@@ -179,7 +179,7 @@ public class ShoppingListActivity extends AppCompatActivity
             for(ShoppingItem i:dataList){
                 if(i.getDescription().equals(item.getDescription())){
                     i.setOldcount(item.getCount());
-                    if(i.getCount() <=0){
+                    if((i.getCount()-i.getOldcount()) <=0){
                         dataList.remove(i);
                     }
                     break;
