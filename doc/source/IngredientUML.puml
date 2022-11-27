@@ -102,7 +102,7 @@ FireBaseFirestore --o "0..*" IngredientFragment.IngredientFragment
 IngredientActivity.IngredientActivity <--> IngredientFragment.IngredientFragment
 
 IngredientFragment.CalendarActivity <-> IngredientFragment.ActivityResultLauncher
-IngredientFragment.ActivityResultLauncher -o "1" IngredientFragment.IngredientFragment
+IngredientFragment.ActivityResultLauncher --o "1" IngredientFragment.IngredientFragment
 
 note "Activity and Fragment can move between each other via button clicks; onOkPressed() \nand onOkEdit() are the methods used by fragment to make changes to activity" as N1
 note "formattedBestBeforeDate() is for returning a String \nrepresentation of the Date object similar to toSring() " as N2
@@ -110,22 +110,6 @@ note "CustomIngredientArrayAdapter is to properly \ndisplay the ingredient class
 note "selected is the position of the user chosen Ingredient from ListView" as IActivity3
 note "This is the firebase firestore that the application references\n all ingredientList modifications are made to FireStore" as FireBase
 note "emptyString() checks for valid user input \n& OnCreateDialog() is for communication with activty" as error
-
-N1 . IngredientFragment.IngredientFragment
-IngredientActivity.IngredientActivity . N1
-
-N2 . Ingredient.Ingredient
-
-IActivity2 . IngredientActivity.CustomIngredientArrayAdapter
-IActivity2 .. IngredientActivity.IngredientActivity
-
-IActivity3 .. IngredientActivity.IngredientActivity
-
-FireBaseFirestore . FireBase
-
-error .. IngredientFragment.IngredientFragment
-
-
 
 
 
