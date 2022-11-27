@@ -6,7 +6,6 @@ import static org.junit.Assert.assertFalse;
 import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,13 +14,10 @@ import com.robotium.solo.Solo;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import java.util.List;
 
 public class IngredientTest {
     private Solo solo;
@@ -60,10 +56,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
@@ -76,6 +69,7 @@ public class IngredientTest {
         solo.clickOnButton("Add"); //Select CONFIRM Button
 
         assertTrue(solo.waitForText("Chicken", 1, 2000));
+        removeAllElements();
     }
 
 
@@ -85,10 +79,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BadCount(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
@@ -110,10 +101,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankDesc(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
         solo.clickOnView(solo.getView(R.id.calendarButton));
@@ -134,10 +122,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankLocation(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
         solo.clickOnView(solo.getView(R.id.calendarButton));
@@ -158,10 +143,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankDate(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
@@ -181,10 +163,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankCount(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
@@ -206,10 +185,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankUnit(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
+        removeAllElements();
 
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
@@ -231,11 +207,7 @@ public class IngredientTest {
     @Test
     public void AddIngredient_BlankCategory(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
-        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<mylist.getCount();i++){
-            solo.clickOnImageButton(i);
-        }
-
+        removeAllElements();
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
 
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
@@ -280,5 +252,16 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Fish");
         solo.clickOnButton("Edit");
         assertTrue(solo.waitForText("Fish", 1, 2000));
+        removeAllElements();
+    }
+
+    /**
+     * removes all elements from the listview
+     */
+    private void removeAllElements() {
+        ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
+        for(int i =0;i<mylist.getCount();i++){
+            solo.clickOnImageButton(i);
+        }
     }
 }
