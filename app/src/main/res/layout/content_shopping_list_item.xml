@@ -28,9 +28,9 @@
 
         <TextView
             android:id="@+id/shopping_item_quantity"
-            android:layout_width="69dp"
-            android:layout_height="44dp"
-            android:layout_marginTop="28dp"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
+            android:layout_marginTop="31dp"
             android:text="sample_text"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@+id/shopping_item_sort"
@@ -39,39 +39,24 @@
 
         <TextView
             android:id="@+id/shopping_item_sort"
-            android:layout_width="65dp"
-            android:layout_height="36dp"
+            android:layout_width="0dp"
+            android:layout_height="47dp"
             android:text="sample_text"
             android:textSize="15sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/shopping_item_quantity"
-            app:layout_constraintEnd_toStartOf="@+id/shopping_item_boughtButton"
+            app:layout_constraintEnd_toStartOf="@+id/shopping_item_checkButton"
             app:layout_constraintStart_toEndOf="@+id/shopping_item_quantity" />
 
-        <ImageButton
-            android:id="@+id/shopping_item_boughtButton"
-            android:layout_width="33dp"
-            android:layout_height="72dp"
-            android:layout_marginEnd="4dp"
-            android:background="@null"
-            android:contentDescription="Bought Button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shopping_item_sort"
-            app:layout_constraintEnd_toStartOf="@+id/shopping_item_deleteButton"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:srcCompat="@android:drawable/ic_input_add" />
-
-        <ImageButton
-            android:id="@+id/shopping_item_deleteButton"
+        <CheckBox
+            android:id="@+id/shopping_item_checkButton"
             android:layout_width="33dp"
             android:layout_height="72dp"
             android:background="@null"
-            android:contentDescription="Delete Button"
+            android:contentDescription="Check Button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shopping_item_boughtButton"
-            app:srcCompat="@android:drawable/ic_delete"
-            tools:layout_editor_absoluteY="4dp" />
+            app:layout_constraintStart_toEndOf="@+id/shopping_item_sort"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

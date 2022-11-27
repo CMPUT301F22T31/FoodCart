@@ -1,11 +1,17 @@
 package com.example.foodcart.shoppingList;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -16,15 +22,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.foodcart.R;
+import com.example.foodcart.ingredients.CalendarActivity;
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,12 +51,14 @@ public class ShoppingItemFragment extends DialogFragment {
     private EditText itemDescription;
     private EditText itemCount;
     private EditText itemUnit;
+    private EditText itemLocation;
+    private TextView itemBestBeforeDate;
+    private Date calendarDate = null;
     private EditText itemCategory;
-    private ShoppingItemFragment.OnFragmentInteractionListener listener;
+    private OnFragmentInteractionListener listener;
     private FirebaseFirestore db;
 
     public interface OnFragmentInteractionListener {
-        void onOkPressed(ShoppingItem newItem);
         void onOkPressedEdit(ShoppingItem newItem);
     }
 
@@ -58,21 +73,23 @@ public class ShoppingItemFragment extends DialogFragment {
         }
     }
 
-    public static void addShoppingItemDB(ShoppingItem addItem,
-                                       CollectionReference shoppingCollect) {
-        // Add new ingredient to DataBase
+    public static void editShoppingItemDB(String oldItem,
+                                          Ingredient newItem,
+                                        CollectionReference IngredientCollection) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("Count", String.valueOf(addItem.getCount()));
-        data.put("Unit", addItem.getUnit());
-        data.put("Category", addItem.getCategory());
-        shoppingCollect
-                .document(addItem.getDescription())
+        data.put("Category", newItem.getCategory());
+        data.put("Count", newItem.getCount().toString());
+        data.put("Date", newItem.getFormattedBestBeforeDate());
+        data.put("Location", newItem.getLocation());
+        data.put("Unit", newItem.getUnit());
+        IngredientCollection
+                .document(oldItem)
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         // These are a method which gets executed when the task is succeeded
-                        Log.d("Edit Item", String.valueOf(data.get("Description")));
+                        Log.d("Edit Scale", String.valueOf(data.get("Description")));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -82,34 +99,6 @@ public class ShoppingItemFragment extends DialogFragment {
                         Log.d("ERROR Edit Item", String.valueOf(data.get("Description")));
                     }
                 });
-    }
-
-    public static void delShoppingItemDB(ShoppingItem delItem,
-                                       CollectionReference shoppingCollect) {
-        shoppingCollect
-                .document(delItem.getDescription())
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // These are a method which gets executed when the task is succeeded
-                        Log.d("Sample", "Data has been deleted successfully!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // These are a method which gets executed if there’s any problem
-                        Log.d("Sample", "Data could not be deleted!" + e.toString());
-                    }
-                });
-    }
-
-    public static void editShoppingItemDB(ShoppingItem oldItem,
-                                        ShoppingItem newItem,
-                                        CollectionReference shoppingCollect) {
-        delShoppingItemDB(oldItem, shoppingCollect);
-        addShoppingItemDB(newItem, shoppingCollect);
     }
 
     /**
@@ -128,90 +117,88 @@ public class ShoppingItemFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_shopping_item, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_ingredient, null);
 
-        itemDescription = view.findViewById(R.id.itemDescriptionET);
-        itemCount = view.findViewById(R.id.itemCountET);
-        itemUnit = view.findViewById(R.id.itemUnitET);
-        itemCategory = view.findViewById(R.id.itemCategoryET);
+        itemDescription = view.findViewById(R.id.ingredientDescriptionET);
+        itemCount = view.findViewById(R.id.ingredientCountET);
+        itemLocation = view.findViewById(R.id.ingredientLocationET);
+        itemUnit = view.findViewById(R.id.ingredientUnitET);
+        itemCategory = view.findViewById(R.id.ingredientCategoryET);
+        itemBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateTV2);
+
+        final ImageButton calendarButton = view.findViewById(R.id.calendarButton);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent calendarIntent = new Intent(getActivity(), CalendarActivity.class);
+                calendarActivity.launch(calendarIntent);
+            }
+        });
+
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance();
         // Get a top level reference to the collection
-        final CollectionReference ShoppingListCollection = db.collection("Shopping List");
+        final CollectionReference IngredientCollection = db.collection("Ingredients");
 
         Bundle args = getArguments();
         //Edit ShoppingItem functionality
-        if(args != null) {
-            ShoppingItem item = (ShoppingItem) args.getSerializable("shopping item");
-            itemDescription.setText(item.getDescription());
-            itemCount.setText((String) item.getCount().toString());
-            itemUnit.setText(item.getUnit());
-            itemCategory.setText(item.getCategory());
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            return builder
-                    .setTitle("View/Edit Ingredient")
-                    .setView(view)
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Edit", new DialogInterface.OnClickListener(){
-                        //edit button on Edit food functionality
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String description = itemDescription.getText().toString();
-                            String count = itemCount.getText().toString();
-                            String unit = itemUnit.getText().toString();
-                            String category = itemCategory.getText().toString();
-                            //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, count, unit, category);
-                            if (!emptyStringsExist) {
-                                //try to parse the count
-                                int countInt = parseCount(count);
-                                if (countInt > 0) {
-                                    ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
-                                    listener.onOkPressedEdit(newItem);
-                                    // edit item in database
-                                    editShoppingItemDB(item, newItem, ShoppingListCollection);
-                                }
+        ShoppingItem item = (ShoppingItem) args.getSerializable("item");
+        itemDescription.setText(item.getDescription());
+        itemLocation = view.findViewById(R.id.ingredientLocationET);
+        itemCount.setText(Integer.toString(item.getCount()-item.getOldcount()));
+        itemUnit.setText(item.getUnit());
+        itemCategory.setText(item.getCategory());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        return builder
+                .setTitle("View/Edit Ingredient")
+                .setView(view)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    //edit button on Edit food functionality
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String description = itemDescription.getText().toString();
+                        String location = itemLocation.getText().toString();
+                        String count = itemCount.getText().toString();
+                        String unit = itemUnit.getText().toString();
+                        String category = itemCategory.getText().toString();
+                        //validate empty strings
+                        boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
+                        //try to parse the count
+                        int countInt = parseCount(count)+item.getOldcount();
+                        if (!emptyStringsExist && countInt != -1) {
+                            if (calendarDate != null) {
+                                Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
+                                ShoppingItem newItem = new ShoppingItem(description, countInt,item.getOldcount(),unit, category);
+                                listener.onOkPressedEdit(newItem);
+                                // edit ingredient in database
+                                editShoppingItemDB(newIngredient.getDescription(), newIngredient, IngredientCollection);
                             }
                             else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please select Expiry Date", Toast.LENGTH_SHORT).show();
                             }
+                        } else {
+                            Toast.makeText(getContext(), "Please enter all mandatory fields correctly!", Toast.LENGTH_SHORT).show();
                         }
-                    }).create();
-        }
-        //add ingredient functionality
-        else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            return builder
-                    .setView(view)
-                    .setTitle("Add Item")
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            String description = itemDescription.getText().toString();
-                            String count = itemCount.getText().toString();
-                            String unit = itemUnit.getText().toString();
-                            String category = itemCategory.getText().toString();
-                            //validate empty strings
-                            boolean emptyStringsExist = emptyStringCheck(description, count, unit, category);
-                            if (!emptyStringsExist) {
-                                //try to parse the count
-                                int countInt = parseCount(count);
-                                if (countInt > 0) {
-                                    ShoppingItem newItem = new ShoppingItem(description, countInt, unit, category);
-                                    listener.onOkPressed(newItem);
-                                    // add item to database
-                                    addShoppingItemDB(newItem, ShoppingListCollection);
-                                }
-                            }
-                            else {
-                                Toast.makeText(getContext(), "Please try again!", Toast.LENGTH_SHORT).show();
-                            }
-
-                        }
-                    }).create();
-        }
+                    }
+                }).create();
     }
+    /**
+     * Opens the calendar activity to get date
+     */
+    ActivityResultLauncher<Intent> calendarActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            String date = result.getData().getStringExtra("Date");
+                            setDate(date);
+                            itemBestBeforeDate.setText(date);
+                        }
+                    }
+                }
+            });
 
     /**
      * Tests the count if it is an integer otherwise print out an exception
@@ -229,22 +216,52 @@ public class ShoppingItemFragment extends DialogFragment {
         return result;
     }
 
-    //code is not reused as it also toasts specific errors
-    private boolean emptyStringCheck(String description, String count, String unit, String category) {
+    /**
+     * Checks if none of the input values are empty
+     * @param description
+     * @param location
+     * @param count
+     * @param unit
+     * @param category
+     * @return
+     * true: if any value is empty
+     * false: all values are filled
+     */
+    public boolean emptyStringCheck(String description, String location, String count, String unit, String category) {
         boolean emptyStringExist = false;
         if(description.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Description", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Description", Toast.LENGTH_SHORT).show();
+        }
+        else if(location.isEmpty()) {
+            emptyStringExist = true;
+            Toast.makeText(getContext(), "Please Enter Ingredient Location", Toast.LENGTH_SHORT).show();
         }
         else if(count.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Count", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Count", Toast.LENGTH_SHORT).show();
+        }
+        else if(unit.isEmpty()) {
+            emptyStringExist = true;
+            Toast.makeText(getContext(), "Please Enter Ingredient Unit", Toast.LENGTH_SHORT).show();
         }
         else if(category.isEmpty()) {
             emptyStringExist = true;
-            Toast.makeText(getContext(), "Please Enter Category", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please Enter Ingredient Category", Toast.LENGTH_SHORT).show();
         }
         return emptyStringExist;
+    }
+
+    /**
+     * sets the current calendar date
+     * @param date
+     */
+    private void setDate(String date) {
+        try {
+            calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
 }

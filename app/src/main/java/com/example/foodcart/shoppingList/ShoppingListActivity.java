@@ -1,5 +1,6 @@
 package com.example.foodcart.shoppingList;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -18,15 +20,23 @@ import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.ingredients.IngredientFragment;
+import com.example.foodcart.mealplans.Meal;
 import com.example.foodcart.mealplans.MealPlanActivity;
+import com.example.foodcart.recipes.Recipe;
 import com.example.foodcart.recipes.RecipeActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,8 +52,9 @@ public class ShoppingListActivity extends AppCompatActivity
         private ListView shoppingList;
         private ArrayAdapter<ShoppingItem> shoppingAdapter;
         private ArrayList<ShoppingItem> dataList;
+        private ArrayList<ShoppingItem> tempList;
         private int selected;
-        private FirebaseFirestore db;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         private String[] sortValues = { "description", "category" };
 
         @Override
@@ -55,47 +66,11 @@ public class ShoppingListActivity extends AppCompatActivity
             // initialize lists
             shoppingList = findViewById(R.id.shopping_list);
             dataList = new ArrayList<>();
+            tempList = new ArrayList<>();
 
             // set adapter
             shoppingAdapter = new CustomShoppingItemArrayAdapter(this, dataList);
             shoppingList.setAdapter(shoppingAdapter);
-
-            // Access a Cloud Firestore instance from your Activity
-            db = FirebaseFirestore.getInstance();
-            // Get a top level reference to the collection
-            final CollectionReference ShoppingListCollection = db.collection("Shopping List");
-
-            // set spinner adapter for drop down sort list
-            Spinner sortDropDown = (Spinner) findViewById(R.id.shopping_list_sort_select);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            sortDropDown.setAdapter(adapter);
-            sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    // sort the db by the sortValue
-                    String sortValue = sortValues[position];
-                    ShoppingListCollection.orderBy(sortValue);
-                    Collections.sort(dataList, new Comparator<Ingredient>(){
-                        public int compare(Ingredient ing1, Ingredient ing2)
-                        {
-                            switch(sortValue) {
-                                case "description":
-                                    return ing1.getDescription().compareTo(ing2.getDescription());
-                                case "category":
-                                    return ing1.getCategory().compareTo(ing2.getCategory());
-                            }
-                            return 0;
-                        }
-                    });
-                    shoppingAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
 
             final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
             IngredientTab.setOnClickListener(new View.OnClickListener() {
@@ -135,53 +110,129 @@ public class ShoppingListActivity extends AppCompatActivity
             addItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new ShoppingItemFragment().show(getSupportFragmentManager(), "ADD_SHOPPING_ITEM");
-                }
-            });
-
-            // onClick for selecting items from list. When item is selected, Edit Food pops up
-            shoppingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                    ShoppingItem selectedItem = dataList.get(position);
-                    selected = position;
-                    new ShoppingItemFragment().newInstance(selectedItem).show(getSupportFragmentManager(), "EDIT_SHOPPING_ITEM");
-                }
-            });
-
-            ShoppingListCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
-                        FirebaseFirestoreException error) {
-                    dataList.clear();
-                    assert queryDocumentSnapshots != null;
-                    for(QueryDocumentSnapshot doc: queryDocumentSnapshots) {
-                        Log.d("Update Shopping List", String.valueOf(doc.getData().get("Description")));
-                        String description = doc.getId();
-                        String count = (String) doc.getData().get("Count");
-                        String unit = (String) doc.getData().get("Unit");
-                        String category = (String) doc.getData().get("Category");
-
-                        // no need to parse count as in XML datatype is set to number (no decimals will be allowed)
-                        int countInt = Integer.parseInt(count);
-                        // add ingredient to list
-                        dataList.add(new ShoppingItem(description, countInt, unit, category));
+                    //new ShoppingItemFragment().show(getSupportFragmentManager(), "ADD_SHOPPING_ITEM");
+                    for(ShoppingItem i : dataList){
+                        if(i.isChecked()) {
+                            new ShoppingItemFragment().newInstance(i).show(getSupportFragmentManager(), "EDIT_INGREDIENT");
+                        }
                     }
-                    shoppingAdapter.notifyDataSetChanged(); // Notifying the adapter to render any new data fetches from the cloud
                 }
             });
 
-        }
-
-//        @Override
-        public void onOkPressed(ShoppingItem newItem) {
-            shoppingAdapter.add(newItem);
+            db = FirebaseFirestore.getInstance();
+            // Get a top level reference to the collection
+            final CollectionReference MealPlanCollection = db.collection("MealPlan");
+            MealPlanCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        tempList.clear();
+                        ArrayList<Ingredient> ingredientList = new ArrayList<>();
+                        assert task.getResult() != null;
+                        for(QueryDocumentSnapshot doc: task.getResult()) {
+                            Log.d("Update ShoppingList", doc.getId());
+                            String title = doc.getId();
+                            if(doc.getData().get("Type").equals("Recipe")) {
+                                String scale = (String) doc.getData().get("Scale");
+                                CollectionReference ingredients = db.collection("MealPlan")
+                                        .document(title).collection("Ingredients");
+                                ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@org.checkerframework.checker.nullness.qual.NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot ing : task.getResult()) {
+                                                String description = ing.getId();
+                                                String count = (String) ing.getData().get("Count");
+                                                String unit = (String) ing.getData().get("Unit");
+                                                String category = (String) ing.getData().get("Category");
+                                                // Convert date string into Date class
+                                                int countInt = Integer.parseInt(count);
+                                                int scaleInt = Integer.parseInt(scale);
+                                                // add ingredient to list
+                                                ShoppingItem item_temp = new ShoppingItem(description, countInt*scaleInt,0, unit, category);
+                                                additemCheck(item_temp);
+                                            }
+                                        } else {
+                                            Log.d("Update RECIPE", String.valueOf(doc.getData().get("Title")));
+                                        }
+                                    }
+                                });
+                            } else {
+                                String description = (String) doc.getData().get("MealName");
+                                String count = (String) doc.getData().get("Count");
+                                String unit = (String) doc.getData().get("Unit");
+                                String category = (String) doc.getData().get("Category");
+                                // Convert date string into Date class
+                                int countInt = Integer.parseInt(count);
+                                // add ingredient to list
+                                ShoppingItem item_temp = new ShoppingItem(description, countInt,0, unit, category);
+                                additemCheck(item_temp);
+                            }
+                        }// Notifying the adapter to render any new data fetches from the cloud
+                    }
+                }
+            });
         }
 
 //        @Override
         public void onOkPressedEdit(ShoppingItem item) {
-            dataList.set(selected, item);
+            for(ShoppingItem i:dataList){
+                if(i.getDescription().equals(item.getDescription())){
+                    i.setCount(i.getCount()-item.getCount());
+                    if(i.getCount() <=0){
+                        dataList.remove(i);
+                    }
+                    break;
+                }
+            }
             shoppingAdapter.notifyDataSetChanged();
         }
 
+        public void additem(ShoppingItem item){
+            if(tempList.contains(item)){
+                for(ShoppingItem i:tempList){
+                    if(i.getDescription().equals(item.getDescription())){
+                        i.setCount(i.getCount()+item.getCount());
+                        break;
+                    }
+                }
+            } else {
+                tempList.add(item);
+            }
+            dataList.clear();
+            for(ShoppingItem i :tempList){
+                if(i.getCount()-i.getOldcount() >0){
+                    dataList.add(i);
+                }
+            }
+            shoppingAdapter.notifyDataSetChanged();
+        }
+
+
+        public void additemCheck(ShoppingItem item) {
+            DocumentReference docIdRef = db.collection("Ingredients").document(item.getDescription());
+            docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if(tempList.contains(item)){
+                            additem(item);
+                            return;
+                        }
+                        if (document.exists()) {
+                            String ing_count = (String)document.getData().get("Count");
+                            item.setCount(item.getCount());
+                            item.setOldcount(Integer.parseInt(ing_count));
+                            additem(item);
+                            Log.d("Adjust Item exists", item.getDescription());
+                        } else {
+                            additem(item);
+                        }
+                    } else {
+                        Log.d("Adjust Item", "Failed with: ", task.getException());
+                    }
+                }
+        });
     }
+}

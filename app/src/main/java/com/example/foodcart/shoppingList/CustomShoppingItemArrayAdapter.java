@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.Checkable;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,13 +17,13 @@ import androidx.annotation.Nullable;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
+import com.example.foodcart.recipes.RecipeFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * The custom array adapter for ingredients. Also includes delete
@@ -66,101 +68,18 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
         Spinner sortDropDown = parentView.findViewById(R.id.shopping_list_sort_select);
 
         itemDescription.setText(item.getDescription());
-        itemQuantity.setText(item.getCount().toString());
+        itemQuantity.setText(Integer.toString(item.getCount()-item.getOldcount()));
 
-        if (sortDropDown.getSelectedItem() != null) {
-            String sortValue = sortDropDown.getSelectedItem().toString();
-            System.out.println(sortValue);
-            switch (sortValue){
-                case "description":
-                    itemSort.setText("");
-                    break;
-                case "category":
-                    itemSort.setText(item.getCategory());
-                    break;
-            }
-        } else {
-            String sortValue = "description";
-            itemSort.setText("");
-        }
-
-        // set up delete button on each list item and onClick
-        ImageButton boughtButton = (ImageButton) view.findViewById(R.id.shopping_item_boughtButton);
-        boughtButton.setFocusable(false);
-        boughtButton.setOnClickListener(new View.OnClickListener() {
+        final CheckBox checkBox = view.findViewById(R.id.shopping_item_checkButton);
+        checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            /**
-             * OnClick for delete button on each item in ingredients list
-             * Deletes an ingredient from the Ingredients database
-             */
             public void onClick(View view) {
-                if (items.size() > 0) {
-                    // Access a Cloud Firestore instance from your Activity
-                    db = FirebaseFirestore.getInstance();
-                    Ingredient ingredient = items.get(position);
-                    // Get a top level reference to the collection
-                    final CollectionReference IngredientCollection = db.collection("Ingredients");
-                    IngredientCollection
-                            .document(items.get(position).getDescription())
-                            .set(ingredient)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    // These are a method which gets executed when the task is succeeded
-                                    Log.d("Sample", "Data has been added successfully!");
-                                    final CollectionReference ShoppingListCollection = db.collection("Shopping List");
-                                    ShoppingListCollection
-                                            .document(items.get(position).getDescription())
-                                            .delete()
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Log.d("Sample", "Data has been deleted successfully!");
-                                                    // find and remove selection
-                                                    // items.remove(position);
-                                                    notifyDataSetChanged();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d("Sample", "Data could not be deleted.");
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // These are a method which gets executed if there’s any problem
-                                    Log.d("Sample", "Data could not be added!" + e.toString());
-                                }
-                            });
-                    notifyDataSetChanged();
+                if(checkBox.isChecked()){
+                    item.setChecked(true);
+                } else{
+                    item.setChecked(false);
                 }
-            }
-        });
-
-        // set up delete button on each list item and onClick
-        ImageButton deleteButton = (ImageButton) view.findViewById(R.id.shopping_item_deleteButton);
-        deleteButton.setFocusable(false);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            /**
-             * OnClick for delete button on each item in ingredients list
-             * Deletes an ingredient from the Ingredients database
-             */
-            public void onClick(View view) {
-                if (items.size() > 0) {
-                    // Access a Cloud Firestore instance from your Activity
-                    db = FirebaseFirestore.getInstance();
-                    // Get a top level reference to the collection
-                    final CollectionReference ShoppingListCollection = db.collection("Shopping List");
-                    // delete item from database
-                    ShoppingItemFragment.delShoppingItemDB(items.get(position), ShoppingListCollection);
-                    // find and remove selection
-                    items.remove(Math.min(position, items.size() - 1));
-                    notifyDataSetChanged();
-                }
+                notifyDataSetChanged();
             }
         });
 
