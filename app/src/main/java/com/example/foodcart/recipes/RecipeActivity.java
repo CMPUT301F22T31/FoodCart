@@ -46,7 +46,7 @@ public class RecipeActivity extends AppCompatActivity
     ArrayAdapter<Recipe> recipeAdapter;
     ArrayList<Recipe> recipeList;
     int selected;
-    private String[] sortValues = { "title", "prep time", "# of servings", "category" };
+    private final String[] sortValues = { "title", "prep time", "# of servings", "category" };
 
 
     @Override

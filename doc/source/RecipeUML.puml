@@ -1,0 +1,136 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Ingredient
+{
+-String description
+-Date bestBeforeDate
+-String location
+-int count
+-String unit
+-String category
+
+-String formattedBestBeforeDate()
+}
+
+class FireBaseFirestore
+{
++CollectionReference collection(String)
+}
+
+class RecipeFragment.ActivityResultLauncher
+{
+    +void onActivityResult(ActivityResult)
+}
+
+class Recipe
+{
+-String title
+-int prep_time
+-int servings
+-String comments
+-String category
+-String picture
+
++void addIngredient(Ingredient)
++void removeIngredient(Ingredient)
+}
+
+class RecipeFragment.CalendarActivity
+{
+    - String date
+    * void onCreate(Bundle savedInstanceState)
+    - void done()
+}
+
+class RecipeActivity.RecipeActivity implements RecipeFragment.OnFragmentInteractionListener
+{
+-ListView recipeListView
+-ArrayAdapter<Recipe> recipeAdapter
+-ArrayList<Recipe> recipeList
+-int selected
+-String[] sortValues = { "title", "prep time", "# of servings", "category" }
+
+*void onCreate(Bundle)
++void onOkPressedRecipe(Recipe)
++void onOkPressedEditRecipe(Recipe)
+}
+
+class RecipeFragment.RecipeFragment
+{
+-ImageView recipeImage
+-EditText recipeTitle
+-EditText recipePrepareTime
+-EditText recipeServings
+-EditText recipeCategory
+-EditText recipeComments
+-Uri imageURI
+-OnFragmentInteractionListener listener;
+-FireBaseFirestore db
+-ActivityResultLauncher<Intent> cameraActivity
+-ActivityResultLauncher<Intent> ingredientActivity
+
++ {static} void onAttach(@NonNull Context)
++ {static} RecipeFragment NewInstance(Recipe)
++ Dialog onCreateDialog(@Nullable Bundle)
+- boolean emptyStringCheck(String, String, String, String, String)
+
++ {static} void delRecipeDB(Recipe, CollectionReference)
++ {static} void addRecipeDB(Recipe, CollectionReference)
++ {static} void editRecipeDB(Recipe, Recipe, CollectionReference)
+
+- int parsePrepTime(String prepTime)
+- int parseServing(String serving)
+- String bitmapToString(Bitmap picture)
+
+}
+
+interface RecipeFragment.OnFragmentInteractionListener
+{
++void onOkPressed(Ingredient newIngredient);
++void onOkPressedEdit(Ingredient newIngredient);
+}
+
+class RecipeActivity.CustomRecipeArrayAdapter
+{
+- ArrayList<Recipe> recipes
+- Context context
+- FireBaseFirestore db
+
++ View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+class RecipeFragment.RecipeIngredientsActivity implements RecipeFragment.OnFragmentInteractionListener
+{
+    -ListView ingredientList;
+    -ArrayAdapter<Ingredient> ingredientAdapter;
+    -ArrayList<Ingredient> dataList;
+    -int selected;
+
+    *void onResume()
+    *void onCreate(Bundle savedInstanceState)
+    +void onOkPressed(Ingredient newIngredient)
+    +void onOkPressedEdit(Ingredient ingredient)
+    +void Done()
+
+}
+
+Serializable ()-- Recipe : Implements
+Serializable ()-- Ingredient : Implements
+Recipe "0..*" -o "0..*" Ingredient
+
+RecipeActivity.RecipeActivity *-> "0..*" Recipe
+RecipeActivity.CustomRecipeArrayAdapter --o RecipeActivity.RecipeActivity
+FireBaseFirestore --o "0..*" RecipeActivity.RecipeActivity
+
+RecipeFragment.OnFragmentInteractionListener <-* RecipeFragment.RecipeFragment
+FireBaseFirestore --o "0..*" RecipeFragment.RecipeFragment
+FireBaseFirestore --o "0..*" RecipeActivity.CustomRecipeArrayAdapter
+
+RecipeActivity.RecipeActivity --> RecipeFragment.RecipeFragment
+RecipeFragment.RecipeFragment --> RecipeFragment.ActivityResultLauncher
+RecipeFragment.ActivityResultLauncher -> RecipeFragment.CalendarActivity
+RecipeFragment.ActivityResultLauncher -> RecipeFragment.RecipeIngredientsActivity
+
+
+@enduml
