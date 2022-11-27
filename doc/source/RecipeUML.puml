@@ -45,12 +45,13 @@ class AppCompatActivity {
 *void onCreate(Bundle)
 }
 
-class RecipeActivity {
+class RecipeActivity.RecipeActivity extends AppCompatActivity implements RecipeFragment.OnFragmentInteractionListener
+{
 -ListView recipeListView
 -ArrayAdapter<Recipe> recipeAdapter
 -ArrayList<Recipe> recipeList
 -int selected
--FireBaseFirestore db
+-String[] sortValues = { "title", "prep time", "# of servings", "category" }
 
 *void onCreate(Bundle)
 +void onOkPressedRecipe(Recipe)
@@ -72,11 +73,22 @@ class RecipeFragment {
 -Uri imageURI
 -OnFragmentInteractionListener listener;
 -FireBaseFirestore db
+-ActivityResultLauncher<Intent> cameraActivity
+-ActivityResultLauncher<Intent> ingredientActivity
 
 + {static} void onAttach(@NonNull Context)
 + {static} RecipeFragment NewInstance(Recipe)
 + Dialog onCreateDialog(@Nullable Bundle)
 - boolean emptyStringCheck(String, String, String, String, String)
+
++ {static} void delRecipeDB(Recipe, CollectionReference)
++ {static} void addRecipeDB(Recipe, CollectionReference)
++ {static} void editRecipeDB(Recipe, Recipe, CollectionReference)
+
+- int parsePrepTime(String prepTime)
+- int parseServing(String serving)
+- String bitmapToString(Bitmap picture)
+
 }
 
 interface OnFragmentInteractionListener {
@@ -90,6 +102,21 @@ class CustomRecipeArrayAdapter extends ArrayAdapter {
 - FireBaseFirestore db
 
 + View getView(int, @Nullable View, @NonNull ViewGroup)
+}
+
+class RecipeIngredientsActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener
+{
+    -ListView ingredientList;
+    -ArrayAdapter<Ingredient> ingredientAdapter;
+    -ArrayList<Ingredient> dataList;
+    -int selected;
+
+    *void onResume()
+    *void onCreate(Bundle savedInstanceState)
+    +void onOkPressed(Ingredient newIngredient)
+    +void onOkPressedEdit(Ingredient ingredient)
+    +void Done()
+
 }
 
 Serializable ()-- Recipe : Implements
