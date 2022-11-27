@@ -2,12 +2,14 @@ package com.example.foodcart;
 
 import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 import android.content.Context;
 
 import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.mealplans.Meal;
 import com.example.foodcart.recipes.Recipe;
+import com.example.foodcart.shoppingList.ShoppingItem;
 
 import org.junit.Test;
 import org.mockito.Mock;
@@ -89,5 +91,20 @@ public class UnitTests {
         assertEquals(2, testMeal.getScale());
         assertEquals(formatter.format(formatter.parse("2022-12-24")), testMeal.getDate());
 
+    }
+
+    @Test
+    public void ShoppingItemUnitTest() throws ParseException {
+
+        // Creates an object of Ingredient
+        ShoppingItem testItem = new ShoppingItem("Apples",
+                2, "bags", "fruit");
+
+        assertEquals("Apples", testItem.getDescription());
+        assertEquals(null, testItem.getBestBeforeDate());
+        assertEquals(null, testItem.getLocation());
+        assertEquals("bags", testItem.getUnit());
+        assertEquals(Integer.valueOf(2), testItem.getCount());
+        assertEquals("fruit", testItem.getCategory());
     }
 }
