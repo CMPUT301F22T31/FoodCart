@@ -1,5 +1,7 @@
 package com.example.foodcart.ingredients;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -158,6 +160,17 @@ public class Ingredient implements Serializable {
         setCategory(category);
     }
 
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(!(obj instanceof Ingredient)){
+            return false;
+        }
+        final Ingredient other = (Ingredient) obj;
+        if(this.getDescription().equals(other.getDescription())){
+            return true;
+        }
+        return false;
+    }
 }
 
 

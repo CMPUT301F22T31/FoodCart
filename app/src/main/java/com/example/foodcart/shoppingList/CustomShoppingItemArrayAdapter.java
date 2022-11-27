@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.Checkable;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import androidx.annotation.Nullable;
 
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.Ingredient;
+import com.example.foodcart.recipes.RecipeFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -65,23 +68,20 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
         Spinner sortDropDown = parentView.findViewById(R.id.shopping_list_sort_select);
 
         itemDescription.setText(item.getDescription());
-        itemQuantity.setText(item.getCount().toString());
-        /*
-        if (sortDropDown.getSelectedItem() != null) {
-            String sortValue = sortDropDown.getSelectedItem().toString();
-            System.out.println(sortValue);
-            switch (sortValue){
-                case "description":
-                    itemSort.setText("");
-                    break;
-                case "category":
-                    itemSort.setText(item.getCategory());
-                    break;
+        itemQuantity.setText(Integer.toString(item.getCount()-item.getOldcount()));
+
+        final CheckBox checkBox = view.findViewById(R.id.shopping_item_checkButton);
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(checkBox.isChecked()){
+                    item.setChecked(true);
+                } else{
+                    item.setChecked(false);
+                }
+                notifyDataSetChanged();
             }
-        } else {
-            String sortValue = "description";
-            itemSort.setText("");
-        }*/
+        });
 
         return view;
     }
