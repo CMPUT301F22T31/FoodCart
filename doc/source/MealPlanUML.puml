@@ -1,9 +1,9 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class ArrayAdapter
+class FireBaseFirestore
 {
-    +View getView(Context, ArrayList)
+    +CollectionReference collection(String)
 }
 
 class MealPlanFragment.ActivityResultLancher
@@ -11,7 +11,7 @@ class MealPlanFragment.ActivityResultLancher
     +void onActivityResult(ActivityResult)
 }
 
-class MealPlanActivity.CustomMealPlanArrayAdapter extends ArrayAdapter
+class MealPlanActivity.CustomMealPlanArrayAdapter
 {
     -ArrayList<Meal> meals;
     -Context context;
@@ -28,7 +28,7 @@ class Meal implements Serializable
     +String getFormattedDate();
 }
 
-class MealPlanActivity.MealPlanActivity extends AppCompatActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
+class MealPlanActivity.MealPlanActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
 {
     -ListView mealPlanListView;
     -ArrayAdapter<Meal> mealplanAdapter;
@@ -44,7 +44,7 @@ class MealPlanActivity.MealPlanActivity extends AppCompatActivity implements Mea
     +void onOkEditPressed(Meal newMeal);
 }
 
-class MealPlanFragment.MealPlanFragment extends DialogFragment
+class MealPlanFragment.MealPlanFragment
 {
     -FirebaseFirestore db;
     -MealPlanScaleFragment.OnFragmentInteractionListener listener;
@@ -71,19 +71,31 @@ class MealPlanFragment.MealPlanFragment extends DialogFragment
     -void setDate(String);
 }
 
-class MealPlanScaleFragment.MealPlanScaleFragment extends DialogFragment
+class MealPlanScaleFragment.MealPlanScaleFragment
 {
-    private MealPlanScaleFragment.OnFragmentInteractionListener listener;
-    private FirebaseFirestore db;
-    private EditText mealScale_ET;
+    -MealPlanScaleFragment.OnFragmentInteractionListener listener;
+    -FirebaseFirestore db;
+    -EditText mealScale_ET;
     +void onAttach(@NonNull Context context)
     +void {static} MealPlanScaleFragment newInstance(Meal meal)
     +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
 }
 
 interface MealPlanScaleFragment.OnFragmentInteractionListener
-    {
-        void onOkPressed(Meal newMeal);
-        void onOkEditPressed(Meal newMeal);
-    }
+{
+    -void onOkPressed(Meal newMeal);
+    -void onOkEditPressed(Meal newMeal);
+}
+
+class MealPlanFragment.CalendarActivity
+{
+    - String date
+    * void onCreate(Bundle savedInstanceState)
+    - void done()
+}
+
+
+
+
+
 @enduml
