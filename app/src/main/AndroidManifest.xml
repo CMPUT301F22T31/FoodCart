@@ -32,6 +32,9 @@
             android:name=".mealplans.MealPlanActivity"
             android:exported="false" />
         <activity
+            android:name=".recipes.RecipeIngredientsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ingredients.IngredientActivity"
             android:exported="true">
             <intent-filter>

@@ -142,6 +142,22 @@ public class Ingredient implements Serializable {
         setUnit(unit);
         setCategory(category);
     }
+
+    /**
+     * The constructor to assist creation of ingredients in Recipe class. Creates a new
+     * ingredient with the params passed.
+     * @param description
+     * @param count
+     * @param unit
+     * @param category
+     */
+    public Ingredient(String description, int count, String unit, String category) {
+        setDescription(description);
+        setCount(count);
+        setUnit(unit);
+        setCategory(category);
+    }
+
 }
 
 
