@@ -33,13 +33,13 @@ public class UnitTests {
                 new Date(2023, 05, 26), "fridge",
                 5, "", "fruit");
 
-        assertEquals(testIngredient.getDescription(), "Banana");
-        assertEquals(testIngredient.getBestBeforeDate(), new Date(2023, 5, 26));
-        assertEquals(testIngredient.getFormattedBestBeforeDate(), formatter.format(formatter.parse("2023-05-26")));
-        assertEquals(testIngredient.getLocation(), "fridge");
-        assertEquals(testIngredient.getUnit(), "");
-        assertEquals(testIngredient.getCount(), Integer.valueOf(5));
-        assertEquals(testIngredient.getCategory(), "fruit");
+        assertEquals("Banana", testIngredient.getDescription());
+        assertEquals(new Date(2023, 5, 26), testIngredient.getBestBeforeDate());
+        assertEquals(formatter.format(formatter.parse("2023-05-26")), testIngredient.getFormattedBestBeforeDate());
+        assertEquals("fridge", testIngredient.getLocation());
+        assertEquals("", testIngredient.getUnit());
+        assertEquals(Integer.valueOf(5), testIngredient.getCount());
+        assertEquals("fruit", testIngredient.getCategory());
     }
 
     @Test
@@ -68,15 +68,15 @@ public class UnitTests {
                 10, 4,
                 "Grandma's famous recipe", "spaghetti-pic", "pasta", ingredients);
 
-        assertEquals(testRecipe.getTitle(), "Spaghetti with Meatballs");
-        assertEquals(testRecipe.getPrep_time(), 10);
-        assertEquals(testRecipe.getServings(), 4);
-        assertEquals(testRecipe.getComments(), "Grandma's famous recipe");
-        assertEquals(testRecipe.getPicture(), "spaghetti-pic");
-        assertEquals(testRecipe.getIngredientList().get(0), spaghetti);
-        assertEquals(testRecipe.getIngredientList().get(1), ground_beef);
-        assertEquals(testRecipe.getIngredientList().get(2), sauce);
-        assertEquals(testRecipe.getIngredientList().get(3), cheese);
+        assertEquals("Spaghetti with Meatballs", testRecipe.getTitle());
+        assertEquals(10, testRecipe.getPrep_time());
+        assertEquals(4, testRecipe.getServings());
+        assertEquals("Grandma's famous recipe", testRecipe.getComments());
+        assertEquals("spaghetti-pic", testRecipe.getPicture());
+        assertEquals(spaghetti, testRecipe.getIngredientList().get(0));
+        assertEquals(ground_beef, testRecipe.getIngredientList().get(1));
+        assertEquals(sauce, testRecipe.getIngredientList().get(2));
+        assertEquals(cheese, testRecipe.getIngredientList().get(3));
     }
 
     @Test
@@ -84,10 +84,10 @@ public class UnitTests {
 
         Meal testMeal = new Meal("Spaghetti with Meatballs", "supper", 2, new Date(2022, 12, 24));
 
-        assertEquals(testMeal.getMealName(), "Spaghetti with Meatballs");
-        assertEquals(testMeal.getMealType(), "supper");
-        assertEquals(testMeal.getScale(), 2);
-        assertEquals(testMeal.getDate(), formatter.format(formatter.parse("2022-12-24")));
+        assertEquals("Spaghetti with Meatballs", testMeal.getMealName());
+        assertEquals("supper", testMeal.getMealType());
+        assertEquals(2, testMeal.getScale());
+        assertEquals(formatter.format(formatter.parse("2022-12-24")), testMeal.getDate());
 
     }
 }
