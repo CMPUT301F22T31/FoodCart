@@ -30,7 +30,7 @@ class AppCompatActivity {
 *void onCreate(Bundle)
 }
 
-class IngredientActivity.IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener
+class IngredientActivity.IngredientActivity extends AppCompatActivity implements IngredientActivity.OnFragmentInteractionListener
 {
 -ListView ingredientList
 -ArrayAdapter<Ingredient> ingredientAdapter
@@ -100,7 +100,7 @@ class CalendarActivity extends AppCompatActivity
 Serializable ()-- Ingredient.Ingredient : Implements
 Ingredient.Date "1" <--* "1..*" Ingredient.Ingredient
 
-Ingredient "0..*" <-*  IngredientActivity.IngredientActivity
+IngredientActivity.IngredientActivity  *->   "0..*"Ingredient
 IngredientActivity.IngredientActivity *-> ListView
 IngredientActivity.CustomIngredientArrayAdapter --o IngredientActivity.IngredientActivity
 FireBaseFirestore --o "0..*" IngredientActivity.IngredientActivity
