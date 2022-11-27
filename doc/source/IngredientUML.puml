@@ -15,7 +15,7 @@ class FireBaseFirestore {
 +DocumentReference document(String)
 }
 
-class Ingredient {
+class Ingredient.Ingredient {
 -String description
 -Date bestBeforeDate
 -String location
@@ -30,24 +30,26 @@ class AppCompatActivity {
 *void onCreate(Bundle)
 }
 
-class IngredientActivity {
+class IngredientActivity.IngredientActivity extends AppCompatActivity implements IngredientFragment.OnFragmentInteractionListener
+{
 -ListView ingredientList
 -ArrayAdapter<Ingredient> ingredientAdapter
 -ArrayList<Ingredient> dataList
 -int selected
 -FireBaseFirestore db
+-final String[] sortValues = { "description", "best before date", "location", "category" }
 
 *void onCreate(Bundle)
 +void onOkPressed(Ingredient)
 +void onOkPressedEdit(Ingredient)
 }
 
-class DialogFragment {
+class IngredientFragment.DialogFragment {
 +void onAttach(@NonNull Context))
 +Dialog onCreateDialog(@Nullable Bundle))
 }
 
-class IngredientFragment {
+class IngredientFragment.IngredientFragment {
 -EditText ingredientDescription;
 -EditText ingredientLocation;
 -EditText ingredientBestBeforeDate;
@@ -56,20 +58,30 @@ class IngredientFragment {
 -EditText ingredientCategory;
 -OnFragmentInteractionListener listener;
 -FireBaseFirestore db
+-ActivityResultLauncher<Intent> calendarActivity
+
+- Date calendarDate
+- {static} String triggerFlag
 
 + {static} void onAttach(@NonNull Context)
 + {static} IngredientFragment NewInstance(Ingredient)
 + Dialog onCreateDialog(@Nullable Bundle)
-- Date parseDate(String)
+- void setDate(String)
++ int parseCount(String count)
 - boolean emptyStringCheck(String, String, String, String, String, String)
+
++ {static}void addIngredientDB(Ingredient, CollectionReference)
++ {static}void delIngredientDB(String, CollectionReference)
++ {static}void editIngredientDB(String, Ingredient, CollectionReference)
+
 }
 
-interface OnFragmentInteractionListener {
+interface IngredientActivity.OnFragmentInteractionListener {
 +void onOkPressed(Ingredient newIngredient);
 +void onOkPressedEdit(Ingredient newIngredient);
 }
 
-class CustomIngredientArrayAdapter extends ArrayAdapter {
+class IngredientActivity.CustomIngredientArrayAdapter extends ArrayAdapter {
 - ArrayList<Ingredient> ingredients
 - Context context
 - FireBaseFirestore db
@@ -77,23 +89,31 @@ class CustomIngredientArrayAdapter extends ArrayAdapter {
 + View getView(int, @Nullable View, @NonNull ViewGroup)
 }
 
-Serializable ()-- Ingredient : Implements
-Date "1" <--* "1..*" Ingredient
+class CalendarActivity extends AppCompatActivity
+{
+    - String date
+    * void onCreate(Bundle savedInstanceState)
+    - void done()
+}
 
-Ingredient "0..*" <-*  IngredientActivity
-IngredientActivity *-> ListView
-CustomIngredientArrayAdapter --o IngredientActivity
-FireBaseFirestore --o "0..*" IngredientActivity
 
-IngredientActivity o-- ArrayList
-AppCompatActivity <|--- IngredientActivity
-DialogFragment <|--- IngredientFragment
-FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
+Serializable ()-- Ingredient.Ingredient : Implements
+Ingredient.Date "1" <--* "1..*" Ingredient.Ingredient
 
-IngredientFragment *-> "6" EditText
-OnFragmentInteractionListener <-* IngredientFragment
-FireBaseFirestore --o "0..*" IngredientFragment
-IngredientActivity <--> IngredientFragment
+Ingredient "0..*" <-*  IngredientActivity.IngredientActivity
+IngredientActivity.IngredientActivity *-> ListView
+IngredientActivity.CustomIngredientArrayAdapter --o IngredientActivity.IngredientActivity
+FireBaseFirestore --o "0..*" IngredientActivity.IngredientActivity
+
+IngredientActivity.IngredientActivity o-- ArrayList
+AppCompatActivity <|--- IngredientActivity.IngredientActivity
+IngredientFragment.DialogFragment <|--- IngredientFragment.IngredientFragment
+FireBaseFirestore --o "0..*" IngredientActivity.CustomIngredientArrayAdapter
+
+IngredientFragment.IngredientFragment *-> "6" EditText
+IngredientActivity.OnFragmentInteractionListener <-* IngredientFragment.IngredientFragment
+FireBaseFirestore --o "0..*" IngredientFragment.IngredientFragment
+IngredientActivity.IngredientActivity <--> IngredientFragment.IngredientFragment
 
 note "Activity and Fragment can move between each other via button clicks; onOkPressed() \nand onOkEdit() are the methods used by fragment to make changes to activity" as N1
 note "formattedBestBeforeDate() is for returning a String \nrepresentation of the Date object similar to toSring() " as N2
@@ -102,20 +122,20 @@ note "selected is the position of the user chosen Ingredient from ListView" as I
 note "This is the firebase firestore that the application references\n all ingredientList modifications are made to FireStore" as FireBase
 note "emptyString() checks for valid user input \n& OnCreateDialog() is for communication with activty" as error
 
-N1 . IngredientFragment
-IngredientActivity . N1
+N1 . IngredientFragment.IngredientFragment
+IngredientActivity.IngredientActivity . N1
 
-N2 . Ingredient
-Date .. N2
+N2 . Ingredient.Ingredient
+Ingredient.Date .. N2
 
-IActivity2 . CustomIngredientArrayAdapter
-IActivity2 .. IngredientActivity
+IActivity2 . IngredientActivity.CustomIngredientArrayAdapter
+IActivity2 .. IngredientActivity.IngredientActivity
 
-IActivity3 .. IngredientActivity
+IActivity3 .. IngredientActivity.IngredientActivity
 
 FireBaseFirestore . FireBase
 
-error .. IngredientFragment
+error .. IngredientFragment.IngredientFragment
 
 
 
