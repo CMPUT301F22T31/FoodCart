@@ -143,6 +143,7 @@ public class RecipeActivity extends AppCompatActivity
                 }
             });
 
+            // Switch to mealplan activity
             final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -154,6 +155,7 @@ public class RecipeActivity extends AppCompatActivity
                 }
             });
 
+            // Switch to shoppinglist activity
             final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
             ShoppingListTab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,6 +167,7 @@ public class RecipeActivity extends AppCompatActivity
                 }
             });
 
+        // Notify Adapter whenever the database updates
             recipeCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -181,6 +184,7 @@ public class RecipeActivity extends AppCompatActivity
                         String category = (String) doc.getData().get("Category");
                         String picture =  (String) doc.getData().get("Picture");
 
+                        // Get the ingredients for the recipe
                         CollectionReference ingredients = db.collection("Recipes")
                                                             .document(title).collection("Ingredients");
                         ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

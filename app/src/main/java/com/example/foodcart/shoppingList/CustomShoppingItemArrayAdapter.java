@@ -72,11 +72,13 @@ public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
         View parentView = (View) parent.getParent();
         Spinner sortDropDown = parentView.findViewById(R.id.shopping_list_sort_select);
 
+        // Set the item values
         itemDescription.setText(item.getDescription());
         itemQuantity.setText("Amount: "+Integer.toString(item.getCount()-item.getOldcount()));
         itemCategory.setText("Category: " + item.getCategory());
         itemunit.setText("Unit: "+item.getUnit());
 
+        // Set item check value depending on checkbox
         final CheckBox checkBox = view.findViewById(R.id.shopping_item_checkButton);
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -240,10 +240,14 @@ public class MealPlanFragment extends DialogFragment {
         final CollectionReference Collection = db.collection(type);
         TextView type_test = view.findViewById(R.id.addmeal_title);
 
+        // Depending on the type of object we are looking for
         if(type.equals("Ingredients")){
+            // Set Defaults
             type_test.setText("Ingredients");
             ingredientAdapter = new CustomIngredientArrayAdapter(getActivity(), ingredientdataList, false);
             ItemList.setAdapter(ingredientAdapter);
+
+            // Get all the ingredients from database
             Collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -274,9 +278,12 @@ public class MealPlanFragment extends DialogFragment {
                 }
             });
         } else {
+            // Set Defaults
             type_test.setText("Recipes");
             recipeAdapter = new CustomRecipeArrayAdapter(getActivity(), recipedataList, false);
             ItemList.setAdapter(recipeAdapter);
+
+            // Get all recipes from our list
             Collection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -293,6 +300,7 @@ public class MealPlanFragment extends DialogFragment {
                             String category = (String) doc.getData().get("Category");
                             String picture =  (String) doc.getData().get("Picture");
 
+                            // Get the ingredients for this recipe
                             CollectionReference ingredients = db.collection("Recipes")
                                     .document(title).collection("Ingredients");
                             ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -338,7 +346,7 @@ public class MealPlanFragment extends DialogFragment {
         }
         final CollectionReference MealPlanCollection = db.collection("MealPlan");
 
-        // onClick for selecting items from list. When item is selected, Edit Food pops up
+        // onClick for selecting items from list. When item is selected, calender pops up
         ItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -360,6 +368,7 @@ public class MealPlanFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Ensure we get a valid date
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             String date = result.getData().getStringExtra("Date");
@@ -367,7 +376,7 @@ public class MealPlanFragment extends DialogFragment {
 
                             CollectionReference MealPlanCollection = db.collection("MealPlan");
                             Meal newMeal;
-
+                            // depending on type add to mealplan differently
                             if(type.equals("Ingredients")) {
                                 newMeal = new Meal(selectedIngredient.getDescription(), "Ingredient", 1, calendarDate);
                                 // Add meal ingredient
@@ -386,6 +395,9 @@ public class MealPlanFragment extends DialogFragment {
                 }
             });
 
+    /**
+     * Try to setDate with our format
+     */
     private void setDate(String date) {
         try {
             calendarDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);

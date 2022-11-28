@@ -29,18 +29,34 @@ public class ShoppingItem extends Ingredient {
         this.oldcount = oldcount;
     }
 
+    /**
+     * Returns true if the item is checked
+     * @return
+     */
     public boolean isChecked() {
         return Checked;
     }
 
+    /**
+     * Change the value of checked for the item
+     * @return
+     */
     public void setChecked(boolean checked) {
         Checked = checked;
     }
 
+    /**
+     * Get the old count
+     * @return
+     */
     public Integer getOldcount() {
         return oldcount;
     }
 
+    /**
+     * Sets the old count
+     * @return
+     */
     public void setOldcount(int oldcount) {
         this.oldcount = oldcount;
     }

@@ -51,6 +51,7 @@ public class RecipeIngredientsActivity extends AppCompatActivity
             }
         });
 
+        // Done button for adding Ingredients
         final Button activityComplete = findViewById(R.id.ingredientsDone);
         activityComplete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +91,10 @@ public class RecipeIngredientsActivity extends AppCompatActivity
         dataList.set(selected, ingredient);
         ingredientAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Finish Activity and set our result
+     */
     public void Done() {
         Intent intent = new Intent();
         intent.putExtra("EditedList", dataList);

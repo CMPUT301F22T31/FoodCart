@@ -96,6 +96,11 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Create new instance to make it possible to edit some recipe objects
+     * @param recipe
+     * @return
+     */
     public static RecipeFragment newInstance(Recipe recipe) {
         Bundle args = new Bundle();
         args.putSerializable("recipe", recipe);
@@ -118,11 +123,13 @@ public class RecipeFragment extends DialogFragment {
         // get reference to ingredient collection
         CollectionReference delIngredientCollect = delCollect.document(delRecipe.getTitle())
                                                     .collection("Ingredients");
+        // Delete all the ingredients from the Recipe
         while(iter.hasNext())
         {
             Ingredient currentIngredient = iter.next();
             IngredientFragment.delIngredientDB(currentIngredient.getDescription(), delIngredientCollect);
         }
+        // Delete the recipe
         delCollect
                 .document(delRecipe.getTitle())
                 .delete()
@@ -232,6 +239,7 @@ public class RecipeFragment extends DialogFragment {
         // Get a top level reference to the collection
         final CollectionReference recipeCollection = db.collection("Recipes");
 
+        // Get Text Views
         recipeTitle = view.findViewById(R.id.recipeTitleET);
         recipePrepareTime = view.findViewById(R.id.recipePrepareTimeET);
         recipeServings = view.findViewById(R.id.recipeServingsET);
@@ -263,6 +271,7 @@ public class RecipeFragment extends DialogFragment {
 
         //edit recipe functionality
         if (args != null) {
+            // Set Text views
             Recipe currentRecipe = (Recipe) args.getSerializable("recipe");
             imageBitmap = currentRecipe.getBitmapPicture();
             recipeImage.setImageBitmap(imageBitmap);
@@ -271,6 +280,8 @@ public class RecipeFragment extends DialogFragment {
             recipeServings.setText(Integer.toString(currentRecipe.getServings()));
             recipeCategory.setText(currentRecipe.getCategory());
             recipeComments.setText(currentRecipe.getComments());
+
+            // For all the ingredients add to our ingredient list
             CollectionReference ingredientData = recipeCollection.document(currentRecipe.getTitle()).collection("Ingredients");
             ingredientData.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                @Override
@@ -298,6 +309,7 @@ public class RecipeFragment extends DialogFragment {
                     .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            // Get user inputs
                             String title = recipeTitle.getText().toString();
                             String prepTime = recipePrepareTime.getText().toString();
                             String serves = recipeServings.getText().toString();
@@ -337,6 +349,7 @@ public class RecipeFragment extends DialogFragment {
                     .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
+                            // Get user inputs
                             String title = recipeTitle.getText().toString();
                             String prepTime = recipePrepareTime.getText().toString();
                             String serves = recipeServings.getText().toString();
@@ -369,6 +382,7 @@ public class RecipeFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Ensure date is valid
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             imageBitmap = (Bitmap) result.getData().getExtras().get("data");
@@ -385,6 +399,7 @@ public class RecipeFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Add ingredients to our recipe
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         ingredients = (ArrayList<Ingredient>) result.getData().
                                 getSerializableExtra("EditedList");

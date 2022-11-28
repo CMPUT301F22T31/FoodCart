@@ -79,6 +79,7 @@ public class IngredientFragment extends DialogFragment {
      * object of Ingredient fragment
      */
     public static IngredientFragment newInstance(Ingredient ingredient, String flag) {
+        // If we have a specific ingredient to edit then create different fragment
         triggerFlag = flag;
         if (flag.equals("edit") || flag.equals("editFromRecipe")) {
             Bundle args = new Bundle();
@@ -184,6 +185,7 @@ public class IngredientFragment extends DialogFragment {
         ingredientUnit = view.findViewById(R.id.ingredientUnitET);
         ingredientCategory = view.findViewById(R.id.ingredientCategoryET);
 
+        // Launch the Calender app to get date
         final ImageButton calendarButton = view.findViewById(R.id.calendarButton);
         calendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +206,7 @@ public class IngredientFragment extends DialogFragment {
             Ingredient ingredient = (Ingredient) args.getSerializable("ingredient");
             ingredientDescription.setText(ingredient.getDescription());
 
-
+            // depending on edit or ediFromRecipe configure fragment
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());
                 ingredientBestBeforeDate.setText(ingredient.getFormattedBestBeforeDate());
@@ -220,6 +222,7 @@ public class IngredientFragment extends DialogFragment {
                 calendarButton.setVisibility(View.INVISIBLE);
             }
 
+            // Create the alertdialog to get user input
             ingredientCount.setText(String.valueOf(ingredient.getCount()));
             ingredientUnit.setText(ingredient.getUnit());
             ingredientCategory.setText(ingredient.getCategory());
@@ -270,6 +273,7 @@ public class IngredientFragment extends DialogFragment {
         }
         //add ingredient functionality
         else {
+            // If from recipe activity change fragment info
             if (triggerFlag.equals("addFromRecipe")) {
                 TextView BBDTextView = view.findViewById(R.id.ingredientBestBeforeDateTV1);
                 TextView locationTextView = view.findViewById(R.id.ingredientLocationTV);
@@ -282,6 +286,7 @@ public class IngredientFragment extends DialogFragment {
             else {
                //do nothing
             }
+            // Create the alertdialog to get user input
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             return builder
                     .setView(view)
@@ -337,6 +342,7 @@ public class IngredientFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Check if we got a valid result
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             String date = result.getData().getStringExtra("Date");
