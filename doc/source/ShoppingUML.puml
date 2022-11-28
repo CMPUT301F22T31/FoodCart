@@ -1,66 +1,71 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class ShoppingItem extends Ingredient
+package ShoppingList
 {
-    -boolean Checked = false
-    -int oldcount
+    class ShoppingItem
+    {
+        -boolean Checked = false
+        -int oldcount
+    }
+    package ShoppingListFragment
+    {
+        interface OnFragmentInteractionListener
+        {
+            +void onOkPressedEdit(ShoppingItem newItem)
+        }
+        class ShoppingItemFragment
+        {
+            -EditText itemDescription
+            -EditText itemCount
+            -EditText itemUnit
+            -EditText itemLocation
+            -TextView itemBestBeforeDate
+            -Date calendarDate
+            -EditText itemCategory
+            -OnFragmentInteractionListener listener
+            -FirebaseFirestore db
+            -ActivityResultLauncher<Intent> calendarActivity
+
+            -void setDate(String date)
+            -int parseCount(String count)
+            +void onAttach(@NonNull Context context)
+            +{static}void editShoppingItemDB(String oldItem, Ingredient newItem, CollectionReference IngredientCollection)
+            +{static} ShoppingItemFragment newInstance(ShoppingItem item)
+            +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+            +boolean emptyStringCheck(String description, String location, String count, String unit, String category)
+
+        }
+    }
+    package ShoppingListActivity
+    {
+        class CustomShoppingItemArrayAdapter
+        {
+            -ArrayList<ShoppingItem> items
+            -Context context
+            -FirebaseFirestore db
+
+            +CustomShoppingItemArrayAdapter(Context context, ArrayList<ShoppingItem> items)
+            +View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
+        }
+        class ShoppingListActivity implements OnFragmentInteractionListener
+        {
+                -ListView shoppingList
+                -ArrayAdapter<ShoppingItem> shoppingAdapter
+                -ArrayList<ShoppingItem> dataList
+                -ArrayList<ShoppingItem> tempList
+                -int selected
+                -FirebaseFirestore db
+                -String[] sortValues = { "description", "category" }
+
+                *void onCreate(Bundle savedInstanceState)
+                +void onOkPressedEdit(ShoppingItem item)
+                +void additem(ShoppingItem item)
+                +void additemCheck(ShoppingItem item)
+        }
+    }
+    ShoppingListActivity -- CustomShoppingItemArrayAdapter
+    ShoppingItemFragment <--> ShoppingListActivity
 }
-class ShoppingListActivity.CustomShoppingItemArrayAdapter
-{
-    -ArrayList<ShoppingItem> items
-    -Context context
-    -FirebaseFirestore db
-
-    +CustomShoppingItemArrayAdapter(Context context, ArrayList<ShoppingItem> items)
-    +View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
-}
-
-class ShoppingListActivity.ShoppingListActivity implements ShoppingItemFragment.OnFragmentInteractionListener
-{
-        -ListView shoppingList
-        -ArrayAdapter<ShoppingItem> shoppingAdapter
-        -ArrayList<ShoppingItem> dataList
-        -ArrayList<ShoppingItem> tempList
-        -int selected
-        -FirebaseFirestore db
-        -String[] sortValues = { "description", "category" }
-
-        *void onCreate(Bundle savedInstanceState)
-        +void onOkPressedEdit(ShoppingItem item)
-        +void additem(ShoppingItem item)
-        +void additemCheck(ShoppingItem item)
-}
-
-interface ShoppingItemFragment.OnFragmentInteractionListener
-{
-    +void onOkPressedEdit(ShoppingItem newItem)
-}
-
-class ShoppingItemFragment.ShoppingItemFragment
-{
-    -EditText itemDescription
-    -EditText itemCount
-    -EditText itemUnit
-    -EditText itemLocation
-    -TextView itemBestBeforeDate
-    -Date calendarDate
-    -EditText itemCategory
-    -OnFragmentInteractionListener listener
-    -FirebaseFirestore db
-    -ActivityResultLauncher<Intent> calendarActivity
-
-    -void setDate(String date)
-    -int parseCount(String count)
-    +void onAttach(@NonNull Context context)
-    +{static}void editShoppingItemDB(String oldItem, Ingredient newItem, CollectionReference IngredientCollection)
-    +{static} ShoppingItemFragment newInstance(ShoppingItem item)
-    +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
-    +boolean emptyStringCheck(String description, String location, String count, String unit, String category)
-
-}
-
-ShoppingListActivity.ShoppingListActivity -- ShoppingListActivity.CustomShoppingItemArrayAdapter
-ShoppingItemFragment.ShoppingItemFragment <--> ShoppingListActivity.ShoppingListActivity
 
 @enduml
