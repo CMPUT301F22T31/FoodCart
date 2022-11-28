@@ -2,6 +2,7 @@
 
 Docs
 - UML
+- JavaDocs
 
 Projects Tab:
 - Backlog
