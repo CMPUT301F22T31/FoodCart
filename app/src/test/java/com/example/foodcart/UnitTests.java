@@ -1,8 +1,7 @@
 package com.example.foodcart;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertNull;
 
 import android.content.Context;
 
@@ -21,7 +20,6 @@ import java.util.Date;
 
 public class UnitTests {
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
     //As we don't have access to Context in our JUnit test classes, we need to mock it
     @Mock
@@ -31,33 +29,41 @@ public class UnitTests {
     public void IngredientUnitTest() throws ParseException {
 
         // Creates an object of Ingredient
+        String dateString = "2023-05-26";
+        Date date = stringToDate(dateString);
         Ingredient testIngredient = new Ingredient("Banana",
-                new Date(2023, 05, 26), "fridge",
-                5, "", "fruit");
+                date, "fridge",
+                5, "Units", "fruit");
 
         assertEquals("Banana", testIngredient.getDescription());
-        assertEquals(new Date(2023, 5, 26), testIngredient.getBestBeforeDate());
-        assertEquals(formatter.format(formatter.parse("2023-05-26")), testIngredient.getFormattedBestBeforeDate());
+        assertEquals(date, testIngredient.getBestBeforeDate());
         assertEquals("fridge", testIngredient.getLocation());
-        assertEquals("", testIngredient.getUnit());
+        assertEquals("Units", testIngredient.getUnit());
         assertEquals(Integer.valueOf(5), testIngredient.getCount());
         assertEquals("fruit", testIngredient.getCategory());
     }
 
     @Test
     public void RecipeUnitTest() {
-
+        String dateString = "2020-08-24";
+        Date date = stringToDate(dateString);
         Ingredient spaghetti = new Ingredient("Spaghetti",
-                new Date(2020, 8, 24), "pantry",
+                date, "pantry",
                 1, "bag", "pasta");
+        dateString = "2023-01-14";
+        date = stringToDate(dateString);
         Ingredient ground_beef = new Ingredient("Ground Beef",
-                new Date(2023, 1, 14), "freezer",
+                date, "freezer",
                 2, "packs", "meat");
+        dateString = "2024-05-01";
+        date = stringToDate(dateString);
         Ingredient sauce = new Ingredient("Spaghetti Sauce",
-                new Date(2024, 5, 1), "pantry",
+                date, "pantry",
                 4, "jars", "sauces");
+        dateString = "2025-02-09";
+        date = stringToDate(dateString);
         Ingredient cheese = new Ingredient("Shredded Cheese",
-                new Date(2025, 2, 9), "fridge",
+                date, "fridge",
                 1, "bag", "cheese");
 
         ArrayList<Ingredient> ingredients = new ArrayList<>();
@@ -83,13 +89,14 @@ public class UnitTests {
 
     @Test
     public void MealUnitTest() throws ParseException {
-
-        Meal testMeal = new Meal("Spaghetti with Meatballs", "supper", 2, new Date(2022, 12, 24));
+        String dateString = "2022-12-24";
+        Date date = stringToDate(dateString);
+        Meal testMeal = new Meal("Spaghetti with Meatballs", "supper", 2, date);
 
         assertEquals("Spaghetti with Meatballs", testMeal.getMealName());
         assertEquals("supper", testMeal.getMealType());
         assertEquals(2, testMeal.getScale());
-        assertEquals(formatter.format(formatter.parse("2022-12-24")), testMeal.getDate());
+        assertEquals(date, testMeal.getDate());
 
     }
 
@@ -100,10 +107,21 @@ public class UnitTests {
         ShoppingItem testItem = new ShoppingItem("Apples", 2, 2,"bags", "fruit");
 
         assertEquals("Apples", testItem.getDescription());
-        assertEquals(null, testItem.getBestBeforeDate());
-        assertEquals(null, testItem.getLocation());
+        assertNull(testItem.getBestBeforeDate());
+        assertNull(testItem.getLocation());
         assertEquals("bags", testItem.getUnit());
         assertEquals(Integer.valueOf(2), testItem.getCount());
         assertEquals("fruit", testItem.getCategory());
+    }
+
+    private Date stringToDate(String date) {
+        Date formattedDate = null;
+        try {
+            formattedDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return formattedDate;
     }
 }
