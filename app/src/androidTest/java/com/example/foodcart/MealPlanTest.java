@@ -59,6 +59,7 @@ public class MealPlanTest {
     public void AddMealRecipe() {
         solo.assertCurrentActivity("Wrong Activity", MealPlanActivity.class);
         removeAllElements();
+        //add a recipe if not available
         solo.clickOnView(solo.getView(R.id.recipes_tab));
         solo.assertCurrentActivity("Did not switch", RecipeActivity.class);
         if(!solo.searchText("Butter Chicken")) {
@@ -81,12 +82,14 @@ public class MealPlanTest {
             solo.clickOnButton("Add"); //Select CONFIRM Button
             assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
         }
+        //add it to meal
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
         solo.clickOnView(solo.getView(R.id.add_mealplan_button));
         solo.clickOnView(solo.getView(R.id.add_mealplan_recipe_button));
         solo.clickOnText("Butter Chicken");
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
+        //should exist
         assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
     }
 
@@ -97,6 +100,7 @@ public class MealPlanTest {
     public void AddMealIngredient() {
         solo.assertCurrentActivity("Wrong Activity", MealPlanActivity.class);
         removeAllElements();
+        //add ingredient if not already available
         solo.clickOnView(solo.getView(R.id.ingredients_tab));
         solo.assertCurrentActivity("Did not switch", IngredientActivity.class);
         if(!solo.searchText("Rice")) {
@@ -111,12 +115,14 @@ public class MealPlanTest {
             solo.clickOnButton("Add");
             assertTrue(solo.waitForText("Rice", 1, 2000));
         }
+        //add ingredient to meal
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
         solo.clickOnView(solo.getView(R.id.add_mealplan_button));
         solo.clickOnView(solo.getView(R.id.add_mealplan_ingredient_button));
         solo.clickOnText("Rice");
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
+        //should exist
         assertTrue(solo.waitForText("Rice", 1, 2000));
     }
 
@@ -125,12 +131,15 @@ public class MealPlanTest {
      */
     @Test
     public void RescaleMealRecipe() {
+        //add recipe and then make a meal from that recipe
         AddMealRecipe();
+        //rescale this meal
         solo.clickOnText("Butter Chicken");
         solo.clearEditText((EditText) solo.getView(R.id.mealscaleET));
         solo.enterText((EditText) solo.getView(R.id.mealscaleET), "5");
         solo.clickOnButton("Edit");
         solo.clickOnText("Butter Chicken");
+        //check if it is rescaled
         assertTrue(solo.waitForText("5", 1, 2000));
     }
 
@@ -139,7 +148,9 @@ public class MealPlanTest {
      */
     @Test
     public void DeleteMeal(){
+        //add a meal
         AddMealIngredient();
+        //delete that specific meal
         ListView mylist = (ListView)solo.getView(R.id.mealplan_list);
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
@@ -148,6 +159,7 @@ public class MealPlanTest {
                 solo.clickOnImageButton(i);
             }
         }
+        //should not exist
         assertFalse(solo.searchText("Rice"));
     }
 

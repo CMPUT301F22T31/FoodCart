@@ -20,13 +20,11 @@ import java.util.Date;
 
 public class UnitTests {
 
-
-    //As we don't have access to Context in our JUnit test classes, we need to mock it
-    @Mock
-    Context mMockContext;
-
+    /**
+     * Test the Ingredient Class
+     */
     @Test
-    public void IngredientUnitTest() throws ParseException {
+    public void IngredientUnitTest() {
 
         // Creates an object of Ingredient
         String dateString = "2023-05-26";
@@ -35,6 +33,7 @@ public class UnitTests {
                 date, "fridge",
                 5, "Units", "fruit");
 
+        //checks if the details are correct
         assertEquals("Banana", testIngredient.getDescription());
         assertEquals(date, testIngredient.getBestBeforeDate());
         assertEquals("fridge", testIngredient.getLocation());
@@ -42,9 +41,12 @@ public class UnitTests {
         assertEquals(Integer.valueOf(5), testIngredient.getCount());
         assertEquals("fruit", testIngredient.getCategory());
     }
-
+    /**
+     * Test the Recipe Class
+     */
     @Test
     public void RecipeUnitTest() {
+        //create ingredients
         String dateString = "2020-08-24";
         Date date = stringToDate(dateString);
         Ingredient spaghetti = new Ingredient("Spaghetti",
@@ -66,16 +68,18 @@ public class UnitTests {
                 date, "fridge",
                 1, "bag", "cheese");
 
+        //add them to arraylist
         ArrayList<Ingredient> ingredients = new ArrayList<>();
         ingredients.add(spaghetti);
         ingredients.add(ground_beef);
         ingredients.add(sauce);
         ingredients.add(cheese);
-
+        //create new Recipe Object
         Recipe testRecipe = new Recipe("Spaghetti with Meatballs",
                 10, 4,
                 "Grandma's famous recipe", "spaghetti-pic", "pasta", ingredients);
 
+        //check if details are correct
         assertEquals("Spaghetti with Meatballs", testRecipe.getTitle());
         assertEquals(10, testRecipe.getPrep_time());
         assertEquals(4, testRecipe.getServings());
@@ -87,12 +91,16 @@ public class UnitTests {
         assertEquals(cheese, testRecipe.getIngredientList().get(3));
     }
 
+    /**
+     * Test the Meal Plan Class
+     */
     @Test
-    public void MealUnitTest() throws ParseException {
+    public void MealUnitTest() {
+        //create a Meal Object
         String dateString = "2022-12-24";
         Date date = stringToDate(dateString);
         Meal testMeal = new Meal("Spaghetti with Meatballs", "supper", 2, date);
-
+        //check if details are correct
         assertEquals("Spaghetti with Meatballs", testMeal.getMealName());
         assertEquals("supper", testMeal.getMealType());
         assertEquals(2, testMeal.getScale());
@@ -100,12 +108,15 @@ public class UnitTests {
 
     }
 
+    /**
+     * Tests the Shopping List
+     */
     @Test
-    public void ShoppingItemUnitTest() throws ParseException {
+    public void ShoppingItemUnitTest() {
 
-        // Creates an object of Ingredient
+        //creates an object of Shopping Item
         ShoppingItem testItem = new ShoppingItem("Apples", 2, 2,"bags", "fruit");
-
+        //check if details are correct
         assertEquals("Apples", testItem.getDescription());
         assertNull(testItem.getBestBeforeDate());
         assertNull(testItem.getLocation());
@@ -114,6 +125,11 @@ public class UnitTests {
         assertEquals("fruit", testItem.getCategory());
     }
 
+    /**
+     * Converts string value of date to Date Object
+     * @param date
+     * @return
+     */
     private Date stringToDate(String date) {
         Date formattedDate = null;
         try {

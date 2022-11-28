@@ -36,7 +36,6 @@ public class RecipeTest {
      */
     @Before
     public void setUp() throws Exception {
-
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
     }
 
@@ -57,6 +56,7 @@ public class RecipeTest {
     public void AddRecipe(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -70,10 +70,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredients are added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if recipe is added
         assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
     }
 
@@ -84,6 +86,7 @@ public class RecipeTest {
     public void AddRecipeNoPicture(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Butter Chicken");
         solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
@@ -95,10 +98,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredient added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("Butter Chicken"));
     }
     /**
@@ -108,6 +113,7 @@ public class RecipeTest {
     public void AddRecipeEmptyTitle(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -121,10 +127,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredient added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("EmptyString"));
     }
     /**
@@ -134,6 +142,7 @@ public class RecipeTest {
     public void AddRecipeBadPrepTime(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -147,10 +156,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredient added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("Butter Chicken"));
     }
 
@@ -161,6 +172,7 @@ public class RecipeTest {
     public void AddRecipeBadServes(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -174,10 +186,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredient added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("Butter Chicken"));
     }
 
@@ -188,6 +202,7 @@ public class RecipeTest {
     public void AddRecipeEmptyCategory(){
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -201,10 +216,12 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //check if ingredient added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("Butter Chicken"));
     }
 
@@ -212,6 +229,7 @@ public class RecipeTest {
     public void NoIngredient() {
         solo.assertCurrentActivity("Wrong Activity", RecipeActivity.class);
         removeAllElements();
+        //add recipe with given details
         solo.clickOnView(solo.getView(R.id.add_recipe_button));
         solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
         //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
@@ -219,7 +237,8 @@ public class RecipeTest {
         solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
         solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
         solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Indian");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
+        //recipe should not be added
         assertFalse(solo.waitForText("Butter Chicken"));
     }
 
@@ -229,7 +248,9 @@ public class RecipeTest {
      */
     @Test
     public void EditRecipe(){
+        //add recipe to be edited
         AddRecipe();
+        //edit the added recipe details
         solo.clickOnText("Butter Chicken");
         solo.clearEditText((EditText) solo.getView(R.id.recipeTitleET));
         solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Chicken Tikka Masala");
@@ -237,10 +258,12 @@ public class RecipeTest {
         solo.clickOnText("Chicken");
         solo.clearEditText((EditText) solo.getView(R.id.ingredientCountET));
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "2");
-        solo.clickOnButton("Edit"); //Select CONFIRM Button
+        solo.clickOnButton("Edit");
+        //check if the edited ingredient exist
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Edit"); //Select CONFIRM Button
+        solo.clickOnButton("Edit");
+        //check if recipe edited
         assertTrue(solo.waitForText("Chicken Tikka Masala", 1, 2000));
     }
 
@@ -249,7 +272,9 @@ public class RecipeTest {
      */
     @Test
     public void DeleteRecipe(){
+        //add recipe to be deleted
         AddRecipe();
+        //delete this particular recipe
         ListView mylist = (ListView)solo.getView(R.id.recipes_list);
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
@@ -258,6 +283,7 @@ public class RecipeTest {
                 solo.clickOnImageButton(i);
             }
         }
+        //recipe should no longer exist
         assertFalse(solo.searchText("Butter Chicken"));
     }
 

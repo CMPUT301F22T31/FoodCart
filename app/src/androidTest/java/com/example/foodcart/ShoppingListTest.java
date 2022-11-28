@@ -62,9 +62,11 @@ public class ShoppingListTest {
     @Test
     public void AddToShoppingIngredient() {
         solo.assertCurrentActivity("Wrong Activity", ShoppingListActivity.class);
+        //add ingredients
         addIngredient();
+        //add recipes
         addRecipe();
-        //add meal
+        //add meal if not available
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
         if(!solo.searchText("Vegan Burger")) {
@@ -74,18 +76,26 @@ public class ShoppingListTest {
             solo.clickOnView(solo.getView(R.id.floatingActionButton));
             assertTrue(solo.waitForText("Vegan Burger", 1, 2000));
         }
+        //scale meal
         solo.clickOnText("Vegan Burger");
         solo.clearEditText((EditText) solo.getView(R.id.mealscaleET));
         solo.enterText((EditText) solo.getView(R.id.mealscaleET), "30");
         solo.clickOnButton("Edit");
+        //check if item added to shopping list
         solo.clickOnView(solo.getView(R.id.shoppinglist_tab));
         solo.assertCurrentActivity("Did not switch", ShoppingListActivity.class);
         assertTrue(solo.waitForText("Vegan Patty", 1, 2000));
     }
 
+    /**
+     * Add ingredient in shoppinglist to ingredient storage after entering the missing
+     * details
+     */
     @Test
     public void AddToIngredientFromList() {
+        //add item to shopping list
         AddToShoppingIngredient();
+        //select checkbox
         ListView mylist = (ListView)solo.getView(R.id.shopping_list);
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
@@ -95,14 +105,19 @@ public class ShoppingListTest {
             }
         }
         assertTrue(solo.waitForText("Vegan Patty", 1, 2000));
+        //add it to ingredient storage after adding the details
         solo.clickOnView(solo.getView(R.id.add_item_button));
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
         solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "Freezer");
         solo.clickOnButton("Edit");
+        //it should no longer exist in shopping list
         assertFalse(solo.searchText("Vegan Patty"));
     }
 
+    /**
+     * Add an ingredient if not already available
+     */
     private void addIngredient() {
         //add ingredient
         solo.clickOnView(solo.getView(R.id.ingredients_tab));
@@ -128,6 +143,9 @@ public class ShoppingListTest {
         }
     }
 
+    /**
+     * adds a recipe if not already available
+     */
     private void addRecipe() {
         //add recipe
         solo.clickOnView(solo.getView(R.id.recipes_tab));

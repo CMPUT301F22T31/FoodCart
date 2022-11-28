@@ -59,9 +59,10 @@ public class IngredientTest {
     public void AddIngredient(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
+        //enter today's date
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
         solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
@@ -69,7 +70,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //check if it was added
         assertTrue(solo.waitForText("Chicken", 1, 2000));
     }
 
@@ -81,10 +82,10 @@ public class IngredientTest {
     public void AddIngredient_BadCount(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
+        //enter today's date
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
         solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
@@ -92,7 +93,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //it should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -103,7 +104,7 @@ public class IngredientTest {
     public void AddIngredient_BlankDesc(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
@@ -113,7 +114,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //should not be added
         assertFalse(solo.searchText("EmptyString"));
     }
 
@@ -124,7 +125,7 @@ public class IngredientTest {
     public void AddIngredient_BlankLocation(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
@@ -134,7 +135,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -145,15 +146,15 @@ public class IngredientTest {
     public void AddIngredient_BlankDate(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
         solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "Fridge");
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
+        //should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -164,9 +165,8 @@ public class IngredientTest {
     public void AddIngredient_BlankCount(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
@@ -175,7 +175,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "g");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -186,9 +186,8 @@ public class IngredientTest {
     public void AddIngredient_BlankUnit(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
-
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
@@ -197,7 +196,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
         solo.clickOnButton("Add");
-
+        //should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -208,8 +207,8 @@ public class IngredientTest {
     public void AddIngredient_BlankCategory(){
         solo.assertCurrentActivity("Wrong Activity", IngredientActivity.class);
         removeAllElements();
+        //adds ingredients with given details
         solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
         solo.clickOnView(solo.getView(R.id.calendarButton));
         solo.clickOnView(solo.getView(R.id.floatingActionButton));
@@ -218,7 +217,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "");
         solo.clickOnButton("Add");
-
+        //should not be added
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -227,8 +226,9 @@ public class IngredientTest {
      */
     @Test
     public void DeleteIngredient(){
+        //add an ingredient first
         AddIngredient();
-
+        //delete that particular ingredient
         ListView mylist = (ListView)solo.getView(R.id.ingredients_list);
         for(int i =0;i<mylist.getCount();i++){
             View child = mylist.getChildAt(i);
@@ -237,8 +237,8 @@ public class IngredientTest {
                 solo.clickOnImageButton(i);
             }
         }
-
-        assertFalse(solo.searchText("Fish"));
+        //should not exist anymore
+        assertFalse(solo.searchText("Chicken"));
     }
 
     /**
@@ -246,11 +246,14 @@ public class IngredientTest {
      */
     @Test
     public void EditIngredient(){
+        //add ingredient
         AddIngredient();
+        //edit it
         solo.clickOnText("Chicken");
         solo.clearEditText((EditText) solo.getView(R.id.ingredientDescriptionET));
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Fish");
         solo.clickOnButton("Edit");
+        //check if edited version exists
         assertTrue(solo.waitForText("Fish", 1, 2000));
     }
 
