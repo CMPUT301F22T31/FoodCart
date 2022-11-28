@@ -1,27 +1,59 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
+class ShoppingItem extends Ingredient
+{
+    -boolean Checked = false
+    -int oldcount
+}
+class ShoppingListActivity.CustomShoppingItemArrayAdapter
+{
+    -ArrayList<ShoppingItem> items
+    -Context context
+    -FirebaseFirestore db
 
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+    +CustomShoppingItemArrayAdapter(Context context, ArrayList<ShoppingItem> items)
+    +View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+class ShoppingListActivity.ShoppingListActivity implements ShoppingItemFragment.OnFragmentInteractionListener
+{
+        -ListView shoppingList
+        -ArrayAdapter<ShoppingItem> shoppingAdapter
+        -ArrayList<ShoppingItem> dataList
+        -ArrayList<ShoppingItem> tempList
+        -int selected
+        -FirebaseFirestore db
+        -String[] sortValues = { "description", "category" }
+
+        *void onCreate(Bundle savedInstanceState)
+        +void onOkPressedEdit(ShoppingItem item)
+        +void additem(ShoppingItem item)
+        +void additemCheck(ShoppingItem item)
 }
+
+class ShoppingItemFragment.ShoppingItemFragment
+{
+    -EditText itemDescription
+    -EditText itemCount
+    -EditText itemUnit
+    -EditText itemLocation
+    -TextView itemBestBeforeDate
+    -Date calendarDate
+    -EditText itemCategory
+    -OnFragmentInteractionListener listener
+    -FirebaseFirestore db
+    -ActivityResultLauncher<Intent> calendarActivity
+
+    +void onAttach(@NonNull Context context)
+    +{static}void editShoppingItemDB(String oldItem, Ingredient newItem, CollectionReference IngredientCollection)
+    +{static} ShoppingItemFragment newInstance(ShoppingItem item)
+    +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+    -int parseCount(String count)
+    +boolean emptyStringCheck(String description, String location, String count, String unit, String category)
+    -void setDate(String date)
+}
+
+
 
 @enduml
