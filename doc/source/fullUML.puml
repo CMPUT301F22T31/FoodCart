@@ -407,4 +407,6 @@ MealPlanActivity <-> ShoppingListActivity
 
 Recipe <-> ShoppingListActivity
 
+
+
 @enduml
