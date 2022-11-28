@@ -91,8 +91,8 @@ package Ingredient #DDD
     }
     Serializable ()- Ingredient : Implements
 
-    IngredientActivity  *--   "0..*" Ingredient
-    IngredientFragment  *--   "0..*" Ingredient
+    IngredientActivity  o--   "0..*" Ingredient
+    IngredientFragment  o--   "0..*" Ingredient
     CustomIngredientArrayAdapter --o IngredientActivity
 
     FireBaseFirestore --o "0..*" IngredientActivity
@@ -102,6 +102,6 @@ package Ingredient #DDD
     Ingredient.OnFragmentInteractionListener <-* IngredientFragment
     IngredientActivity <-> IngredientFragment
     CalendarActivity <-> ActivityResultLauncher
-    ActivityResultLauncher --o "1" IngredientFragment
+    ActivityResultLauncher <--o "1" IngredientFragment
 }
 @enduml

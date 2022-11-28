@@ -20,7 +20,7 @@ class Ingredient
 }
 Serializable ()-- Ingredient : Implements
 
-
+class CameraActivity{}
 
 package Recipe #DDD
 {
@@ -43,12 +43,7 @@ package Recipe #DDD
         {
             +void onActivityResult(ActivityResult)
         }
-        class Recipe.CalendarActivity
-        {
-            - String date
-            * void onCreate(Bundle savedInstanceState)
-            - void done()
-        }
+
         interface Recipe.OnFragmentInteractionListener
         {
             +void onOkPressed(Ingredient newIngredient);
@@ -122,18 +117,18 @@ package Recipe #DDD
 
     Ingredient "0..*" -o "0..*" Recipe
 
-    RecipeActivity *-> "0..*" Recipe
-    CustomRecipeArrayAdapter --o RecipeActivity
-    FireBaseFirestore --o "0..*" RecipeActivity
-
+    RecipeActivity o- "0..*" Recipe
+    CustomRecipeArrayAdapter "1" --o RecipeActivity
     Recipe.OnFragmentInteractionListener <-* RecipeFragment
-    FireBaseFirestore --o "0..*" RecipeFragment
-    FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
+
+    FireBaseFirestore --o RecipeActivity
+    FireBaseFirestore --o RecipeFragment
+    FireBaseFirestore --o CustomRecipeArrayAdapter
 
     RecipeActivity <--> RecipeFragment
-    RecipeFragment --> Recipe.ActivityResultLauncher
-    Recipe.ActivityResultLauncher -> Recipe.CalendarActivity
-    Recipe.ActivityResultLauncher -> RecipeIngredientsActivity
+    RecipeFragment "2" o--> Recipe.ActivityResultLauncher
+    Recipe.ActivityResultLauncher <-> CameraActivity
+    Recipe.ActivityResultLauncher <-> RecipeIngredientsActivity
 }
 
 

@@ -97,20 +97,19 @@ package MealPlan #DDD
     }
     Serializable ()- Meal : Implements
 
-    MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
-    MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
-    MealPlanFragment <-- MealPlanFragment.CalendarActivity
+    MealPlanFragment o--> "1" MealPlanFragment.ActivityResultLauncher
+    MealPlanFragment.ActivityResultLauncher <--> MealPlanFragment.CalendarActivity
     Meal "0..*" --o MealPlanActivity
     Meal "0..*" --o MealPlanFragment
 
     MealPlanActivity <-> MealPlanFragment
-    MealPlanActivity -- CustomMealPlanArrayAdapter
+    MealPlanActivity o-- CustomMealPlanArrayAdapter
     MealPlanScaleFragment <-> MealPlanActivity
-    MealPlanScaleFragment *-- MealPlanScaleFragment.OnFragmentInteractionListener
+    MealPlanScaleFragment *--> MealPlanScaleFragment.OnFragmentInteractionListener
 
-    FireBaseFirestore ---> MealPlanFragment
-    FireBaseFirestore ---> MealPlanActivity
-    FireBaseFirestore ---> MealPlanScaleFragment
+    FireBaseFirestore ---o MealPlanFragment
+    FireBaseFirestore ---o MealPlanActivity
+    FireBaseFirestore ---o MealPlanScaleFragment
 }
 @enduml
 
