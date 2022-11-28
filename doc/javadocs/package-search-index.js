@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.example.foodcart"},{"l":"com.example.foodcart.ingredients"},{"l":"com.example.foodcart.mealplans"},{"l":"com.example.foodcart.recipes"},{"l":"com.example.foodcart.shoppingList"}]
