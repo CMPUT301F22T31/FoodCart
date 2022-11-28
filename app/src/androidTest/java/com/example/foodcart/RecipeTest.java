@@ -255,6 +255,7 @@ public class RecipeTest {
         solo.clearEditText((EditText) solo.getView(R.id.recipeTitleET));
         solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Chicken Tikka Masala");
         solo.clickOnView(solo.getView(R.id.recipeIngredientButton));
+        assertTrue(solo.waitForText("Chicken", 1, 2000));
         solo.clickOnText("Chicken");
         solo.clearEditText((EditText) solo.getView(R.id.ingredientCountET));
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "2");
