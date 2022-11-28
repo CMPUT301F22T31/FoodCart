@@ -1,6 +1,12 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+class FireBaseFirestore
+{
+    +CollectionReference collection(String)
+
+}
+
 class Ingredient
 {
     -String description
@@ -14,13 +20,9 @@ class Ingredient
 }
 Serializable ()-- Ingredient : Implements
 
-class FireBaseFirestore
-{
-    +CollectionReference collection(String)
 
-}
 
-package Recipe
+package Recipe #DDD
 {
     class Recipe
     {
@@ -30,23 +32,24 @@ package Recipe
         -String comments
         -String category
         -String picture
+        -ArrayList<Ingredient> ingredientList;
 
         +void addIngredient(Ingredient)
         +void removeIngredient(Ingredient)
     }
-    package RecipeFragment
+    package RecipeFragment #DAA
     {
-        class ActivityResultLauncher
+        class Recipe.ActivityResultLauncher
         {
             +void onActivityResult(ActivityResult)
         }
-        class CalendarActivity
+        class Recipe.CalendarActivity
         {
             - String date
             * void onCreate(Bundle savedInstanceState)
             - void done()
         }
-        interface OnFragmentInteractionListener
+        interface Recipe.OnFragmentInteractionListener
         {
             +void onOkPressed(Ingredient newIngredient);
             +void onOkPressedEdit(Ingredient newIngredient);
@@ -78,7 +81,7 @@ package Recipe
             - int parseServing(String serving)
             - String bitmapToString(Bitmap picture)
         }
-        class RecipeIngredientsActivity implements OnFragmentInteractionListener
+        class RecipeIngredientsActivity implements Recipe.OnFragmentInteractionListener
         {
             -ListView ingredientList;
             -ArrayAdapter<Ingredient> ingredientAdapter;
@@ -92,9 +95,9 @@ package Recipe
             +void Done()
         }
     }
-    package RecipeActivity
+    package RecipeActivity #DAA
     {
-        class RecipeActivity implements OnFragmentInteractionListener
+        class RecipeActivity implements Recipe.OnFragmentInteractionListener
         {
             -ListView recipeListView
             -ArrayAdapter<Recipe> recipeAdapter
@@ -123,14 +126,14 @@ package Recipe
     CustomRecipeArrayAdapter --o RecipeActivity
     FireBaseFirestore --o "0..*" RecipeActivity
 
-    OnFragmentInteractionListener <-* RecipeFragment
+    Recipe.OnFragmentInteractionListener <-* RecipeFragment
     FireBaseFirestore --o "0..*" RecipeFragment
     FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
 
     RecipeActivity <--> RecipeFragment
-    RecipeFragment --> ActivityResultLauncher
-    ActivityResultLauncher -> CalendarActivity
-    ActivityResultLauncher -> RecipeIngredientsActivity
+    RecipeFragment --> Recipe.ActivityResultLauncher
+    Recipe.ActivityResultLauncher -> Recipe.CalendarActivity
+    Recipe.ActivityResultLauncher -> RecipeIngredientsActivity
 }
 
 

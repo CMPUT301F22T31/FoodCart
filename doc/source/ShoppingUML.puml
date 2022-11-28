@@ -1,16 +1,31 @@
 @startuml
 'https://plantuml.com/class-diagram
-
-package ShoppingList
+class FireBaseFirestore
 {
-    class ShoppingItem
+    +CollectionReference collection(String)
+}
+class Ingredient
+{
+    -String description
+    -Date bestBeforeDate
+    -String location
+    -int count
+    -String unit
+    -String category
+
+    -String formattedBestBeforeDate()
+}
+
+package ShoppingList #DDD
+{
+    class ShoppingItem extends Ingredient
     {
         -boolean Checked = false
         -int oldcount
     }
-    package ShoppingListFragment
+    package ShoppingListFragment #DFF
     {
-        interface OnFragmentInteractionListener
+        interface ShoppingListFragment.OnFragmentInteractionListener
         {
             +void onOkPressedEdit(ShoppingItem newItem)
         }
@@ -37,7 +52,7 @@ package ShoppingList
 
         }
     }
-    package ShoppingListActivity
+    package ShoppingListActivity #DFF
     {
         class CustomShoppingItemArrayAdapter
         {
@@ -48,7 +63,7 @@ package ShoppingList
             +CustomShoppingItemArrayAdapter(Context context, ArrayList<ShoppingItem> items)
             +View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
         }
-        class ShoppingListActivity implements OnFragmentInteractionListener
+        class ShoppingListActivity implements ShoppingListFragment.OnFragmentInteractionListener
         {
                 -ListView shoppingList
                 -ArrayAdapter<ShoppingItem> shoppingAdapter
@@ -66,6 +81,12 @@ package ShoppingList
     }
     ShoppingListActivity -- CustomShoppingItemArrayAdapter
     ShoppingItemFragment <--> ShoppingListActivity
-}
 
+    ShoppingItemFragment *- ShoppingListFragment.OnFragmentInteractionListener
+    ShoppingItem -o ShoppingItemFragment
+    ShoppingItem -o ShoppingListActivity
+
+    FireBaseFirestore --> ShoppingListActivity
+    FireBaseFirestore --> ShoppingItemFragment
+}
 @enduml

@@ -4,7 +4,7 @@ class FireBaseFirestore
 {
     +CollectionReference collection(String)
 }
-package MealPlan
+package MealPlan #DDD
 {
     class Meal
     {
@@ -14,7 +14,7 @@ package MealPlan
         -int scale;
         +String getFormattedDate();
     }
-    package MealPlanScaleFragment
+    package MealPlanScaleFragment #DAF
     {
         class MealPlanScaleFragment
         {
@@ -25,19 +25,19 @@ package MealPlan
             +void {static} MealPlanScaleFragment newInstance(Meal meal)
             +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
         }
-        interface OnFragmentInteractionListener
+        interface MealPlanScaleFragment.OnFragmentInteractionListener
         {
             -void onOkPressed(Meal newMeal);
             -void onOkEditPressed(Meal newMeal);
         }
     }
-    package MealPlanFragment
-    {
-        class ActivityResultLauncher
+    package MealPlanFragment #DAF
+        {
+        class MealPlanFragment.ActivityResultLauncher
         {
             +void onActivityResult(ActivityResult)
         }
-        class CalendarActivity
+        class MealPlanFragment.CalendarActivity
         {
             - String date
             * void onCreate(Bundle savedInstanceState)
@@ -70,7 +70,7 @@ package MealPlan
             -void setDate(String);
         }
     }
-    package MealPlanActivity
+    package MealPlanActivity #DAF
     {
         class CustomMealPlanArrayAdapter
         {
@@ -79,7 +79,7 @@ package MealPlan
             -FirebaseFirestore db;
             +View getView(int, @Nullable View, @NonNull ViewGroup);
         }
-        class MealPlanActivity implements OnFragmentInteractionListener
+        class MealPlanActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
         {
             -ListView mealPlanListView;
             -ArrayAdapter<Meal> mealplanAdapter;
@@ -97,17 +97,17 @@ package MealPlan
     }
     Serializable ()- Meal : Implements
 
-    MealPlanFragment "1" o--> ActivityResultLauncher
-    ActivityResultLauncher --> CalendarActivity
-    MealPlanFragment <-- CalendarActivity
+    MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
+    MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
+    MealPlanFragment <-- MealPlanFragment.CalendarActivity
 
     MealPlanActivity <-> MealPlanFragment
-    MealPlanActivity - CustomMealPlanArrayAdapter
+    MealPlanActivity -- CustomMealPlanArrayAdapter
     MealPlanScaleFragment <-> MealPlanActivity
-    MealPlanScaleFragment *- OnFragmentInteractionListener
+    MealPlanScaleFragment *-- MealPlanScaleFragment.OnFragmentInteractionListener
 
-    FireBaseFirestore -> MealPlanFragment
-    FireBaseFirestore -> MealPlanActivity
+    FireBaseFirestore ---> MealPlanFragment
+    FireBaseFirestore ---> MealPlanActivity
     FireBaseFirestore ---> MealPlanScaleFragment
 }
 @enduml

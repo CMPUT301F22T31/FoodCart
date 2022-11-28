@@ -7,7 +7,7 @@ class FireBaseFirestore
     +DocumentReference document(String)
 }
 
-package Ingredient
+package Ingredient #DDD
 {
     class Ingredient
     {
@@ -20,7 +20,7 @@ package Ingredient
 
         -String formattedBestBeforeDate()
     }
-    package IngredientFragment
+    package IngredientFragment #AFA
     {
         class ActivityResultLauncher
         {
@@ -59,9 +59,9 @@ package Ingredient
             + {static}void editIngredientDB(String, Ingredient, CollectionReference)
         }
     }
-    package IngredientActivity
+    package IngredientActivity #AFA
     {
-        interface OnFragmentInteractionListener
+        interface Ingredient.OnFragmentInteractionListener
         {
             +void onOkPressed(Ingredient newIngredient);
             +void onOkPressedEdit(Ingredient newIngredient);
@@ -74,7 +74,7 @@ package Ingredient
 
             + View getView(int, @Nullable View, @NonNull ViewGroup)
         }
-        class IngredientActivity implements OnFragmentInteractionListener
+        class IngredientActivity implements Ingredient.OnFragmentInteractionListener
         {
             -ListView ingredientList
             -ArrayAdapter<Ingredient> ingredientAdapter
@@ -99,7 +99,7 @@ package Ingredient
     FireBaseFirestore --o "0..*" CustomIngredientArrayAdapter
     FireBaseFirestore --o "0..*" IngredientFragment
 
-    OnFragmentInteractionListener <-* IngredientFragment
+    Ingredient.OnFragmentInteractionListener <-* IngredientFragment
     IngredientActivity <-> IngredientFragment
     CalendarActivity <-> ActivityResultLauncher
     ActivityResultLauncher --o "1" IngredientFragment
