@@ -1,112 +1,115 @@
 @startuml
 'https://plantuml.com/class-diagram
-
 class FireBaseFirestore
 {
     +CollectionReference collection(String)
 }
-
-class MealPlanFragment.ActivityResultLauncher
+package MealPlan #DDD
 {
-    +void onActivityResult(ActivityResult)
+    class Meal
+    {
+        -String mealName;
+        -String mealType;
+        -Date date;
+        -int scale;
+        +String getFormattedDate();
+    }
+    package MealPlanScaleFragment #DAF
+    {
+        class MealPlanScaleFragment
+        {
+            -MealPlanScaleFragment.OnFragmentInteractionListener listener;
+            -FirebaseFirestore db;
+            -EditText mealScale_ET;
+            +void onAttach(@NonNull Context context)
+            +void {static} MealPlanScaleFragment newInstance(Meal meal)
+            +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
+        }
+        interface MealPlanScaleFragment.OnFragmentInteractionListener
+        {
+            -void onOkPressed(Meal newMeal);
+            -void onOkEditPressed(Meal newMeal);
+        }
+    }
+    package MealPlanFragment #DAF
+        {
+        class MealPlanFragment.ActivityResultLauncher
+        {
+            +void onActivityResult(ActivityResult)
+        }
+        class MealPlanFragment.CalendarActivity
+        {
+            - String date
+            * void onCreate(Bundle savedInstanceState)
+            - void done()
+        }
+        class MealPlanFragment
+        {
+            -FirebaseFirestore db;
+            -MealPlanScaleFragment.OnFragmentInteractionListener listener;
+            -ArrayAdapter<Ingredient> ingredientAdapter;
+            -ArrayList<Ingredient> ingredientdataList;
+            -ArrayAdapter<Recipe> recipeAdapter;
+            -ArrayList<Recipe> recipedataList;
+            -Date calendarDate;
+            -ListView ItemList;
+            -Ingredient selectedIngredient;
+            -Recipe selectedRecipe;
+            -String type;
+            -ActivityResultLauncher<Intent> calendarActivity;
+
+            +void {static} addMealRecipeDB(Meal, Recipe, CollectionReference);
+            +void {static} delMealRecipeDB(Recipe, CollectionReference);
+            +void {static} editMealRecipeDB(Recipe, Meal, Recipe, CollectionReference);
+            +void {static} addMealIngredientDB(Meal, Ingredient, CollectionReference);
+            +void {static} delMealIngredientDB(String, String, CollectionReference);
+            +void {static} editMealIngredientDB(String, String, Meal, Ingredient, CollectionReference);
+            +void onAttach(@NonNull Context);
+            +void {static} MealPlanFragment newInstance(String);
+            +View onCreateView(@NonNull LayoutInflater, @Nullable ViewGroup, @Nullable Bundle);
+            -void setDate(String);
+        }
+    }
+    package MealPlanActivity #DAF
+    {
+        class CustomMealPlanArrayAdapter
+        {
+            -ArrayList<Meal> meals;
+            -Context context;
+            -FirebaseFirestore db;
+            +View getView(int, @Nullable View, @NonNull ViewGroup);
+        }
+        class MealPlanActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
+        {
+            -ListView mealPlanListView;
+            -ArrayAdapter<Meal> mealplanAdapter;
+            -ArrayList<Meal> mealplanList;
+            -FirebaseFirestore db;
+            -int selected;
+            -FloatingActionButton addMealPlan, addmIngredientButton, addmRecipeButton;
+            -TextView addmIngredientText, addmRecipeText;
+            -boolean isAllFabsVisible;
+
+            *void onCreate(Bundle savedInstanceState);
+            +void onOkPressed(Meal newMeal);
+            +void onOkEditPressed(Meal newMeal);
+        }
+    }
+    Serializable ()- Meal : Implements
+
+    MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
+    MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
+    MealPlanFragment <-- MealPlanFragment.CalendarActivity
+
+    MealPlanActivity <-> MealPlanFragment
+    MealPlanActivity -- CustomMealPlanArrayAdapter
+    MealPlanScaleFragment <-> MealPlanActivity
+    MealPlanScaleFragment *-- MealPlanScaleFragment.OnFragmentInteractionListener
+
+    FireBaseFirestore ---> MealPlanFragment
+    FireBaseFirestore ---> MealPlanActivity
+    FireBaseFirestore ---> MealPlanScaleFragment
 }
-
-class MealPlanActivity.CustomMealPlanArrayAdapter
-{
-    -ArrayList<Meal> meals;
-    -Context context;
-    -FirebaseFirestore db;
-    +View getView(int, @Nullable View, @NonNull ViewGroup);
-}
-
-class Meal
-{
-    -String mealName;
-    -String mealType;
-    -Date date;
-    -int scale;
-    +String getFormattedDate();
-}
-
-class MealPlanActivity.MealPlanActivity implements MealPlanScaleFragment.OnFragmentInteractionListener
-{
-    -ListView mealPlanListView;
-    -ArrayAdapter<Meal> mealplanAdapter;
-    -ArrayList<Meal> mealplanList;
-    -FirebaseFirestore db;
-    -int selected;
-    -FloatingActionButton addMealPlan, addmIngredientButton, addmRecipeButton;
-    -TextView addmIngredientText, addmRecipeText;
-    -boolean isAllFabsVisible;
-
-    *void onCreate(Bundle savedInstanceState);
-    +void onOkPressed(Meal newMeal);
-    +void onOkEditPressed(Meal newMeal);
-}
-
-class MealPlanFragment.MealPlanFragment
-{
-    -FirebaseFirestore db;
-    -MealPlanScaleFragment.OnFragmentInteractionListener listener;
-    -ArrayAdapter<Ingredient> ingredientAdapter;
-    -ArrayList<Ingredient> ingredientdataList;
-    -ArrayAdapter<Recipe> recipeAdapter;
-    -ArrayList<Recipe> recipedataList;
-    -Date calendarDate;
-    -ListView ItemList;
-    -Ingredient selectedIngredient;
-    -Recipe selectedRecipe;
-    -String type;
-    -ActivityResultLauncher<Intent> calendarActivity;
-
-    +void {static} addMealRecipeDB(Meal, Recipe, CollectionReference);
-    +void {static} delMealRecipeDB(Recipe, CollectionReference);
-    +void {static} editMealRecipeDB(Recipe, Meal, Recipe, CollectionReference);
-    +void {static} addMealIngredientDB(Meal, Ingredient, CollectionReference);
-    +void {static} delMealIngredientDB(String, String, CollectionReference);
-    +void {static} editMealIngredientDB(String, String, Meal, Ingredient, CollectionReference);
-    +void onAttach(@NonNull Context);
-    +void {static} MealPlanFragment newInstance(String);
-    +View onCreateView(@NonNull LayoutInflater, @Nullable ViewGroup, @Nullable Bundle);
-    -void setDate(String);
-}
-
-class MealPlanScaleFragment.MealPlanScaleFragment
-{
-    -MealPlanScaleFragment.OnFragmentInteractionListener listener;
-    -FirebaseFirestore db;
-    -EditText mealScale_ET;
-    +void onAttach(@NonNull Context context)
-    +void {static} MealPlanScaleFragment newInstance(Meal meal)
-    +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
-}
-
-interface MealPlanScaleFragment.OnFragmentInteractionListener
-{
-    -void onOkPressed(Meal newMeal);
-    -void onOkEditPressed(Meal newMeal);
-}
-
-class MealPlanFragment.CalendarActivity
-{
-    - String date
-    * void onCreate(Bundle savedInstanceState)
-    - void done()
-}
-
-Serializable ()- Meal : Implements
-
-MealPlanFragment.MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
-MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
-MealPlanFragment.MealPlanFragment <-- MealPlanFragment.CalendarActivity
-
-MealPlanActivity.MealPlanActivity -> MealPlanFragment.MealPlanFragment
-MealPlanActivity.MealPlanActivity - MealPlanActivity.CustomMealPlanArrayAdapter
-MealPlanScaleFragment.MealPlanScaleFragment <-> MealPlanActivity.MealPlanActivity
-MealPlanScaleFragment.MealPlanScaleFragment -* MealPlanScaleFragment.OnFragmentInteractionListener
-
-FireBaseFirestore -> MealPlanFragment.MealPlanFragment
-FireBaseFirestore -> MealPlanActivity.MealPlanActivity
-FireBaseFirestore ---> MealPlanScaleFragment.MealPlanScaleFragment
-
 @enduml
+
+
