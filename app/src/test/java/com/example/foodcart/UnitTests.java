@@ -97,8 +97,7 @@ public class UnitTests {
     public void ShoppingItemUnitTest() throws ParseException {
 
         // Creates an object of Ingredient
-        ShoppingItem testItem = new ShoppingItem("Apples",
-                2, "bags", "fruit");
+        ShoppingItem testItem = new ShoppingItem("Apples", 2, 2,"bags", "fruit");
 
         assertEquals("Apples", testItem.getDescription());
         assertEquals(null, testItem.getBestBeforeDate());

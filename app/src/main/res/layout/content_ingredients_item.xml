@@ -15,8 +15,8 @@
         <TextView
             android:id="@+id/ingredient_item_name"
             android:layout_width="195dp"
-            android:layout_height="80dp"
-            android:padding="20dp"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
             android:paddingBottom="0dp"
             android:text="sample_text"
             android:textSize="25sp"
@@ -27,7 +27,7 @@
         <TextView
             android:id="@+id/ingredient_item_sort"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:text="sample_text"
             android:textSize="15sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/ingredient_item_name"
@@ -37,7 +37,7 @@
         <ImageButton
             android:id="@+id/ingredient_item_deleteButton"
             android:layout_width="33dp"
-            android:layout_height="72dp"
+            android:layout_height="wrap_content"
             android:background="@null"
             android:contentDescription="Delete Button"
             app:layout_constraintBottom_toBottomOf="parent"

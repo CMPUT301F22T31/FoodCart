@@ -114,8 +114,7 @@ public class MealPlanTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Rice");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
-
+        solo.clickOnButton("Add");
         assertTrue(solo.waitForText("Rice", 1, 2000));
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
@@ -141,7 +140,7 @@ public class MealPlanTest {
     }
 
     /**
-     * Test the deletion of recipes
+     * Test the deletion of Meals
      */
     @Test
     public void DeleteMeal(){
