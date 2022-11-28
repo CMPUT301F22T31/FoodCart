@@ -14,6 +14,8 @@ import com.robotium.solo.Solo;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
+
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -69,7 +71,6 @@ public class IngredientTest {
         solo.clickOnButton("Add");
 
         assertTrue(solo.waitForText("Chicken", 1, 2000));
-        removeAllElements();
     }
 
 
@@ -251,7 +252,6 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Fish");
         solo.clickOnButton("Edit");
         assertTrue(solo.waitForText("Fish", 1, 2000));
-        removeAllElements();
     }
 
     /**

@@ -1,26 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/addmeal_title"
-        android:layout_width="192dp"
+        android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="16dp"
         android:text="Type"
-        android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.566"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_centerHorizontal="true"
+        android:textSize="24sp" />
 
     <ListView
         android:id="@+id/mealplan_list_frag"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="600dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addmeal_title">
+        android:paddingTop="5dp"
+        android:layout_below="@+id/addmeal_title">
 
     </ListView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
