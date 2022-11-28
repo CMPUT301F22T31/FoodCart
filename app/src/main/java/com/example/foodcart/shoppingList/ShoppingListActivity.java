@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
+
 import com.example.foodcart.R;
 import com.example.foodcart.ingredients.IngredientActivity;
 import com.example.foodcart.mealplans.MealPlanActivity;
+import com.example.foodcart.recipes.Recipe;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Main activity for all shopping list functionality. Sets UI elements, starts fragments to get user
@@ -59,6 +65,37 @@ public class ShoppingListActivity extends AppCompatActivity
             // set adapter
             shoppingAdapter = new CustomShoppingItemArrayAdapter(this, dataList);
             shoppingList.setAdapter(shoppingAdapter);
+
+            // set spinner adapter for drop down sort list
+            Spinner sortDropDown = findViewById(R.id.shopping_list_sort_select);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sortValues);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            sortDropDown.setAdapter(adapter);
+            sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    // sort the db by the sortValue
+                    String sortValue = sortValues[position];
+                    Collections.sort(dataList, new Comparator<ShoppingItem>(){
+                        public int compare(ShoppingItem s1, ShoppingItem s2)
+                        {
+                            switch(sortValue) {
+                                case "description":
+                                    return s1.getDescription().compareTo(s2.getDescription());
+                                case "category":
+                                    return s1.getCategory().compareTo(s2.getCategory());
+                            }
+                            return 0;
+                        }
+                    });
+                    shoppingAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
 
             final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
             IngredientTab.setOnClickListener(new View.OnClickListener() {
