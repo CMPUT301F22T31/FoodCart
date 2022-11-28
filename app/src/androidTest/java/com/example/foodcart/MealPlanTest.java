@@ -61,28 +61,26 @@ public class MealPlanTest {
         removeAllElements();
         solo.clickOnView(solo.getView(R.id.recipes_tab));
         solo.assertCurrentActivity("Did not switch", RecipeActivity.class);
-        ListView list = (ListView)solo.getView(R.id.recipes_list);
-        for(int i =0;i<list.getCount();i++){
-            solo.clickOnImageButton(i);
+        if(!solo.searchText("Butter Chicken")) {
+            solo.clickOnView(solo.getView(R.id.add_recipe_button));
+            solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
+            //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
+            solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Butter Chicken");
+            solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
+            solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
+            solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Indian");
+            solo.clickOnView(solo.getView(R.id.recipeIngredientButton));
+            solo.clickOnView(solo.getView(R.id.add_ingredient_button));
+            solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
+            solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
+            solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
+            solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
+            solo.clickOnButton("Add"); //Select CONFIRM Button
+            assertTrue(solo.waitForText("Chicken", 1, 2000));
+            solo.clickOnView(solo.getView(R.id.ingredientsDone));
+            solo.clickOnButton("Add"); //Select CONFIRM Button
+            assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
         }
-        solo.clickOnView(solo.getView(R.id.add_recipe_button));
-        solo.clickOnView(solo.getView(R.id.recipeImgUploadButton));
-        //REQUIREMENT HIT THE CAMERA BUTTON AND CONFIRM THE IMAGE
-        solo.enterText((EditText) solo.getView(R.id.recipeTitleET), "Butter Chicken");
-        solo.enterText((EditText) solo.getView(R.id.recipePrepareTimeET), "20");
-        solo.enterText((EditText) solo.getView(R.id.recipeServingsET), "5");
-        solo.enterText((EditText) solo.getView(R.id.recipeCategoryET), "Indian");
-        solo.clickOnView(solo.getView(R.id.recipeIngredientButton));
-        solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Chicken");
-        solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
-        solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
-        solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
-        assertTrue(solo.waitForText("Chicken", 1, 2000));
-        solo.clickOnView(solo.getView(R.id.ingredientsDone));
-        solo.clickOnButton("Add"); //Select CONFIRM Button
-        assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
         solo.clickOnView(solo.getView(R.id.add_mealplan_button));
@@ -101,21 +99,18 @@ public class MealPlanTest {
         removeAllElements();
         solo.clickOnView(solo.getView(R.id.ingredients_tab));
         solo.assertCurrentActivity("Did not switch", IngredientActivity.class);
-        ListView list = (ListView)solo.getView(R.id.ingredients_list);
-        for(int i =0;i<list.getCount();i++){
-            solo.clickOnImageButton(i);
+        if(!solo.searchText("Rice")) {
+            solo.clickOnView(solo.getView(R.id.add_ingredient_button));
+            solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Rice");
+            solo.clickOnView(solo.getView(R.id.calendarButton));
+            solo.clickOnView(solo.getView(R.id.floatingActionButton));
+            solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
+            solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
+            solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
+            solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Rice");
+            solo.clickOnButton("Add");
+            assertTrue(solo.waitForText("Rice", 1, 2000));
         }
-        solo.clickOnView(solo.getView(R.id.add_ingredient_button));
-
-        solo.enterText((EditText) solo.getView(R.id.ingredientDescriptionET), "Rice");
-        solo.clickOnView(solo.getView(R.id.calendarButton));
-        solo.clickOnView(solo.getView(R.id.floatingActionButton));
-        solo.enterText((EditText) solo.getView(R.id.ingredientLocationET), "pantry");
-        solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
-        solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
-        solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Rice");
-        solo.clickOnButton("Add");
-        assertTrue(solo.waitForText("Rice", 1, 2000));
         solo.clickOnView(solo.getView(R.id.mealplans_tab));
         solo.assertCurrentActivity("Did not switch", MealPlanActivity.class);
         solo.clickOnView(solo.getView(R.id.add_mealplan_button));

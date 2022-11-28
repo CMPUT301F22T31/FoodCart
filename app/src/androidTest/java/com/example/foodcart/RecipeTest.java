@@ -75,7 +75,6 @@ public class RecipeTest {
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
         solo.clickOnButton("Add"); //Select CONFIRM Button
         assertTrue(solo.waitForText("Butter Chicken", 1, 2000));
-        removeAllElements();
     }
 
     /**
@@ -243,7 +242,6 @@ public class RecipeTest {
         solo.clickOnView(solo.getView(R.id.ingredientsDone));
         solo.clickOnButton("Edit"); //Select CONFIRM Button
         assertTrue(solo.waitForText("Chicken Tikka Masala", 1, 2000));
-        removeAllElements();
     }
 
     /**
