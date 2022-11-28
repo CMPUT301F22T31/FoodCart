@@ -66,7 +66,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "Kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertTrue(solo.waitForText("Chicken", 1, 2000));
         removeAllElements();
@@ -90,7 +90,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "five");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("Chicken"));
     }
@@ -111,7 +111,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("EmptyString"));
     }
@@ -132,7 +132,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("Chicken"));
     }
@@ -152,8 +152,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
-
+        solo.clickOnButton("Add");
         assertFalse(solo.searchText("Chicken"));
     }
 
@@ -174,7 +173,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "g");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("Chicken"));
     }
@@ -196,7 +195,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Meat");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("Chicken"));
     }
@@ -217,7 +216,7 @@ public class IngredientTest {
         solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "5");
         solo.enterText((EditText) solo.getView(R.id.ingredientUnitET), "kg");
         solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "");
-        solo.clickOnButton("Add"); //Select CONFIRM Button
+        solo.clickOnButton("Add");
 
         assertFalse(solo.searchText("Chicken"));
     }

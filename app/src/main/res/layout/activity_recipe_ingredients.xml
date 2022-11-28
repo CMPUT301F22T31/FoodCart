@@ -19,15 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:text="Done">
-    </Button>
+        android:text="Done"></Button>
 
 
     <ListView
         android:id="@+id/ingredients_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ingredients_title">
+        android:layout_below="@+id/ingredientsDone">
 
     </ListView>
 
