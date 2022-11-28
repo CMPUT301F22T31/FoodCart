@@ -74,6 +74,10 @@ public class ShoppingListTest {
             solo.clickOnView(solo.getView(R.id.floatingActionButton));
             assertTrue(solo.waitForText("Vegan Burger", 1, 2000));
         }
+        solo.clickOnText("Vegan Burger");
+        solo.clearEditText((EditText) solo.getView(R.id.mealscaleET));
+        solo.enterText((EditText) solo.getView(R.id.mealscaleET), "30");
+        solo.clickOnButton("Edit");
         solo.clickOnView(solo.getView(R.id.shoppinglist_tab));
         solo.assertCurrentActivity("Did not switch", ShoppingListActivity.class);
         assertTrue(solo.waitForText("Vegan Patty", 1, 2000));
@@ -114,6 +118,13 @@ public class ShoppingListTest {
             solo.enterText((EditText) solo.getView(R.id.ingredientCategoryET), "Vegan");
             solo.clickOnButton("Add");
             assertTrue(solo.waitForText("Vegan Patty", 1, 2000));
+        }
+        else {
+            //edit ingredient count so that it appears on the shopping list
+            solo.clickOnText("Vegan Patty");
+            solo.clearEditText((EditText) solo.getView(R.id.ingredientCountET));
+            solo.enterText((EditText) solo.getView(R.id.ingredientCountET), "1");
+            solo.clickOnButton("Edit");
         }
     }
 
