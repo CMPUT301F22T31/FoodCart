@@ -46,6 +46,7 @@ public class CalendarActivity extends AppCompatActivity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         date = formatter.format(currentDate);
 
+        // Save Calender date
         final FloatingActionButton saveButton = findViewById(R.id.floatingActionButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +55,7 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
 
+        // Change date saved from newly selected
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {

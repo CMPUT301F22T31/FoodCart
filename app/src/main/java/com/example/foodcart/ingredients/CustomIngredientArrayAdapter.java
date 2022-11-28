@@ -67,8 +67,10 @@ public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
         View parentView = (View) parent.getParent();
         Spinner sortDropDown = parentView.findViewById(R.id.ingredients_sort_select);
 
+        // Set Description Text
         ingredientDescription.setText(ingredient.getDescription());
 
+        // Set the sort text for the ingredient depending on sort
         if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             switch (sortValue){

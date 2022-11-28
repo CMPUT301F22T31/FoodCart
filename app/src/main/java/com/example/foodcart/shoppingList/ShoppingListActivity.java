@@ -97,6 +97,7 @@ public class ShoppingListActivity extends AppCompatActivity
                 }
             });
 
+            // Change Activity to Ingredients
             final ImageButton IngredientTab = findViewById(R.id.ingredients_tab);
             IngredientTab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,6 +109,7 @@ public class ShoppingListActivity extends AppCompatActivity
                 }
             });
 
+            // Change Activity to Recipe
             final ImageButton RecipeTab = findViewById(R.id.recipes_tab);
             RecipeTab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -119,6 +121,7 @@ public class ShoppingListActivity extends AppCompatActivity
                 }
             });
 
+            // Change Activity to MealPlan
             final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
             MealPlanTab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,7 +138,7 @@ public class ShoppingListActivity extends AppCompatActivity
             addItemButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //new ShoppingItemFragment().show(getSupportFragmentManager(), "ADD_SHOPPING_ITEM");
+                    // If item is checked for being picked up then allow user to add to storage
                     for(ShoppingItem i : dataList){
                         if(i.isChecked()) {
                             new ShoppingItemFragment().newInstance(i).show(getSupportFragmentManager(), "EDIT_INGREDIENT");
@@ -147,6 +150,7 @@ public class ShoppingListActivity extends AppCompatActivity
             db = FirebaseFirestore.getInstance();
             // Get a top level reference to the collection
             final CollectionReference MealPlanCollection = db.collection("MealPlan");
+            // Get all the mealplan items
             MealPlanCollection.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -156,6 +160,8 @@ public class ShoppingListActivity extends AppCompatActivity
                         for(QueryDocumentSnapshot doc: task.getResult()) {
                             Log.d("Update ShoppingList", doc.getId());
                             String title = doc.getId();
+
+                            // Depending on type do certain things
                             if(doc.getData().get("Type").equals("Recipe")) {
                                 String scale = (String) doc.getData().get("Scale");
                                 CollectionReference ingredients = db.collection("MealPlan")
@@ -166,6 +172,7 @@ public class ShoppingListActivity extends AppCompatActivity
                                     public void onComplete(@org.checkerframework.checker.nullness.qual.NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
                                             for (QueryDocumentSnapshot ing : task.getResult()) {
+                                                // Get Values
                                                 String description = ing.getId();
                                                 String count = (String) ing.getData().get("Count");
                                                 String unit = (String) ing.getData().get("Unit");
@@ -175,6 +182,7 @@ public class ShoppingListActivity extends AppCompatActivity
                                                 int scaleInt = Integer.parseInt(scale);
                                                 // add ingredient to list
                                                 ShoppingItem item_temp = new ShoppingItem(description, countInt*scaleInt,0, unit, category);
+                                                // Add the item
                                                 additemCheck(item_temp);
                                             }
                                         } else {
@@ -183,6 +191,7 @@ public class ShoppingListActivity extends AppCompatActivity
                                     }
                                 });
                             } else {
+                                // Get Values
                                 String description = (String) doc.getData().get("MealName");
                                 String count = (String) doc.getData().get("Count");
                                 String unit = (String) doc.getData().get("Unit");
@@ -191,6 +200,8 @@ public class ShoppingListActivity extends AppCompatActivity
                                 int countInt = Integer.parseInt(count);
                                 // add ingredient to list
                                 ShoppingItem item_temp = new ShoppingItem(description, countInt,0, unit, category);
+
+                                // Add the item
                                 additemCheck(item_temp);
                             }
                         }// Notifying the adapter to render any new data fetches from the cloud
@@ -225,6 +236,7 @@ public class ShoppingListActivity extends AppCompatActivity
      * @param item  shopping item to check and add
      */
         public void additem(ShoppingItem item){
+            // if item already in list then add to the count
             if(tempList.contains(item)){
                 for(ShoppingItem i:tempList){
                     if(i.getDescription().equals(item.getDescription())){
@@ -236,6 +248,7 @@ public class ShoppingListActivity extends AppCompatActivity
                 tempList.add(item);
             }
             dataList.clear();
+            // If negative don't show item
             for(ShoppingItem i :tempList){
                 if(i.getCount()-i.getOldcount() >0){
                     dataList.add(i);
@@ -257,11 +270,14 @@ public class ShoppingListActivity extends AppCompatActivity
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
+                        // If item already in list then no need for adjustment
                         if(tempList.contains(item)){
                             additem(item);
                             return;
                         }
+                        // If it exists in ingredient storage
                         if (document.exists()) {
+                            // Set the old count so we know how much we already have
                             String ing_count = (String)document.getData().get("Count");
                             item.setCount(item.getCount());
                             item.setOldcount(Integer.parseInt(ing_count));

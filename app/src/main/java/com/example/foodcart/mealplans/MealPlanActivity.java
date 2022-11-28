@@ -61,11 +61,8 @@ public class MealPlanActivity extends AppCompatActivity
     ArrayList<Meal> mealplanList;
     FirebaseFirestore db;
     int selected;
-
     FloatingActionButton addMealPlan, addmIngredientButton, addmRecipeButton;
-
     TextView addmIngredientText, addmRecipeText;
-
     boolean isAllFabsVisible;
 
     @Override
@@ -73,6 +70,7 @@ public class MealPlanActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mealplan);
 
+        // Get List View and create arraylist
         mealPlanListView = findViewById(R.id.mealplan_list);
         mealplanList = new ArrayList<>();
 
@@ -81,13 +79,14 @@ public class MealPlanActivity extends AppCompatActivity
         // Get a top level reference to the collection
         final CollectionReference mealPlanCollection = db.collection("MealPlan");
 
+        // Set our adapter to the listview
         mealplanAdapter = new CustomMealPlanArrayAdapter(this, mealplanList);
         mealPlanListView.setAdapter(mealplanAdapter);
 
+        // Get our buttons and textviews. Set them to our defaults.
         addMealPlan = findViewById(R.id.add_mealplan_button);
         addmIngredientButton = findViewById(R.id.add_mealplan_ingredient_button);
         addmRecipeButton = findViewById(R.id.add_mealplan_recipe_button);
-
         addmIngredientText = findViewById(R.id.add_mealplan_ingredient_text);
         addmRecipeText = findViewById(R.id.add_mealplan_recipe_text);
 
@@ -98,6 +97,7 @@ public class MealPlanActivity extends AppCompatActivity
 
         isAllFabsVisible = false;
 
+        // Depending on the state, user can click to expand or minimize
         addMealPlan.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -132,6 +132,7 @@ public class MealPlanActivity extends AppCompatActivity
             }
         });
 
+        // onClick for adding an ingredient
         addmIngredientButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,6 +140,7 @@ public class MealPlanActivity extends AppCompatActivity
             }
         });
 
+        // onClick for adding a recipe
         addmRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -169,6 +171,7 @@ public class MealPlanActivity extends AppCompatActivity
             }
         });
 
+        // Switch to shoppingList activity
         final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
         ShoppingListTab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +183,7 @@ public class MealPlanActivity extends AppCompatActivity
             }
         });
 
+        // Notify Adapter whenever the database updates
         mealPlanCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
@@ -201,6 +205,7 @@ public class MealPlanActivity extends AppCompatActivity
                         e.printStackTrace();
                     }
 
+                    // Try to create a new meal
                     Meal meal = null;
                     try {
                         assert scale != null;

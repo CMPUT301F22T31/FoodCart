@@ -64,7 +64,6 @@ public class IngredientActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ingredients);
 
-
         // initialize lists
         ingredientList = findViewById(R.id.ingredients_list);
         dataList = new ArrayList<>();
@@ -86,7 +85,7 @@ public class IngredientActivity extends AppCompatActivity
         sortDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // sort the db by the sortValue
+                // sort the db by the sortValue and sort the arraylist by the sortvalue
                 String sortValue = sortValues[position];
                 IngredientCollection.orderBy(sortValue);
                 Collections.sort(dataList, new Comparator<Ingredient>(){
@@ -114,6 +113,7 @@ public class IngredientActivity extends AppCompatActivity
             }
         });
 
+        // Change to Recipe Activity
         final ImageButton RecipeTab = findViewById(R.id.recipes_tab);
         RecipeTab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +125,7 @@ public class IngredientActivity extends AppCompatActivity
             }
         });
 
+        // Change to MealPlan Activity
         final ImageButton MealPlanTab = findViewById(R.id.mealplans_tab);
         MealPlanTab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +137,7 @@ public class IngredientActivity extends AppCompatActivity
             }
         });
 
+        // Change to ShoppingList Activity
         final ImageButton ShoppingListTab = findViewById(R.id.shoppinglist_tab);
         ShoppingListTab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +168,7 @@ public class IngredientActivity extends AppCompatActivity
         }
         });
 
+        // Notify Adapter whenever the database updates
         IngredientCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable
