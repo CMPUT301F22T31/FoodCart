@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * TODO Recipe object with the title, prep time, number of servings,
- * comments, picture, and category of recipe
+ * the meal class is used for display and data storage purposes since it's essentially an abstraction
+ * of ingredients and recipes. It contains only name, type, date, and scale(only for recipe).
+ * @author Ahmed, Alfred
+ * @version 1.0
  */
 public class Meal implements Serializable {
     String mealName;
@@ -18,6 +20,13 @@ public class Meal implements Serializable {
     Date date;
     int scale;
 
+    /**
+     * contrutor for Meal class
+     * @param mealName  the title/description of meal
+     * @param mealType  if the meal is an ingredient or recipe
+     * @param scale     the factor to scale a recipe by
+     * @param date      the date the meal was selected for
+     */
     public Meal(String mealName, String mealType, int scale, Date date) {
         this.mealName = mealName;
         this.mealType = mealType;

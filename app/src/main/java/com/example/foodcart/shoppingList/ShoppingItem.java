@@ -4,6 +4,12 @@ import com.example.foodcart.ingredients.Ingredient;
 
 import java.util.Date;
 
+/**
+ * shopping item class for shoppingList functionality
+ *
+ * @author Ashley
+ * @version 1.0
+ */
 public class ShoppingItem extends Ingredient {
 
     private boolean Checked = false;

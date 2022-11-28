@@ -16,9 +16,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Launches the Calender app activity to allow user to select a date and returns the date to the
+ * activity that started CalenderActivity. It is called via ActivityResultLauncher in both Ingredient
+ * fragment and MealPlanFragment to get the dates for ingredient.bestBeforeDate and meals.
+ *
+ * @author Arsh
+ * @version 1.0
+ * @see IngredientFragment
+ * @see com.example.foodcart.mealplans.MealPlanFragment
+ */
 public class CalendarActivity extends AppCompatActivity {
     String date = null;
 
+    /**
+     * The first function that is called when created that initializes and sets the UI elements and
+     * watches for changes by the user in the selected date and save button
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +61,10 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Sends date back to starting activity in an intent and sets result flag to RESULT_OK
+     */
     void done() {
         Intent intent = new Intent();
         intent.putExtra("Date", date);

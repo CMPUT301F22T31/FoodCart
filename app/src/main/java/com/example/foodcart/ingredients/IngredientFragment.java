@@ -34,6 +34,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * Fragment that allows user to add/edit ingredients to ingredient storage via a adaptor design
+ * and to firebase
+ *
+ * @author Arsh, Ahmed, Ashley, Alfred
+ * @version 1.0
+ * @see IngredientActivity
+ * @see CalendarActivity
+ * */
 public class IngredientFragment extends DialogFragment {
     private EditText ingredientDescription;
     private EditText ingredientLocation;
@@ -83,6 +92,12 @@ public class IngredientFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Add an Ingredient to firebase database to a specified collection, with its description being
+     * the document ID
+     * @param addItem       The Ingredient to add
+     * @param addCollect    The collection to add ingredient to
+     */
     public static void addIngredientDB(Ingredient addItem, CollectionReference addCollect) {
         // Add new ingredient to DataBase
         HashMap<String, String> data = new HashMap<>();
@@ -110,8 +125,13 @@ public class IngredientFragment extends DialogFragment {
                 });
     }
 
-    public static void delIngredientDB(String delItem,
-                                       CollectionReference delCollect) {
+    /**
+     * Delete an Ingredient from the firebase database in a specific collection.
+     *
+     * @param delItem       the description of the ingredient to delete
+     * @param delCollect    the colleciton to delete the ingredient from
+     */
+    public static void delIngredientDB(String delItem, CollectionReference delCollect) {
         delCollect
                 .document(delItem)
                 .delete()
@@ -131,6 +151,13 @@ public class IngredientFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Edit Ingredient in firebase by first deleting the original and adding the new Ingredient.
+     *
+     * @param oldItem       description of old Ingredient
+     * @param newItem       the new Ingredient to add
+     * @param editCollect   The collection to edit ingredient in
+     */
     public static void editIngredientDB(String oldItem, Ingredient newItem,
                                        CollectionReference editCollect) {
         // delete old ingredient
@@ -139,12 +166,17 @@ public class IngredientFragment extends DialogFragment {
         addIngredientDB(newItem, editCollect);
     }
 
-
+    /**
+     * set up UI elements and parse user input.
+     *
+     * @param savedInstanceState
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_ingredient, null);
 
+        // initalize the edit text fields
         ingredientDescription = view.findViewById(R.id.ingredientDescriptionET);
         ingredientLocation = view.findViewById(R.id.ingredientLocationET);
         ingredientBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateTV2);
@@ -171,6 +203,7 @@ public class IngredientFragment extends DialogFragment {
         if (triggerFlag.equals("edit") || triggerFlag.equals("editFromRecipe")) {
             Ingredient ingredient = (Ingredient) args.getSerializable("ingredient");
             ingredientDescription.setText(ingredient.getDescription());
+
 
             if (triggerFlag.equals("edit")) {
                 ingredientLocation.setText(ingredient.getLocation());

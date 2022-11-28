@@ -34,6 +34,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+/**
+ * The Activity responsible for Ingredient Storage functionality, it sets up UI elements of ingredient
+ * storage, calls IngredientFragment to allow user to add/edit Ingredients, and allows movement to
+ * other activities.
+ * @author Arsh, Ahmed, Ashley, Alfred
+ * @version 1.0
+ * @see IngredientFragment
+ * @see CustomIngredientArrayAdapter
+ */
 public class IngredientActivity extends AppCompatActivity
         implements IngredientFragment.OnFragmentInteractionListener {
 
@@ -45,6 +54,10 @@ public class IngredientActivity extends AppCompatActivity
     private FirebaseFirestore db;
     private final String[] sortValues = { "description", "best before date", "location", "category" };
 
+    /**
+     * First called when activity is created and initializes UI elements and sets various listeners
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -185,12 +198,14 @@ public class IngredientActivity extends AppCompatActivity
         });
 
     }
-
+    // method override from IngredientFragment.OnFragmentInteractionListener that allows fragment
+    // to add ingredients in activity
     @Override
     public void onOkPressed(Ingredient newIngredient) {
         ingredientAdapter.add(newIngredient);
     }
-
+    // method override from IngredientFragment.OnFragmentInteractionListener that allows fragment
+    // to edit ingredients in activity
     @Override
     public void onOkPressedEdit(Ingredient ingredient) {
         dataList.set(selected, ingredient);
