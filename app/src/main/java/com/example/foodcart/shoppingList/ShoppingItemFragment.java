@@ -45,7 +45,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment that allows user to edit shopping items or add an existing one to Ingredient storage
+ * by filling in the required values.
+ *
+ * @author Ahmed, Ashley, Alfred
+ * @version 1.0
+ * @see ShoppingListActivity
  */
 public class ShoppingItemFragment extends DialogFragment {
     private EditText itemDescription;
@@ -58,6 +63,10 @@ public class ShoppingItemFragment extends DialogFragment {
     private OnFragmentInteractionListener listener;
     private FirebaseFirestore db;
 
+    /**
+     * adaptor to interact with ShoppingListActivity
+     * @author Ashley
+     */
     public interface OnFragmentInteractionListener {
         void onOkPressedEdit(ShoppingItem newItem);
     }
@@ -73,8 +82,13 @@ public class ShoppingItemFragment extends DialogFragment {
         }
     }
 
-    public static void editShoppingItemDB(String oldItem,
-                                          Ingredient newItem,
+    /**
+     * edit a shopping item from firebase in specified collection
+     * @param oldItem               description of old ingredient to delete
+     * @param newItem               new ingredient to add
+     * @param IngredientCollection  collection to edit ingredient in
+     */
+    public static void editShoppingItemDB(String oldItem, Ingredient newItem,
                                         CollectionReference IngredientCollection) {
         HashMap<String, String> data = new HashMap<>();
         data.put("Category", newItem.getCategory());
@@ -114,6 +128,12 @@ public class ShoppingItemFragment extends DialogFragment {
     }
 
 
+    /**
+     * method called when fragment is first created. Creates UI elements and checks for valid user
+     * input
+     * @param savedInstanceState
+     * @return
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

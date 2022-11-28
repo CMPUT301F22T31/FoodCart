@@ -27,6 +27,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * Custom array adaptor for meals that allow ListView in MealPlanActivity to display meals correctly
+ *
+ * @author Arsh, Ahmed, Ashley, Alfred
+ * @version 1.0
+ * @see MealPlanActivity
+ */
 public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
     private ArrayList<Meal> meals;
     private Context context;

@@ -39,6 +39,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+/**
+ * recipe activity responsible for all recipe functionality. It sets the UI, calls RecipeFragment
+ * to allow user input, and facilitates navigation between activities
+ *
+ * author Arsh, Ahmed, Ashley, Alfred
+ * @version 3.0
+ * @see RecipeFragment              allows user to add/edit recipes
+ * @see CustomRecipeArrayAdapter    sorts recipes and allows ListView to display recipes
+ */
 public class RecipeActivity extends AppCompatActivity
         implements RecipeFragment.OnFragmentInteractionListener{
 
@@ -47,7 +57,6 @@ public class RecipeActivity extends AppCompatActivity
     ArrayList<Recipe> recipeList;
     int selected;
     private final String[] sortValues = { "title", "prep time", "# of servings", "category" };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

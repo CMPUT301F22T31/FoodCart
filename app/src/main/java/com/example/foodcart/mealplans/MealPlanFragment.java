@@ -54,6 +54,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ * Allows user to add a new meal into MealPlan.
+ *
+ * @author Ahmed, Alfred
+ * @version 1.0
+ * @see MealPlanActivity
+ */
 
 public class MealPlanFragment extends DialogFragment {
     private FirebaseFirestore db;
@@ -69,9 +76,15 @@ public class MealPlanFragment extends DialogFragment {
     private Recipe selectedRecipe;
     private String type;
 
+    /**
+     * add a Meal Recipe to a collection in firebase
+     * @param addMeal       the meal to add
+     * @param addRecipe     the supplemental recipe meal is based on
+     * @param addCollect    the collection to add the meal to
+     */
     public static void addMealRecipeDB(Meal addMeal, Recipe addRecipe,
                                  CollectionReference addCollect) {
-        // Add new edited recipe to database
+        // set all fields in hashmap
         HashMap<String, String> data = new HashMap<>();
         data.put("Prep Time", String.valueOf(addRecipe.getPrep_time()));
         data.put("Servings", String.valueOf(addRecipe.getServings()));
@@ -82,6 +95,7 @@ public class MealPlanFragment extends DialogFragment {
         data.put("Type", addMeal.getMealType());
         data.put("MealName", addMeal.getMealName());
         data.put("Day", addMeal.getFormattedDate());
+        // add recipe, meals are stored on database as namedate
         addCollect
                 .document(addRecipe.getTitle() + addMeal.getFormattedDate())
                 .set(data)
@@ -111,7 +125,9 @@ public class MealPlanFragment extends DialogFragment {
             data.put("Category", ingredient.getCategory());
 
             // get reference to sub-collection
-            CollectionReference IngredientCollection = addCollect.document(addMeal.getMealName() + addMeal.getFormattedDate()).collection("Ingredients");
+            CollectionReference IngredientCollection =
+                    addCollect.document(addMeal.getMealName() + addMeal.getFormattedDate())
+                              .collection("Ingredients");
             // put ingredient into sub-collection
             IngredientCollection
                     .document(ingredient.getDescription())
@@ -134,19 +150,12 @@ public class MealPlanFragment extends DialogFragment {
         }
     }
 
-    public static void delMealRecipeDB(Recipe delRecipe,
-                                       CollectionReference mealCollect) {
-        RecipeFragment.delRecipeDB(delRecipe, mealCollect);
-    }
-
-    public static void editMealRecipeDB(Recipe oldRecipe,
-                                        Meal newMeal, Recipe newRecipe,
-                                        CollectionReference mealCollect) {
-        delMealRecipeDB(oldRecipe, mealCollect);
-        addMealRecipeDB(newMeal, newRecipe, mealCollect);
-    }
-
-
+    /**
+     * add meal ingredient to a given collection
+     * @param addMeal       meal to add
+     * @param addItem       supplemental ingredient to add
+     * @param addCollect    collection to add to
+     */
     public static void addMealIngredientDB(Meal addMeal, Ingredient addItem,
                                            CollectionReference addCollect) {
         // Add new ingredient with meal values to DataBase
@@ -180,16 +189,15 @@ public class MealPlanFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * delete a meal ingredient from a given collection
+     * @param delName       description of ingredient to delete
+     * @param delDate       date of meal
+     * @param mealCollect   collection to delete from
+     */
     public static void delMealIngredientDB(String delName, String delDate,
                                            CollectionReference mealCollect) {
         IngredientFragment.delIngredientDB(delName + delDate, mealCollect);
-    }
-
-    public static void editMealIngredientDB(String oldName, String oldDate,
-                                            Meal newMeal, Ingredient newIngredient,
-                                            CollectionReference mealCollect) {
-        delMealIngredientDB(oldName, oldDate , mealCollect);
-        addMealIngredientDB(newMeal, newIngredient, mealCollect);
     }
 
     @Override

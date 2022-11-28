@@ -25,6 +25,9 @@ import java.util.ArrayList;
 /**
  * The custom array adapter for ingredients. Also includes delete
  * and sort functionality for items in the ingredients list
+ * @author Arsh
+ * @version 1.0
+ * @see IngredientActivity
  */
 public class CustomIngredientArrayAdapter extends ArrayAdapter<Ingredient> {
     private ArrayList<Ingredient> ingredients;

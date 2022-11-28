@@ -1,28 +1,17 @@
 package com.example.foodcart.shoppingList;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
-
 import com.example.foodcart.R;
-import com.example.foodcart.ingredients.CustomIngredientArrayAdapter;
-import com.example.foodcart.ingredients.Ingredient;
 import com.example.foodcart.ingredients.IngredientActivity;
-import com.example.foodcart.ingredients.IngredientFragment;
-import com.example.foodcart.mealplans.Meal;
 import com.example.foodcart.mealplans.MealPlanActivity;
-import com.example.foodcart.recipes.Recipe;
 import com.example.foodcart.recipes.RecipeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,20 +19,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.checkerframework.checker.units.qual.A;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+
+/**
+ * Main activity for all shopping list functionality. Sets UI elements, starts fragments to get user
+ * input
+ *
+ * @author Ahmed, Ashley, Alfred
+ * @version 1.0
+ * @see ShoppingListActivity
+ */
 
 public class ShoppingListActivity extends AppCompatActivity
         implements ShoppingItemFragment.OnFragmentInteractionListener {
@@ -127,7 +115,6 @@ public class ShoppingListActivity extends AppCompatActivity
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
                         tempList.clear();
-                        ArrayList<Ingredient> ingredientList = new ArrayList<>();
                         assert task.getResult() != null;
                         for(QueryDocumentSnapshot doc: task.getResult()) {
                             Log.d("Update ShoppingList", doc.getId());
@@ -136,6 +123,7 @@ public class ShoppingListActivity extends AppCompatActivity
                                 String scale = (String) doc.getData().get("Scale");
                                 CollectionReference ingredients = db.collection("MealPlan")
                                         .document(title).collection("Ingredients");
+                                // get all ingredients from recipe
                                 ingredients.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                     @Override
                                     public void onComplete(@org.checkerframework.checker.nullness.qual.NonNull Task<QuerySnapshot> task) {
@@ -174,7 +162,12 @@ public class ShoppingListActivity extends AppCompatActivity
             });
         }
 
-//        @Override
+    /**
+     * called when fragment exits with user clicking confirm/edit, sets new count value, and if new
+     * count is not integer then remove shopping item from list
+     *
+     * @param item      new item that was edited
+     */
         public void onOkPressedEdit(ShoppingItem item) {
             for(ShoppingItem i:dataList){
                 if(i.getDescription().equals(item.getDescription())){
@@ -188,6 +181,12 @@ public class ShoppingListActivity extends AppCompatActivity
             shoppingAdapter.notifyDataSetChanged();
         }
 
+    /**
+     * add shoppingitem to shoppinglist if difference between new item's and old item's count is greater
+     * than zero.
+     *
+     * @param item  shopping item to check and add
+     */
         public void additem(ShoppingItem item){
             if(tempList.contains(item)){
                 for(ShoppingItem i:tempList){
@@ -208,7 +207,12 @@ public class ShoppingListActivity extends AppCompatActivity
             shoppingAdapter.notifyDataSetChanged();
         }
 
-
+    /**
+     * add shoppingitem to shopppinglist if new item's count doesn't match the corresponding ingredient
+     * in Ingredients storage's count.
+     *
+     * @param item  shopping item to check and add
+     */
         public void additemCheck(ShoppingItem item) {
             DocumentReference docIdRef = db.collection("Ingredients").document(item.getDescription());
             docIdRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

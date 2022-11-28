@@ -30,6 +30,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+/**
+ * Allows user to edit scale for a meal recipe
+ *
+ * @author Ahmed, Alfred
+ * @version 1.0
+ * @see MealPlanActivity
+ */
 public class MealPlanScaleFragment extends DialogFragment {
     private MealPlanScaleFragment.OnFragmentInteractionListener listener;
     private FirebaseFirestore db;

@@ -28,6 +28,10 @@ import java.util.ArrayList;
 /**
  * The custom array adapter for ingredients. Also includes delete
  * and sort functionality for items in the ingredients list
+ *
+ * @author Ashley
+ * @version 1.0
+ * @see ShoppingListActivity
  */
 public class CustomShoppingItemArrayAdapter extends ArrayAdapter<ShoppingItem> {
     private ArrayList<ShoppingItem> items;

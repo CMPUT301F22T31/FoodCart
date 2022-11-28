@@ -61,8 +61,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Fragment for Recipe
- * Gives each recipe in the ListView on the recipe page
+ * Fragment for Recipe which allows user to add/edit a recipe
+ *
+ * @author Arsh, Ahmed, Ashley, Alfred
+ * @version 3.0
+ * @see RecipeActivity              calling activity
+ * @see RecipeIngredientsActivity   allows user to add ingredients to a recipe
  */
 public class RecipeFragment extends DialogFragment {
     private ImageView recipeImage;
@@ -452,7 +456,7 @@ public class RecipeFragment extends DialogFragment {
 
     /**
      * Converts bitmap picture to string value
-     * @param picture
+     * @param picture bitmap image from camera activity
      * @return
      * string encoded picture
      */

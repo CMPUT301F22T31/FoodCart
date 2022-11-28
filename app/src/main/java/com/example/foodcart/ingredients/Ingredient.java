@@ -10,6 +10,8 @@ import java.util.Date;
 /**
  * Ingredient object with the description, best before date, location,
  * count, units (for count), and category an ingredient
+ * @author Arsh
+ * @version 2.0
  */
 public class Ingredient implements Serializable {
     private String description;

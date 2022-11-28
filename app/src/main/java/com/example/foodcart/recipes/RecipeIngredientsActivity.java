@@ -19,6 +19,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
+/**
+ * Allows user to select Ingredients from Ingredient Storage and add them to a recipe.
+ *
+ * @author Arsh, Ashley, Alfred
+ * @version 1.0
+ * @see RecipeFragment
+ */
 public class RecipeIngredientsActivity extends AppCompatActivity
     implements IngredientFragment.OnFragmentInteractionListener{
 

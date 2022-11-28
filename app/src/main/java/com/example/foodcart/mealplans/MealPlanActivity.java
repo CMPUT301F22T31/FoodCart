@@ -43,6 +43,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+/**
+ * the main hub for all MealPlan related functionality. It sets the UI, starts fragments to get user
+ * input, and facilitates navigation between activities.
+ *
+ * @author Ahmed, Alfred
+ * @version 1.0
+ * @see CustomMealPlanArrayAdapter
+ * @see MealPlanFragment
+ * @see MealPlanScaleFragment
+ */
 public class MealPlanActivity extends AppCompatActivity
         implements MealPlanScaleFragment.OnFragmentInteractionListener {
 
