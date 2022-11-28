@@ -32,6 +32,11 @@ class ShoppingListActivity.ShoppingListActivity implements ShoppingItemFragment.
         +void additemCheck(ShoppingItem item)
 }
 
+interface ShoppingItemFragment.OnFragmentInteractionListener
+{
+    +void onOkPressedEdit(ShoppingItem newItem)
+}
+
 class ShoppingItemFragment.ShoppingItemFragment
 {
     -EditText itemDescription
@@ -45,15 +50,17 @@ class ShoppingItemFragment.ShoppingItemFragment
     -FirebaseFirestore db
     -ActivityResultLauncher<Intent> calendarActivity
 
+    -void setDate(String date)
+    -int parseCount(String count)
     +void onAttach(@NonNull Context context)
     +{static}void editShoppingItemDB(String oldItem, Ingredient newItem, CollectionReference IngredientCollection)
     +{static} ShoppingItemFragment newInstance(ShoppingItem item)
     +Dialog onCreateDialog(@Nullable Bundle savedInstanceState)
-    -int parseCount(String count)
     +boolean emptyStringCheck(String description, String location, String count, String unit, String category)
-    -void setDate(String date)
+
 }
 
-
+ShoppingListActivity.ShoppingListActivity -- ShoppingListActivity.CustomShoppingItemArrayAdapter
+ShoppingItemFragment.ShoppingItemFragment <--> ShoppingListActivity.ShoppingListActivity
 
 @enduml
