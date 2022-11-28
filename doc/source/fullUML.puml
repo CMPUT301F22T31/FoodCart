@@ -91,8 +91,8 @@ package Ingredient #DDD
     }
     Serializable ()- Ingredient : Implements
 
-    IngredientActivity  *--   "0..*" Ingredient
-    IngredientFragment  *--   "0..*" Ingredient
+    IngredientActivity  o--   "0..*" Ingredient
+    IngredientFragment  o--   "0..*" Ingredient
     CustomIngredientArrayAdapter --o IngredientActivity
 
     FireBaseFirestore --o "0..*" IngredientActivity
@@ -102,8 +102,10 @@ package Ingredient #DDD
     Ingredient.OnFragmentInteractionListener <-* IngredientFragment
     IngredientActivity <-> IngredientFragment
     CalendarActivity <-> ActivityResultLauncher
-    ActivityResultLauncher --o "1" IngredientFragment
+    ActivityResultLauncher <--o "1" IngredientFragment
 }
+
+class CameraActivity{}
 
 package Recipe #DDD
 {
@@ -126,12 +128,7 @@ package Recipe #DDD
         {
             +void onActivityResult(ActivityResult)
         }
-        class Recipe.CalendarActivity
-        {
-            - String date
-            * void onCreate(Bundle savedInstanceState)
-            - void done()
-        }
+
         interface Recipe.OnFragmentInteractionListener
         {
             +void onOkPressed(Ingredient newIngredient);
@@ -205,18 +202,18 @@ package Recipe #DDD
 
     Ingredient "0..*" -o "0..*" Recipe
 
-    RecipeActivity *-> "0..*" Recipe
-    CustomRecipeArrayAdapter --o RecipeActivity
-    FireBaseFirestore --o "0..*" RecipeActivity
-
+    RecipeActivity o- "0..*" Recipe
+    CustomRecipeArrayAdapter "1" --o RecipeActivity
     Recipe.OnFragmentInteractionListener <-* RecipeFragment
-    FireBaseFirestore --o "0..*" RecipeFragment
-    FireBaseFirestore --o "0..*" CustomRecipeArrayAdapter
+
+    FireBaseFirestore --o RecipeActivity
+    FireBaseFirestore --o RecipeFragment
+    FireBaseFirestore --o CustomRecipeArrayAdapter
 
     RecipeActivity <--> RecipeFragment
-    RecipeFragment --> Recipe.ActivityResultLauncher
-    Recipe.ActivityResultLauncher -> Recipe.CalendarActivity
-    Recipe.ActivityResultLauncher -> RecipeIngredientsActivity
+    RecipeFragment "2" o--> Recipe.ActivityResultLauncher
+    Recipe.ActivityResultLauncher <--> CameraActivity
+    Recipe.ActivityResultLauncher <-> RecipeIngredientsActivity
 }
 package MealPlan #DDD
 {
@@ -311,20 +308,19 @@ package MealPlan #DDD
     }
     Serializable ()- Meal : Implements
 
-    MealPlanFragment "1" o--> MealPlanFragment.ActivityResultLauncher
-    MealPlanFragment.ActivityResultLauncher --> MealPlanFragment.CalendarActivity
-    MealPlanFragment <-- MealPlanFragment.CalendarActivity
+    MealPlanFragment o--> "1" MealPlanFragment.ActivityResultLauncher
+    MealPlanFragment.ActivityResultLauncher <--> MealPlanFragment.CalendarActivity
     Meal "0..*" --o MealPlanActivity
     Meal "0..*" --o MealPlanFragment
 
     MealPlanActivity <-> MealPlanFragment
-    MealPlanActivity -- CustomMealPlanArrayAdapter
+    MealPlanActivity o-- CustomMealPlanArrayAdapter
     MealPlanScaleFragment <-> MealPlanActivity
-    MealPlanScaleFragment *-- MealPlanScaleFragment.OnFragmentInteractionListener
+    MealPlanScaleFragment *--> MealPlanScaleFragment.OnFragmentInteractionListener
 
-    FireBaseFirestore ---> MealPlanFragment
-    FireBaseFirestore ---> MealPlanActivity
-    FireBaseFirestore ---> MealPlanScaleFragment
+    FireBaseFirestore ---o MealPlanFragment
+    FireBaseFirestore ---o MealPlanActivity
+    FireBaseFirestore ---o MealPlanScaleFragment
 }
 package ShoppingList #DDD
 {
@@ -389,15 +385,16 @@ package ShoppingList #DDD
                 +void additemCheck(ShoppingItem item)
         }
     }
-    ShoppingListActivity -- CustomShoppingItemArrayAdapter
+    ShoppingListActivity o-- "1" CustomShoppingItemArrayAdapter
     ShoppingItemFragment <--> ShoppingListActivity
 
-    ShoppingItemFragment *- ShoppingListFragment.OnFragmentInteractionListener
-    ShoppingItem -o ShoppingItemFragment
-    ShoppingItem -o ShoppingListActivity
+    ShoppingItemFragment *--> ShoppingListFragment.OnFragmentInteractionListener
+    ShoppingItem "0..*" -o ShoppingItemFragment
+    ShoppingItem "0..*" -o ShoppingListActivity
 
-    FireBaseFirestore --> ShoppingListActivity
-    FireBaseFirestore --> ShoppingItemFragment
+    FireBaseFirestore --o ShoppingListActivity
+    FireBaseFirestore --o ShoppingItemFragment
+    FireBaseFirestore --o CustomShoppingItemArrayAdapter
 }
 
 IngredientActivity <-> MealPlanActivity

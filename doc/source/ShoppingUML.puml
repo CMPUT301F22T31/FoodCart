@@ -79,14 +79,15 @@ package ShoppingList #DDD
                 +void additemCheck(ShoppingItem item)
         }
     }
-    ShoppingListActivity -- CustomShoppingItemArrayAdapter
+    ShoppingListActivity o-- "1" CustomShoppingItemArrayAdapter
     ShoppingItemFragment <--> ShoppingListActivity
 
-    ShoppingItemFragment *- ShoppingListFragment.OnFragmentInteractionListener
-    ShoppingItem -o ShoppingItemFragment
-    ShoppingItem -o ShoppingListActivity
+    ShoppingItemFragment *--> ShoppingListFragment.OnFragmentInteractionListener
+    ShoppingItem "0..*" -o ShoppingItemFragment
+    ShoppingItem "0..*" -o ShoppingListActivity
 
-    FireBaseFirestore --> ShoppingListActivity
-    FireBaseFirestore --> ShoppingItemFragment
+    FireBaseFirestore --o ShoppingListActivity
+    FireBaseFirestore --o ShoppingItemFragment
+    FireBaseFirestore --o CustomShoppingItemArrayAdapter
 }
 @enduml
