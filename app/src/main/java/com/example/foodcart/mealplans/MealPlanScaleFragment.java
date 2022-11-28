@@ -87,6 +87,7 @@ public class MealPlanScaleFragment extends DialogFragment {
         // Get a top level reference to the collection
         final CollectionReference MealPlanCollection = db.collection("MealPlan");
 
+        // Return our alertdialog for scaling the recipe
         Bundle args = getArguments();
         Meal meal = (Meal) args.getSerializable("meal");
         mealScale_ET.setText(Integer.toString(meal.getScale()));

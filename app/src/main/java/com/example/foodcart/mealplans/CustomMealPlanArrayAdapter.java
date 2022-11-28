@@ -67,11 +67,10 @@ public class CustomMealPlanArrayAdapter extends ArrayAdapter<Meal> {
 
         Meal meal = meals.get(position);
 
-        // Get the views of the TextViews
+        // Get the views of the TextViews and set text
         TextView mealname = view.findViewById(R.id.mealplan_name);
         TextView mealtype = view.findViewById(R.id.mealplan_type);;
         TextView mealdate = view.findViewById(R.id.mealplan_date);;
-
         mealname.setText(meal.getMealName());
         mealtype.setText(meal.getMealType());
         mealdate.setText(meal.getFormattedDate());

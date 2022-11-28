@@ -164,10 +164,12 @@ public class Ingredient implements Serializable {
 
     @Override
     public boolean equals(@Nullable Object obj) {
+        // Not an ingredient so can't compare
         if(!(obj instanceof Ingredient)){
             return false;
         }
         final Ingredient other = (Ingredient) obj;
+        // Compare the descriptions
         if(this.getDescription().equals(other.getDescription())){
             return true;
         }

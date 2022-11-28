@@ -30,6 +30,12 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
     private FirebaseFirestore db;
     private boolean sort;
 
+    /**
+     * Constructor for custom array of recipe adapter
+     * @param context
+     * @param recipes
+     * @param sort
+     */
     public CustomRecipeArrayAdapter(Context context, ArrayList<Recipe> recipes, boolean sort) {
         super(context, 0, recipes);
         this.recipes = recipes;
@@ -39,6 +45,10 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
     @NonNull
     @Override
+    /**
+     * Get the view of the ingredients list and provides delete
+     * and sort functionality for the ingredients in the list
+     */
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
         if (view == null) {
@@ -47,13 +57,14 @@ public class CustomRecipeArrayAdapter extends ArrayAdapter<Recipe> {
 
         Recipe recipe = recipes.get(position);
 
+        // Get Text Views and set them
         TextView recipeDescription = view.findViewById(R.id.recipe_name);
         TextView recipeSort = view.findViewById(R.id.recipe_item_sort);
-
         recipeDescription.setText(recipe.getTitle());
         View parentView = (View) parent.getParent();
         Spinner sortDropDown = parentView.findViewById(R.id.recipes_sort_select);
 
+        // Depending on sort selection change sort value
         if (sort && sortDropDown.getSelectedItem() != null) {
             String sortValue = sortDropDown.getSelectedItem().toString();
             switch (sortValue){

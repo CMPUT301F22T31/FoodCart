@@ -90,6 +90,7 @@ public class ShoppingItemFragment extends DialogFragment {
      */
     public static void editShoppingItemDB(String oldItem, Ingredient newItem,
                                         CollectionReference IngredientCollection) {
+        // Put the data in the hashmap
         HashMap<String, String> data = new HashMap<>();
         data.put("Category", newItem.getCategory());
         data.put("Count", newItem.getCount().toString());
@@ -139,6 +140,7 @@ public class ShoppingItemFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_ingredient, null);
 
+        // Get our textviews
         itemDescription = view.findViewById(R.id.ingredientDescriptionET);
         itemCount = view.findViewById(R.id.ingredientCountET);
         itemLocation = view.findViewById(R.id.ingredientLocationET);
@@ -146,6 +148,7 @@ public class ShoppingItemFragment extends DialogFragment {
         itemCategory = view.findViewById(R.id.ingredientCategoryET);
         itemBestBeforeDate = view.findViewById(R.id.ingredientBestBeforeDateTV2);
 
+        // Setup the calendar button to add date
         final ImageButton calendarButton = view.findViewById(R.id.calendarButton);
         calendarButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +171,8 @@ public class ShoppingItemFragment extends DialogFragment {
         itemCount.setText(Integer.toString(item.getCount()-item.getOldcount()));
         itemUnit.setText(item.getUnit());
         itemCategory.setText(item.getCategory());
+
+        // Create our alertdialog to add to ingredient storage
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         return builder
                 .setTitle("View/Edit Ingredient")
@@ -186,6 +191,7 @@ public class ShoppingItemFragment extends DialogFragment {
                         boolean emptyStringsExist = emptyStringCheck(description, location, count, unit, category);
                         //try to parse the count
                         int countInt = parseCount(count)+item.getOldcount();
+                        // Ensure data is valid
                         if (!emptyStringsExist && countInt != -1) {
                             if (calendarDate != null) {
                                 Ingredient newIngredient = new Ingredient(description, calendarDate, location, countInt, unit, category);
@@ -210,6 +216,7 @@ public class ShoppingItemFragment extends DialogFragment {
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
+                    // Make sure we have a valid date
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         if (result.getData() != null) {
                             String date = result.getData().getStringExtra("Date");
